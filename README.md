@@ -4,13 +4,15 @@
 
 Boilerplate listo para clonar. Al clonarlo, un script interactivo te pregunta el nombre de tu proyecto y configura todo automáticamente — DDEV, `.env`, dependencias, migraciones y apertura del navegador.
 
+> **Alcance de DDEV:** DDEV es exclusivamente una herramienta de **desarrollo local**. Gestiona contenedores Docker en tu máquina para replicar el entorno de producción sin instalar PHP, PostgreSQL ni Nginx directamente en el sistema operativo. Para desplegar en un VPS, consulta la sección [Producción en VPS](#producción-en-vps).
+
 ---
 
 ## Quick Start
 
 ```bash
 # 1. Clonar y entrar al directorio
-git clone https://github.com/tu-org/laravel12-boilerplate mi-proyecto
+git clone https://github.com/MendicantBias-096/z-laravel-boilerplate mi-proyecto
 cd mi-proyecto
 
 # 2. Ejecutar el setup interactivo
@@ -60,6 +62,7 @@ ddev bun run dev
 9. [Comandos disponibles](#comandos-disponibles)
 10. [HMR Troubleshooting](#hmr-troubleshooting)
 11. [Compatibilidad Herd / Laragon / Valet](#compatibilidad-herd--laragon--valet)
+12. [Producción en VPS](#producción-en-vps)
 
 ---
 
@@ -89,18 +92,43 @@ laravel12-boilerplate/
 
 ## Requisitos
 
+DDEV necesita un **motor Docker** corriendo. No requiere Docker Desktop específicamente — es solo una de varias formas de obtener ese motor.
+
 ### Mac
+
 | Herramienta | Notas |
 |---|---|
-| Docker Desktop 4.x+ | O [OrbStack](https://orbstack.dev) (más ligero) |
+| Motor Docker | Elige una opción abajo |
 | DDEV 1.25+ | Instalado con Homebrew |
 
+**Opciones de motor Docker en Mac** (elige una):
+
+| Opción | Coste | Notas |
+|---|---|---|
+| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Gratis (uso personal) | La más conocida |
+| [OrbStack](https://orbstack.dev) | Gratis (uso personal) | Más ligero y rápido, recomendado |
+| [Colima](https://github.com/abiosoft/colima) | Gratis / open source | Línea de comandos, sin GUI |
+| [Rancher Desktop](https://rancherdesktop.io) | Gratis / open source | Con GUI |
+
+> En Mac, Docker Engine no corre de forma nativa (necesita una VM Linux). Cualquiera de las opciones anteriores provee esa VM. No existe una opción "solo engine" como en Linux.
+
 ### Windows
+
 | Herramienta | Notas |
 |---|---|
-| WSL2 + Ubuntu 22.04+ | Habilitar en PowerShell (Admin) |
-| Docker Desktop | Activar backend WSL2 + integración Ubuntu |
-| DDEV 1.25+ | Instalado dentro de WSL2 |
+| WSL2 + Ubuntu 22.04+ | Requerido para DDEV |
+| Motor Docker | Elige una opción abajo |
+| DDEV 1.25+ | Instalado **dentro de WSL2** |
+
+**Opciones de motor Docker en Windows** (elige una):
+
+| Opción | Coste | Notas |
+|---|---|---|
+| Docker Engine en WSL2 | Gratis / open source | Sin GUI, instala directo en Ubuntu. **Recomendado** |
+| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Gratis (uso personal) | Con GUI, configura WSL2 automáticamente |
+| [Rancher Desktop](https://rancherdesktop.io) | Gratis / open source | Alternativa con GUI |
+
+> **Docker Desktop no es obligatorio en Windows.** Puedes instalar Docker Engine directamente en Ubuntu (WSL2) y DDEV lo detecta sin problemas.
 
 ---
 
@@ -125,7 +153,7 @@ ddev version
 
 ### Windows (WSL2)
 
-**En PowerShell (Administrador):**
+**1. Habilitar WSL2 — PowerShell (Administrador):**
 
 ```powershell
 wsl --install
@@ -133,11 +161,24 @@ wsl --install
 wsl --set-default-version 2
 ```
 
-**En Docker Desktop:**
-- Settings → General → activar "Use the WSL 2 based engine"
+**2. Motor Docker — elige una opción:**
+
+**Opción A: Docker Engine directo en WSL2 (sin Docker Desktop)**
+
+```bash
+# Dentro de Ubuntu (WSL2)
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+# Cerrar y reabrir la terminal para aplicar el grupo
+docker run hello-world   # verificar
+```
+
+**Opción B: Docker Desktop**
+- Instalar [Docker Desktop para Windows](https://www.docker.com/products/docker-desktop/)
+- Settings → General → activar **"Use the WSL 2 based engine"**
 - Settings → Resources → WSL Integration → activar Ubuntu
 
-**En la terminal Ubuntu (WSL2):**
+**3. DDEV — dentro de Ubuntu (WSL2):**
 
 ```bash
 sudo apt update && sudo apt upgrade -y
@@ -363,25 +404,81 @@ ddev exec bun --version
 
 ---
 
-## Compatibilidad Herd / Laragon / Valet
+## Entornos locales alternativos (Herd, Laragon, XAMPP)
 
-`vite.config.js` **no modifica nada fuera de DDEV**:
+DDEV es la vía principal de este boilerplate porque gestiona PHP, PostgreSQL, Nginx y el proxy de Vite en contenedores aislados, sin tocar el sistema operativo. Sin embargo, puedes usar otras herramientas con pasos adicionales.
+
+### Compatibilidad de `vite.config.js`
+
+El boilerplate **ya tiene soporte incorporado** para entornos sin DDEV:
 
 ```js
 const isDdev = !!process.env.DDEV_HOSTNAME
-// DDEV_HOSTNAME solo existe dentro del contenedor DDEV
+// DDEV_HOSTNAME solo existe dentro del contenedor DDEV.
+// Fuera de él, Vite usa sus propios defaults sin interferencia.
 ```
 
-Si `DDEV_HOSTNAME` no está definido, el bloque `server` cae al fallback de Vite:
+Esto significa que con Herd, Laragon o Valet, Vite HMR **funciona sin ningún cambio** en `vite.config.js`. Simplemente ejecutas `bun run dev` en tu terminal.
 
-```js
-// Fuera de DDEV: solo ignora los archivos de caché de Laravel
-server: {
-    watch: { ignored: ['**/storage/framework/views/**'] }
-}
+### Qué necesitas configurar manualmente
+
+| | Herd Free | Herd Pro | Laragon | XAMPP |
+|---|---|---|---|---|
+| **PHP 8.5** | ✅ | ✅ | ✅ | ❌ |
+| **PostgreSQL** | Manual¹ | ✅ incluido | ✅ Quick Add² | ❌ muy complejo |
+| **Bun** | `brew install bun` | `brew install bun` | instalador manual | instalador manual |
+| **Vite HMR** | ✅ sin cambios | ✅ sin cambios | ✅ sin cambios | ⚠️ problemático |
+| **Plataformas** | Mac / Win | Mac / Win | Solo Windows | Mac / Win / Linux |
+| **Coste** | Gratis | $99/año | Gratis | Gratis |
+
+¹ Herd Free: instalar PostgreSQL por separado (DBngin o instalador oficial) y apuntar `DB_HOST=127.0.0.1`.
+² Laragon: Menu → Quick Add → PostgreSQL.
+
+> **XAMPP no está recomendado** para este stack: no soporta PHP 8.5, PostgreSQL requiere configuración muy manual y Vite HMR genera problemas frecuentes con WebSockets.
+
+### Setup con Herd o Laragon
+
+En lugar de `bash setup.sh` (que configura DDEV), haz los pasos manualmente:
+
+```bash
+# 1. Clonar
+git clone https://github.com/MendicantBias-096/z-laravel-boilerplate mi-proyecto
+cd mi-proyecto
+
+# 2. Instalar Bun en tu máquina (si no lo tienes)
+# Mac:
+brew install bun
+# Windows: https://bun.sh
+
+# 3. Configurar .env desde la plantilla neutral
+cp .env.example .env
+# Editar .env:
+#   APP_URL=http://mi-proyecto.test
+#   DB_CONNECTION=pgsql (o mysql si usas MySQL)
+#   DB_HOST=127.0.0.1
+#   DB_DATABASE=mi_proyecto
+#   DB_USERNAME=...
+#   DB_PASSWORD=...
+
+# 4. Instalar dependencias
+composer install
+php artisan key:generate
+bun install
+
+# 5. Migraciones
+php artisan migrate
+
+# 6. Vite en modo desarrollo (terminal separada)
+bun run dev
 ```
 
-No se necesita ningún ajuste adicional en Herd, Laragon o Valet.
+El `Makefile` también funciona si tienes `make` disponible, pero apuntando a tu PHP local:
+
+```bash
+# Ajusta la variable PHP al inicio del Makefile si usas Herd/Laragon
+PHP = php          # o php8.5 si tienes múltiples versiones
+COMPOSER = composer
+```
 
 ---
 
@@ -402,6 +499,129 @@ ddev stop
 # 4. Reiniciar
 ddev start
 ddev artisan optimize:clear
+```
+
+---
+
+## Producción en VPS
+
+> DDEV **no se usa en producción**. En el VPS sirves la app directamente con Nginx + PHP-FPM instalados en el sistema.
+
+### El problema: múltiples versiones de PHP en el mismo VPS
+
+Cuando tienes varios proyectos con distintas versiones de PHP, el punto de dolor es el **CLI**: el comando `php` apunta a una sola versión global, pero Composer y Artisan necesitan la versión correcta de cada proyecto.
+
+```bash
+# Nginx sirve con la versión correcta ✅ (configurado por socket FPM)
+fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+
+# Pero en terminal, composer usa el PHP global ❌
+composer update   # puede estar usando PHP 8.5 en un proyecto que requiere 8.3
+```
+
+### Solución: aliases globales + Makefile por proyecto
+
+**1. Añadir aliases en el servidor** (`~/.bashrc` o `~/.zshrc`):
+
+```bash
+# ~/.bashrc — aliases de PHP por versión
+alias php83='php8.3'
+alias php84='php8.4'
+alias php85='php8.5'
+
+alias composer83='php8.3 /usr/local/bin/composer'
+alias composer84='php8.4 /usr/local/bin/composer'
+alias composer85='php8.5 /usr/local/bin/composer'
+```
+
+```bash
+source ~/.bashrc
+```
+
+**2. Makefile en cada proyecto** con la versión de PHP explícita:
+
+Cada proyecto define su propio `PHP` y `COMPOSER` en el `Makefile`, de forma que cualquier operación usa la versión correcta sin importar cuál sea el `php` global del servidor.
+
+```makefile
+# Makefile — variables de entorno del proyecto
+PHP      = php8.5
+COMPOSER = php8.5 /usr/local/bin/composer
+
+# ── Dependencias ──────────────────────────────────────────────
+install: ## Instalar dependencias PHP (producción, sin dev)
+	$(COMPOSER) install --no-dev --optimize-autoloader
+
+update: ## Actualizar dependencias
+	$(COMPOSER) update
+
+# ── Assets ────────────────────────────────────────────────────
+build: ## Compilar assets con Bun
+	bun install --frozen-lockfile
+	bun run build
+
+# ── Laravel ───────────────────────────────────────────────────
+migrate: ## Ejecutar migraciones pendientes
+	$(PHP) artisan migrate --force
+
+cache: ## Cachear config, rutas y vistas para producción
+	$(PHP) artisan optimize
+
+cache-clear: ## Limpiar todos los cachés
+	$(PHP) artisan optimize:clear
+
+queue-restart: ## Reiniciar workers de cola
+	$(PHP) artisan queue:restart
+
+# ── Despliegue completo ───────────────────────────────────────
+deploy: install build migrate cache ## Despliegue completo (install + build + migrate + cache)
+```
+
+**Uso en el servidor:**
+
+```bash
+cd /var/www/mi-proyecto
+make deploy        # despliegue completo
+make migrate       # solo migraciones
+make cache-clear   # limpiar caché tras cambios de config
+```
+
+### Nginx + PHP-FPM por versión
+
+Cada virtual host apunta al socket FPM de su versión:
+
+```nginx
+# /etc/nginx/sites-available/mi-proyecto
+server {
+    listen 443 ssl;
+    server_name mi-proyecto.com;
+    root /var/www/mi-proyecto/public;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.5-fpm.sock;  # ← versión del proyecto
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+```
+
+### Instalar múltiples versiones de PHP (Ubuntu/Debian)
+
+```bash
+# Añadir PPA de Ondřej Surý (todas las versiones de PHP)
+sudo add-apt-repository ppa:ondrej/php
+sudo apt update
+
+# Instalar las versiones que necesites
+sudo apt install php8.3-fpm php8.3-cli php8.3-pgsql php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip
+sudo apt install php8.5-fpm php8.5-cli php8.5-pgsql php8.5-mbstring php8.5-xml php8.5-curl php8.5-zip
+
+# Verificar que ambas FPM están activas
+sudo systemctl status php8.3-fpm
+sudo systemctl status php8.5-fpm
+
+# Confirmar binarios disponibles
+php8.3 --version
+php8.5 --version
 ```
 
 ---
