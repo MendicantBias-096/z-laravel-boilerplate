@@ -1,0 +1,23 @@
+name: laravel12-boilerplate
+type: laravel
+docroot: public
+php_version: "8.5"
+webserver_type: nginx-fpm
+
+database:
+  type: postgres
+  version: "16"
+
+# ── Vite HMR port ──────────────────────────────────────────────────────────
+web_extra_exposed_ports:
+  - name: vite
+    container_port: 5173
+    http_port: 5172
+    https_port: 5173
+
+use_dns_when_possible: true
+composer_version: "2"
+
+# ── Hooks ──────────────────────────────────────────────────────────────────
+# Bun is installed via .ddev/web-build/Dockerfile
+# No post-start hooks needed for Bun

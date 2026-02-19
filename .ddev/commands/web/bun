@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+## Description: Run Bun package manager inside the DDEV web container
+## Usage: bun [args]
+## Example: "ddev bun install", "ddev bun run dev", "ddev bun add alpinejs"
+
+bun "$@"
