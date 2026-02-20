@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ddev exec:*)",
+      "Bash(herd link:*)",
+      "Bash(herd isolate:*)",
+      "Bash(\"/Users/am-mac/Library/Application Support/Herd/bin/php85\" artisan migrate --force)",
+      "Bash(git filter-branch:*)",
+      "Bash(git stash:*)",
+      "Bash(FILTER_BRANCH_SQUELCH_WARNING=1 git filter-branch --env-filter ':*)",
+      "Bash(git stash pop:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(composer require:*)",
+      "Bash(php artisan install:api:*)",
+      "Bash(php artisan vendor:publish:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(php artisan route:list:*)",
+      "Bash(php -l:*)",
+      "Bash(php artisan config:clear:*)",
+      "Bash(composer show:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

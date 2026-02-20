@@ -1,0 +1,15 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Variantes personalizadas de Tailwind
+ *
+ * Aquí se definen los @custom-variant que extienden la capa de utilidades.
+ * Añadir aquí nuevas variantes (hover-focus, group-open, etc.) según se necesite.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/*
+ * Dark mode — class strategy
+ * Se activa cuando el elemento o cualquier ancestro tenga la clase `.dark`.
+ * Alpine gestiona el toggle y persiste la preferencia en localStorage.
+ */
+@custom-variant dark (&:where(.dark, .dark *));

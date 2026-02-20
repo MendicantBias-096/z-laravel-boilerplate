@@ -1,0 +1,91 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Tokens semánticos adaptativos
+ *
+ * Patrón de tres capas:
+ *   1. :root / .dark  → CSS custom properties que cambian con el modo
+ *   2. @theme inline  → expone esas variables como utilidades Tailwind
+ *                       (inline = el valor generado es var(--ui-*), no el hex)
+ *
+ * Resultado: las clases como bg-panel, text-content, border-line cambian
+ * automáticamente sin necesitar el prefijo dark: en los templates.
+ *
+ * Tokens de superficie:
+ *   bg-canvas        → fondo general de la aplicación
+ *   bg-panel         → sidebar, navbar, cards
+ *   bg-panel-alt     → hover states, filas alternas
+ *
+ * Tokens de borde:
+ *   border-line       → borde estándar
+ *   border-line-strong → borde pronunciado / separadores
+ *
+ * Tokens de texto:
+ *   text-content        → texto principal
+ *   text-content-muted  → texto secundario
+ *   text-content-subtle → texto terciario / placeholders
+ *   text-content-invert → texto sobre fondos oscuros (botones primarios, etc.)
+ *
+ * Tokens de estado (también adaptativos):
+ *   text-success / bg-success
+ *   text-warning / bg-warning
+ *   text-danger  / bg-danger
+ *   text-info    / bg-info
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+/* ── Light mode ── */
+:root {
+    --ui-canvas:         #F7F8FA;
+    --ui-panel:          #FFFFFF;
+    --ui-panel-alt:      #F1F4F8;
+    --ui-line:           #E3E8EF;
+    --ui-line-strong:    #CFD8E3;
+
+    --ui-content:        #0B1220;
+    --ui-content-muted:  #475569;
+    --ui-content-subtle: #64748B;
+    --ui-content-invert: #FFFFFF;
+
+    --ui-success: #16A34A;
+    --ui-warning: #F59E0B;
+    --ui-danger:  #EF4444;
+    --ui-info:    #0EA5E9;
+}
+
+/* ── Dark mode — alineado con el módulo público (#080c18) ── */
+.dark {
+    --ui-canvas:         #080c18;
+    --ui-panel:          #0d1222;
+    --ui-panel-alt:      #131929;
+    --ui-line:           #1c2a40;
+    --ui-line-strong:    #253850;
+
+    --ui-content:        #e8eef8;
+    --ui-content-muted:  #a8b8cc;
+    --ui-content-subtle: #6e88a4;
+    --ui-content-invert: #080c18;
+
+    --ui-success: #22C55E;
+    --ui-warning: #FBBF24;
+    --ui-danger:  #F87171;
+    --ui-info:    #38BDF8;
+}
+
+/* ── Exponer como utilidades Tailwind ── */
+@theme inline {
+    --color-canvas:         var(--ui-canvas);
+    --color-panel:          var(--ui-panel);
+    --color-panel-alt:      var(--ui-panel-alt);
+    --color-line:           var(--ui-line);
+    --color-line-strong:    var(--ui-line-strong);
+
+    --color-content:        var(--ui-content);
+    --color-content-muted:  var(--ui-content-muted);
+    --color-content-subtle: var(--ui-content-subtle);
+    --color-content-invert: var(--ui-content-invert);
+
+    --color-success: var(--ui-success);
+    --color-warning: var(--ui-warning);
+    --color-danger:  var(--ui-danger);
+    --color-info:    var(--ui-info);
+}

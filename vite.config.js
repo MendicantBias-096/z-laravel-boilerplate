@@ -25,7 +25,11 @@ export default defineConfig({
               strictPort: true,
               watch: {
                   usePolling: true, // required for file-watching inside Docker
-                  interval: 250,
+                  interval: 300,
+                  awaitWriteFinish: {
+                      stabilityThreshold: 100,
+                      pollInterval: 50,
+                  },
                   ignored: ['**/storage/framework/views/**'],
               },
               hmr: {

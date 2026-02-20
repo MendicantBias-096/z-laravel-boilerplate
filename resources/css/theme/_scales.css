@@ -1,0 +1,57 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Escalas de color estáticas — @theme
+ *
+ * Valores inlineados en el CSS generado. No cambian con dark mode.
+ * Disponibles como utilidades: bg-primary-500, text-accent-400, etc.
+ *
+ * Escalas definidas:
+ *   · gray     — Cool gray (reemplaza el warm-gray por defecto de Tailwind)
+ *   · primary  — Red (color de marca)
+ *   · accent   — Blue modern (acciones, links, focus rings)
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+@theme {
+    /* ── Tipografía ── */
+    --font-sans: 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* ── Gray (cool-blue tint) ── */
+    --color-gray-50:  #F7F8FA;
+    --color-gray-100: #EEF2F6;
+    --color-gray-200: #E3E8EF;
+    --color-gray-300: #CFD8E3;
+    --color-gray-400: #94A3B8;
+    --color-gray-500: #64748B;
+    --color-gray-600: #475569;
+    --color-gray-700: #334155;
+    --color-gray-800: #1F2A3A;
+    --color-gray-900: #0F1624;
+    --color-gray-950: #0A0E15;
+
+    /* ── Primary — Red (color de marca) ── */
+    --color-primary-50:  #fff3f0;
+    --color-primary-100: #ffe4de;
+    --color-primary-200: #ffbfb0;
+    --color-primary-300: #ff9078;
+    --color-primary-400: #f97055;
+    --color-primary-500: #f53003;
+    --color-primary-600: #d42800;
+    --color-primary-700: #b02000;
+    --color-primary-800: #8f1900;
+    --color-primary-900: #751700;
+    --color-primary-950: #3d0800;
+
+    /* ── Accent (blue modern) ── */
+    --color-accent-50:  #eff6ff;
+    --color-accent-100: #dbeafe;
+    --color-accent-200: #bfdbfe;
+    --color-accent-300: #93c5fd;
+    --color-accent-400: #60a5fa;
+    --color-accent-500: #3b82f6;
+    --color-accent-600: #2563eb;
+    --color-accent-700: #1d4ed8;
+    --color-accent-800: #1e40af;
+    --color-accent-900: #1e3a8a;
+    --color-accent-950: #172554;
+}

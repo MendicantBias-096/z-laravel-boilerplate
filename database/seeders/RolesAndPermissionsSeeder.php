@@ -1,0 +1,38 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
+
+class RolesAndPermissionsSeeder extends Seeder
+{
+    public function run(): void
+    {
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        // Crear todos los permisos definidos en config/roles.php
+        foreach (config('roles.permissions') as $module => $permissions) {
+            foreach ($permissions as $permission) {
+                Permission::firstOrCreate(['name' => $permission]);
+            }
+        }
+
+        // Crear roles y asignarles los permisos de sus módulos
+        foreach (config('roles.roles') as $roleName) {
+            $role = Role::firstOrCreate(['name' => $roleName]);
+
+            $modules = config("roles.roles_modules.{$roleName}", []);
+
+            $permissions = collect($modules)
+                ->flatMap(fn ($module) => config("roles.permissions.{$module}", []))
+                ->all();
+
+            if (count($permissions) > 0) {
+                $role->syncPermissions($permissions);
+            }
+        }
+    }
+}
