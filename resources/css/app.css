@@ -15,8 +15,14 @@
 @import './theme/_scales.css';
 @import './theme/_tokens.css';
 
+@plugin '@tailwindcss/forms' {
+    strategy: 'class';
+}
+
 /* ── Fuentes de clases para el scanner de Tailwind ── */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../../vendor/tallstackui/tallstackui/src/**/*.php';
+@source '../../vendor/tallstackui/tallstackui/js/**/*.js';
 @source '../**/*.blade.php';
 @source '../**/*.js';

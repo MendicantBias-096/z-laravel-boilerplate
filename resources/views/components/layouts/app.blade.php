@@ -11,6 +11,7 @@
             #page-header    { padding-left: var(--sidebar-w, 16rem); }
         }
     </style>
+    <tallstackui:script />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -55,5 +56,6 @@
 </div>
 
 @livewireScripts
+<x-toast />
 </body>
 </html>

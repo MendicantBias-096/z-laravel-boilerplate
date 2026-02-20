@@ -19,7 +19,14 @@
       "Bash(php -l:*)",
       "Bash(php artisan config:clear:*)",
       "Bash(composer show:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(php:*)",
+      "Bash(composer:*)",
+      "WebFetch(domain:tallstackui.com)",
+      "Bash(bun add:*)",
+      "Bash(bun run build:*)"
     ]
   }
 }

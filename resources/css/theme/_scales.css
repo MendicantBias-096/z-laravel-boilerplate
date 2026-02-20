@@ -6,9 +6,11 @@
  * Disponibles como utilidades: bg-primary-500, text-accent-400, etc.
  *
  * Escalas definidas:
- *   · gray     — Cool gray (reemplaza el warm-gray por defecto de Tailwind)
- *   · primary  — Red (color de marca)
- *   · accent   — Blue modern (acciones, links, focus rings)
+ *   · gray      — Cool gray (reemplaza el warm-gray por defecto de Tailwind)
+ *   · primary   — Red (color de marca)
+ *   · accent    — Blue modern (acciones, links, focus rings)
+ *   · secondary — Slate (requerido por TallStackUI)
+ *   · dark      — Slate oscuro (requerido por TallStackUI dark mode)
  * ─────────────────────────────────────────────────────────────────────────────
  */
 @theme {
@@ -54,4 +56,46 @@
     --color-accent-800: #1e40af;
     --color-accent-900: #1e3a8a;
     --color-accent-950: #172554;
+
+    /* ── Secondary (slate) — requerido por TallStackUI ── */
+    --color-secondary-50:  #f8fafc;
+    --color-secondary-100: #f1f5f9;
+    --color-secondary-200: #e2e8f0;
+    --color-secondary-300: #cbd5e1;
+    --color-secondary-400: #94a3b8;
+    --color-secondary-500: #64748b;
+    --color-secondary-600: #475569;
+    --color-secondary-700: #334155;
+    --color-secondary-800: #1e293b;
+    --color-secondary-900: #0f172a;
+    --color-secondary-950: #020617;
+
+    /* ── Dark (slate) — requerido por TallStackUI dark mode ── */
+    --color-dark-50:  #f8fafc;
+    --color-dark-100: #f1f5f9;
+    --color-dark-200: #e2e8f0;
+    --color-dark-300: #cbd5e1;
+    --color-dark-400: #94a3b8;
+    --color-dark-500: #64748b;
+    --color-dark-600: #475569;
+    --color-dark-700: #334155;
+    --color-dark-800: #1e293b;
+    --color-dark-900: #0f172a;
+    --color-dark-950: #020617;
+
+    /* ── Variables TallStackUI (z-index y animaciones) ── */
+    --overflow-hidden: hidden;
+    --z-index-0:  0;
+    --z-index-10: 10;
+    --z-index-20: 20;
+    --z-index-30: 30;
+    --z-index-40: 40;
+    --z-index-50: 50;
+    --z-auto: auto;
+    --animate-progress: progress 2s linear infinite;
+
+    @keyframes progress {
+        0%   { width: 0; }
+        100% { width: 100%; }
+    }
 }
