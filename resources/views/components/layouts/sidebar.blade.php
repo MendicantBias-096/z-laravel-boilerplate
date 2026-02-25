@@ -39,7 +39,7 @@
             <button
                 type="button"
                 @click="toggleDark()"
-                class="inline-flex items-center justify-center rounded-md p-1.5 text-content-subtle hover:bg-panel-alt hover:text-content"
+                class="inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 text-content-subtle hover:bg-panel-alt hover:text-content"
                 title="Cambiar tema"
             >
                 <x-ui.icon name="sun"  class="size-5" x-show="darkMode"  x-cloak />

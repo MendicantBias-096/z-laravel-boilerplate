@@ -14,7 +14,7 @@
             <button
                 type="button"
                 @click="mobileSidebarOpen = true"
-                class="inline-flex items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:hidden"
+                class="inline-flex cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:hidden"
             >
                 <x-ui.icon name="bars-3" class="size-5" />
             </button>
@@ -22,7 +22,7 @@
             <button
                 type="button"
                 @click="desktopSidebarOpen = !desktopSidebarOpen"
-                class="hidden items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:inline-flex"
+                class="hidden cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:inline-flex"
             >
                 <x-ui.icon name="bars-3" class="size-5" />
             </button>
