@@ -42,18 +42,20 @@
 
         {{-- Submit --}}
         <button type="submit"
-                class="w-full py-3.5 rounded-xl text-sm font-semibold text-white mt-1
-                       flex items-center justify-center gap-2 transition-all duration-200"
+                wire:loading.attr="disabled"
+                class="w-full h-12 rounded-xl text-sm font-semibold text-white mt-1
+                       relative overflow-hidden transition-all duration-200"
                 style="background:linear-gradient(135deg,#f53003 0%,#c0392b 100%);
                        box-shadow:0 4px 20px rgba(245,48,3,0.35);"
                 onmouseover="this.style.boxShadow='0 8px 28px rgba(245,48,3,0.52)';this.style.transform='translateY(-1px)';"
                 onmouseout="this.style.boxShadow='0 4px 20px rgba(245,48,3,0.35)';this.style.transform='translateY(0)';">
-            <span wire:loading.remove wire:target="register">Crear cuenta</span>
-            <span wire:loading wire:target="register" class="flex items-center gap-2">
-                <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
+            <span wire:loading.class="opacity-0 -translate-y-2"
+                  class="absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out">
+                Crear cuenta
+            </span>
+            <span wire:loading.class.remove="opacity-0 translate-y-2"
+                  class="absolute inset-0 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out opacity-0 translate-y-2">
+                <x-ui.icon name="loader-circle" class="w-4 h-4 animate-spin" />
                 Registrando...
             </span>
         </button>

@@ -111,7 +111,7 @@
     </div>
 
     {{-- ─── PANEL DERECHO — Branding flotando sobre las ondas ── --}}
-    <div class="hidden lg:flex flex-1 items-center justify-center">
+    <div class="hidden lg:flex flex-1 items-center justify-center pr-26">
         <div class="flex flex-col items-center text-center px-12">
 
             {{-- Logo grande --}}
