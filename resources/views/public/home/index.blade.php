@@ -1,4 +1,5 @@
-<div class="relative min-h-screen bg-[#080c18] overflow-hidden font-['Inter',sans-serif]">
+<div class="relative min-h-screen overflow-hidden font-['Inter',sans-serif]"
+     style="background: var(--pub-base-bg);">
 
     @include('public._partials.wave-bg')
     @include('public._partials.navbar')
@@ -7,13 +8,15 @@
     <section class="relative z-10 flex flex-col items-center justify-center text-center
                     min-h-[calc(100vh-76px)] px-6 pb-16">
 
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-medium text-white/60"
-             style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px);">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8 text-xs font-medium"
+             style="background: var(--auth-link-bg); border: 1px solid var(--auth-link-border);
+                    backdrop-filter: blur(8px); color: var(--ui-content-muted);">
             <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
             Plataforma en producción
         </div>
 
-        <h1 class="text-5xl lg:text-7xl font-bold text-white leading-[1.08] tracking-tight mb-5 max-w-4xl">
+        <h1 class="text-5xl lg:text-7xl font-bold leading-[1.08] tracking-tight mb-5 max-w-4xl"
+            style="color: var(--ui-content);">
             Landing Page
             <span class="block mt-2"
                   style="background: linear-gradient(90deg, #ff6b47 0%, #f53003 50%, #c0392b 100%);
@@ -22,7 +25,8 @@
             </span>
         </h1>
 
-        <p class="text-base lg:text-lg text-white/45 leading-relaxed mb-10 max-w-lg">
+        <p class="text-base lg:text-lg leading-relaxed mb-10 max-w-lg"
+           style="color: var(--ui-content-muted);">
             It is a long established fact that a reader will be distracted by the readable content
             of a page when looking at its layout. The point of using Lorem Ipsum is that it has
             a more-or-less normal distribution of letters, as opposed to using 'Content here'.
@@ -41,11 +45,12 @@
                 </svg>
             </a>
             <a href="{{ route('public.about') }}"
-               class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-medium text-white/70 hover:text-white"
-               style="border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(8px);
-                      transition: all 0.25s ease; background: rgba(255,255,255,0.04);"
-               onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.borderColor='rgba(255,255,255,0.22)';"
-               onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='rgba(255,255,255,0.12)';">
+               class="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-medium
+                      transition-all duration-200"
+               style="border: 1px solid var(--auth-link-border); backdrop-filter: blur(8px);
+                      background: var(--auth-link-bg); color: var(--ui-content-muted);"
+               onmouseover="this.style.background='var(--auth-link-bg-hover)';this.style.borderColor='var(--auth-link-border-hover)';this.style.color='var(--ui-content)';"
+               onmouseout="this.style.background='var(--auth-link-bg)';this.style.borderColor='var(--auth-link-border)';this.style.color='var(--ui-content-muted)';">
                 Saber más
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -54,21 +59,21 @@
         </div>
 
         <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-30">
-            <span class="text-white text-xs tracking-widest uppercase">scroll</span>
-            <div class="w-px h-8 bg-gradient-to-b from-white/60 to-transparent"></div>
+            <span class="text-xs tracking-widest uppercase" style="color: var(--ui-content);">scroll</span>
+            <div class="w-px h-8 bg-gradient-to-b from-current to-transparent" style="color: var(--ui-content-muted);"></div>
         </div>
 
     </section>
 
     {{-- FEATURES --}}
     <section id="features" class="relative z-10 py-28 px-8 lg:px-16"
-             style="background: linear-gradient(to bottom, transparent 0%, rgba(8,12,24,0.97) 25%, #080c18 100%);">
+             style="background: linear-gradient(to bottom, transparent 0%, var(--pub-base-bg) 25%, var(--pub-base-bg) 100%);">
         <div class="max-w-5xl mx-auto">
 
             <div class="text-center mb-14">
                 <p class="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style="color:#f53003;">Plataforma</p>
-                <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Funcionalidades</h2>
-                <p class="text-white/45 max-w-md mx-auto text-sm leading-relaxed">
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4" style="color: var(--ui-content);">Funcionalidades</h2>
+                <p class="max-w-md mx-auto text-sm leading-relaxed" style="color: var(--ui-content-muted);">
                     Todo lo que necesitas en una sola plataforma, construida para escalar con tu negocio.
                 </p>
             </div>
@@ -80,18 +85,18 @@
                     ['icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z', 'title' => 'Modular', 'desc' => 'Arquitectura limpia con módulos públicos, privados y de administración completamente separados.'],
                 ] as $f)
                 <div class="p-6 rounded-2xl"
-                     style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);
-                            backdrop-filter:blur(8px);transition:all 0.3s ease;"
+                     style="background: var(--pub-card-bg); border: 1px solid var(--pub-card-border);
+                            backdrop-filter:blur(8px); transition:all 0.3s ease;"
                      onmouseover="this.style.background='rgba(245,48,3,0.05)';this.style.borderColor='rgba(245,48,3,0.18)';this.style.transform='translateY(-4px)';"
-                     onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.borderColor='rgba(255,255,255,0.07)';this.style.transform='translateY(0)';">
+                     onmouseout="this.style.background='var(--pub-card-bg)';this.style.borderColor='var(--pub-card-border)';this.style.transform='translateY(0)';">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-5"
                          style="background:rgba(245,48,3,0.12);border:1px solid rgba(245,48,3,0.25);">
                         <svg class="w-5 h-5" style="color:#f97055;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $f['icon'] }}"/>
                         </svg>
                     </div>
-                    <h3 class="text-white font-semibold mb-2">{{ $f['title'] }}</h3>
-                    <p class="text-white/40 text-sm leading-relaxed">{{ $f['desc'] }}</p>
+                    <h3 class="font-semibold mb-2" style="color: var(--ui-content);">{{ $f['title'] }}</h3>
+                    <p class="text-sm leading-relaxed" style="color: var(--ui-content-muted);">{{ $f['desc'] }}</p>
                 </div>
                 @endforeach
             </div>
@@ -100,13 +105,18 @@
     </section>
 
     {{-- Footer --}}
-    <footer class="relative z-10 py-8 px-8 lg:px-16 bg-[#080c18]"
-            style="border-top:1px solid rgba(255,255,255,0.06);">
-        <div class="max-w-5xl mx-auto flex items-center justify-between text-xs text-white/25">
+    <footer class="relative z-10 py-8 px-8 lg:px-16"
+            style="background: var(--pub-base-bg); border-top: 1px solid var(--auth-divider);">
+        <div class="max-w-5xl mx-auto flex items-center justify-between text-xs"
+             style="color: var(--ui-content-subtle);">
             <span>&copy; {{ date('Y') }} {{ config('app.name') }}. Todos los derechos reservados.</span>
             <div class="flex items-center gap-5">
-                <a href="#" class="hover:text-white/55 transition-colors">Privacidad</a>
-                <a href="#" class="hover:text-white/55 transition-colors">Términos</a>
+                <a href="#" class="transition-colors"
+                   onmouseover="this.style.color='var(--ui-content-muted)';"
+                   onmouseout="this.style.color='var(--ui-content-subtle)';">Privacidad</a>
+                <a href="#" class="transition-colors"
+                   onmouseover="this.style.color='var(--ui-content-muted)';"
+                   onmouseout="this.style.color='var(--ui-content-subtle)';">Términos</a>
             </div>
         </div>
     </footer>

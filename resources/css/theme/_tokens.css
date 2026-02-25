@@ -50,6 +50,23 @@
     --ui-warning: #F59E0B;
     --ui-danger:  #EF4444;
     --ui-info:    #0EA5E9;
+
+    /* Auth */
+    --auth-input-bg:          rgba(0,0,0,0.04);
+    --auth-input-border:      rgba(0,0,0,0.10);
+    --auth-divider:           rgba(0,0,0,0.08);
+    --auth-link-bg:           rgba(0,0,0,0.04);
+    --auth-link-border:       rgba(0,0,0,0.10);
+    --auth-link-bg-hover:     rgba(0,0,0,0.08);
+    --auth-link-border-hover: rgba(0,0,0,0.18);
+
+    /* Public */
+    --pub-base-bg:     #eef2ff;
+    --pub-grad-a:      rgba(100,80,200,0.25);
+    --pub-grad-b:      rgba(80,80,200,0.18);
+    --pub-dots:        rgba(11,18,32,0.07);
+    --pub-card-bg:     rgba(255,255,255,0.55);
+    --pub-card-border: rgba(11,18,32,0.08);
 }
 
 /* ── Dark mode — alineado con el módulo público (#080c18) ── */
@@ -69,6 +86,23 @@
     --ui-warning: #FBBF24;
     --ui-danger:  #F87171;
     --ui-info:    #38BDF8;
+
+    /* Auth */
+    --auth-input-bg:          rgba(255,255,255,0.06);
+    --auth-input-border:      rgba(255,255,255,0.10);
+    --auth-divider:           rgba(255,255,255,0.08);
+    --auth-link-bg:           rgba(255,255,255,0.04);
+    --auth-link-border:       rgba(255,255,255,0.10);
+    --auth-link-bg-hover:     rgba(255,255,255,0.08);
+    --auth-link-border-hover: rgba(255,255,255,0.18);
+
+    /* Public */
+    --pub-base-bg:     #080c18;
+    --pub-grad-a:      rgba(74,10,10,0.9);
+    --pub-grad-b:      rgba(8,8,58,0.9);
+    --pub-dots:        rgba(255,255,255,0.15);
+    --pub-card-bg:     rgba(255,255,255,0.03);
+    --pub-card-border: rgba(255,255,255,0.07);
 }
 
 /* ── Exponer como utilidades Tailwind ── */

@@ -21,7 +21,9 @@
     x-data="{
         mobileSidebarOpen: false,
         desktopSidebarOpen: true,
-        darkMode: localStorage.getItem('darkMode') !== 'false',
+        darkMode: localStorage.getItem('darkMode') !== null
+            ? localStorage.getItem('darkMode') === 'true'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches,
         toggleDark() {
             this.darkMode = !this.darkMode;
             localStorage.setItem('darkMode', this.darkMode);

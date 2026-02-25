@@ -12,13 +12,12 @@
     @livewireStyles
     <style>
         [x-cloak] { display: none !important; }
-        /* Iconos del toggle — reaccionan a html.dark via CSS, sin Alpine */
         .theme-icon-sun  { display: none;  }
         .theme-icon-moon { display: block; }
         html.dark .theme-icon-sun  { display: block; }
         html.dark .theme-icon-moon { display: none;  }
     </style>
-    {{-- Fallback para primera visita sin cookie: usa localStorage / preferencia del sistema --}}
+    {{-- Fallback para primera visita sin cookie --}}
     <script>
         (function () {
             if (document.documentElement.classList.contains('dark')) return;
@@ -30,7 +29,8 @@
         })();
     </script>
 </head>
-<body class="antialiased font-['Inter',sans-serif]" style="height: 100vh; overflow: hidden;">
+<body class="antialiased font-['Inter',sans-serif]"
+      style="background: var(--pub-base-bg); transition: background-color 300ms;">
 
 {{-- Toggle flotante --}}
 <button type="button" onclick="toggleTheme()"
@@ -50,52 +50,17 @@
     </svg>
 </button>
 
-{{-- ════════════════════════════════════════════════════════════
-     FONDO COMPLETO — base color + gradientes + dots + ondas
-     position:fixed cubre siempre el viewport completo
-════════════════════════════════════════════════════════════ --}}
-<div class="fixed inset-0 pointer-events-none"
-     style="background: var(--pub-base-bg); transition: background-color 300ms;">
-    {{-- Gradientes de color --}}
-    <div class="absolute inset-0"
-         style="background:
-                    radial-gradient(ellipse 80% 70% at 72% 50%, var(--pub-grad-a) 0%, transparent 60%),
-                    radial-gradient(ellipse 55% 60% at 22% 50%, var(--pub-grad-b) 0%, transparent 55%);"></div>
-    {{-- Dot pattern --}}
-    <div class="absolute inset-0"
-         style="background-image: radial-gradient(circle, var(--pub-dots) 1px, transparent 1px);
-                background-size: 28px 28px;"></div>
-    {{-- Canvas: ondas animadas a pantalla completa --}}
-    <canvas id="auth-wave-canvas" class="absolute inset-0 w-full h-full" style="opacity: 0.9;"></canvas>
-</div>
-
-{{-- ════════════════════════════════════════════════════════════
-     LAYOUT — dos paneles sobre el fondo
-════════════════════════════════════════════════════════════ --}}
-<div class="relative z-10 min-h-screen flex">
+<div class="min-h-screen flex">
 
     {{-- ─── PANEL IZQUIERDO — Formulario ──────────────────── --}}
-    <div class="flex-1 flex flex-col items-center justify-center px-8 lg:px-16 py-12 relative">
+    <div class="flex-1 flex flex-col items-center justify-center px-8 lg:px-16 py-12"
+         style="background: var(--pub-base-bg); transition: background-color 300ms;">
 
-        {{-- Overlay desktop: degradado sólido → transparente hacia la derecha --}}
-        <div class="absolute inset-0 hidden lg:block pointer-events-none"
-             style="background: linear-gradient(to right,
-                        var(--pub-base-bg) 0%,
-                        var(--pub-base-bg) 42%,
-                        var(--pub-base-bg) 55%,
-                        transparent 100%);
-                    transition: background-color 300ms;"></div>
-        {{-- Overlay mobile: fondo sólido completo --}}
-        <div class="absolute inset-0 lg:hidden pointer-events-none"
-             style="background: var(--pub-base-bg); transition: background-color 300ms;"></div>
-
-        {{-- Form slot --}}
-        <div class="relative z-10 w-full max-w-sm">
+        <div class="w-full max-w-sm">
             {{ $slot }}
         </div>
 
-        {{-- Volver al inicio --}}
-        <div class="relative z-10 w-full max-w-sm mt-10">
+        <div class="w-full max-w-sm mt-10">
             <a href="{{ route('home') }}"
                class="inline-flex items-center gap-1.5 text-xs transition-colors duration-200"
                style="color: var(--ui-content-subtle);"
@@ -110,11 +75,28 @@
         </div>
     </div>
 
-    {{-- ─── PANEL DERECHO — Branding flotando sobre las ondas ── --}}
-    <div class="hidden lg:flex flex-1 items-center justify-center">
-        <div class="flex flex-col items-center text-center px-12">
+    {{-- ─── PANEL DERECHO — Branding + ondas confinadas ──── --}}
+    <div class="hidden lg:flex flex-1 relative overflow-hidden items-center justify-center"
+         style="background: var(--pub-base-bg); transition: background-color 300ms;">
 
-            {{-- Logo grande --}}
+        {{-- Gradientes de color --}}
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute inset-0"
+                 style="background: radial-gradient(ellipse 90% 60% at 75% 50%, var(--pub-grad-a) 0%, transparent 60%),
+                                   radial-gradient(ellipse 70% 60% at 20% 50%, var(--pub-grad-b) 0%, transparent 55%);"></div>
+            <div class="absolute inset-0"
+                 style="background-image: radial-gradient(circle, var(--pub-dots) 1px, transparent 1px);
+                        background-size: 28px 28px;"></div>
+        </div>
+
+        {{-- Canvas: ondas confinadas al panel derecho --}}
+        <canvas id="auth-wave-canvas"
+                class="absolute inset-0 w-full h-full pointer-events-none"
+                style="opacity: 0.9;"></canvas>
+
+        {{-- Branding centrado --}}
+        <div class="relative z-10 flex flex-col items-center text-center px-12">
+
             <div class="w-20 h-20 rounded-3xl flex items-center justify-center mb-7"
                  style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);
                         box-shadow: 0 0 60px rgba(245,48,3,0.4), 0 0 120px rgba(245,48,3,0.15);">
@@ -135,7 +117,6 @@
                 Segura, rápida y lista para escalar.
             </p>
 
-            {{-- Separador --}}
             <div class="flex items-center gap-3 mt-8">
                 <div class="w-8 h-px" style="background: var(--auth-divider);"></div>
                 <div class="w-1.5 h-1.5 rounded-full" style="background: rgba(245,48,3,0.7);"></div>
@@ -150,7 +131,6 @@
 @livewireScripts
 
 <script>
-// Re-aplica el tema tras cada wire:navigate
 document.addEventListener('livewire:navigated', function () {
     var stored = localStorage.getItem('darkMode');
     var dark = stored !== null
@@ -159,21 +139,18 @@ document.addEventListener('livewire:navigated', function () {
     document.documentElement.classList.toggle('dark', dark);
 });
 
-// Sigue la preferencia del sistema si no hay override manual
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
     if (localStorage.getItem('darkMode') === null) {
         document.documentElement.classList.toggle('dark', e.matches);
     }
 });
 
-// Función global para los botones toggle — escribe localStorage y cookie
 window.toggleTheme = function () {
     var dark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('darkMode', dark);
     document.cookie = 'darkMode=' + dark + '; path=/; max-age=31536000; SameSite=Lax';
 };
 
-// Wave canvas — pantalla completa
 (function () {
     const canvas = document.getElementById('auth-wave-canvas');
     if (!canvas) return;

@@ -8,6 +8,14 @@ database:
   type: postgres
   version: "16"
 
+# Cuando el código corre DENTRO del contenedor DDEV, sobreescribe la DB del .env
+web_environment:
+  - DB_HOST=db
+  - DB_PORT=5432
+  - DB_DATABASE=db
+  - DB_USERNAME=db
+  - DB_PASSWORD=db
+
 # ── Vite HMR port ──────────────────────────────────────────────────────────
 web_extra_exposed_ports:
   - name: vite
