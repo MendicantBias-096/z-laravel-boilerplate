@@ -37,6 +37,20 @@ $icons = [
     'log-out' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline stroke-linecap="round" stroke-linejoin="round" points="16 17 21 12 16 7"/><line stroke-linecap="round" x1="21" x2="9" y1="12" y2="12"/>',
 
     'loader-circle' => '<path stroke-linecap="round" d="M21 12a9 9 0 1 1-6.219-8.56"/>',
+
+    // ── Aliases HeroIcons → Lucide ───────────────────────────────────────
+    // Permiten seguir usando los nombres HeroIcons en sidebar, navbar y menu.php
+
+    'bolt'                      => '<polygon stroke-linecap="round" stroke-linejoin="round" points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    'zap'                       => '<polygon stroke-linecap="round" stroke-linejoin="round" points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    'x-mark'                    => '<path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18"/><path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12"/>',
+    'bars-3'                    => '<line stroke-linecap="round" x1="4" x2="20" y1="6" y2="6"/><line stroke-linecap="round" x1="4" x2="20" y1="12" y2="12"/><line stroke-linecap="round" x1="4" x2="20" y1="18" y2="18"/>',
+    'cog-6-tooth'               => '<path stroke-linecap="round" stroke-linejoin="round" d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+    'arrow-right-on-rectangle'  => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline stroke-linecap="round" stroke-linejoin="round" points="16 17 21 12 16 7"/><line stroke-linecap="round" x1="21" x2="9" y1="12" y2="12"/>',
+    'squares-2x2'               => '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+    'queue-list'                => '<line stroke-linecap="round" x1="8" x2="21" y1="6" y2="6"/><line stroke-linecap="round" x1="8" x2="21" y1="12" y2="12"/><line stroke-linecap="round" x1="8" x2="21" y1="18" y2="18"/><line stroke-linecap="round" x1="3" x2="3.01" y1="6" y2="6"/><line stroke-linecap="round" x1="3" x2="3.01" y1="12" y2="12"/><line stroke-linecap="round" x1="3" x2="3.01" y1="18" y2="18"/>',
+    'chart-bar'                 => '<line stroke-linecap="round" x1="18" x2="18" y1="20" y2="10"/><line stroke-linecap="round" x1="12" x2="12" y1="20" y2="4"/><line stroke-linecap="round" x1="6" x2="6" y1="20" y2="14"/>',
+    'user-circle'               => '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>',
 ];
 @endphp
 

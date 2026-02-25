@@ -32,7 +32,6 @@ class Register extends Component
             'password_confirmation' => $this->password_confirmation,
         ]);
 
-        sleep(3);
         Auth::login($user);
 
         $this->redirectRoute('dashboard', navigate: true);
