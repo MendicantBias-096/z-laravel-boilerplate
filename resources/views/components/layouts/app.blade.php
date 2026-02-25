@@ -52,6 +52,13 @@
                 <span class="text-sm text-content-subtle">
                     © {{ date('Y') }} <span class="font-medium text-content-muted">{{ config('app.name') }}</span>
                 </span>
+                @if(config('app.developer'))
+                <span class="text-sm text-content-subtle flex items-center gap-1.5">
+                    Desarrollado con
+                    <x-ui.icon name="heart" class="size-3.5 text-red-500 fill-red-500" />
+                    <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
+                </span>
+                @endif
             </div>
         </footer>
     </div>
