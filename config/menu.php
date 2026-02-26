@@ -28,32 +28,48 @@ return [
             'route' => 'dashboard',
         ],
 
-        // Ejemplo ítem simple con permiso:
+        // ── Operaciones ──────────────────────────────────────────────────
         // [
-        //     'label'        => 'Usuarios',
-        //     'icon'         => 'users',
-        //     'route'        => 'dashboard.users.index',
-        //     'active_route' => 'dashboard.users.*',
-        //     'permission'   => 'ver usuarios',
-        // ],
-
-        // Ejemplo con hijos (dropdown):
-        // [
-        //     'label'        => 'Gestión',
-        //     'icon'         => 'squares-2x2',
-        //     'active_route' => 'dashboard.gestion.*',
+        //     'label'        => 'Operaciones',
+        //     'icon'         => 'layout-grid',
+        //     'active_route' => 'operations.*',
         //     'items' => [
         //         [
+        //             'label'        => 'Dashboard',
+        //             'route'        => 'operations.dashboard',
+        //             'active_route' => 'operations.dashboard',
+        //         ],
+        //         [
         //             'label'        => 'Usuarios',
-        //             'route'        => 'dashboard.users.index',
-        //             'active_route' => 'dashboard.users.*',
+        //             'route'        => 'operations.users.index',
+        //             'active_route' => 'operations.users.*',
         //             'permission'   => 'ver usuarios',
         //         ],
         //         [
         //             'label'        => 'Roles',
-        //             'route'        => 'dashboard.roles.index',
-        //             'active_route' => 'dashboard.roles.*',
+        //             'route'        => 'operations.roles.index',
+        //             'active_route' => 'operations.roles.*',
         //             'permission'   => 'ver roles',
+        //         ],
+        //     ],
+        // ],
+
+        // ── Ventas ───────────────────────────────────────────────────────
+        // [
+        //     'label'        => 'Ventas',
+        //     'icon'         => 'bar-chart-2',
+        //     'active_route' => 'sales.*',
+        //     'items' => [
+        //         [
+        //             'label'        => 'Dashboard',
+        //             'route'        => 'sales.dashboard',
+        //             'active_route' => 'sales.dashboard',
+        //         ],
+        //         [
+        //             'label'        => 'Clientes',
+        //             'route'        => 'sales.customers.index',
+        //             'active_route' => 'sales.customers.*',
+        //             'permission'   => 'ver clientes',
         //         ],
         //     ],
         // ],
