@@ -4,6 +4,27 @@ Este proyecto organiza el área autenticada en **dominios** (ej. General, Operac
 
 ---
 
+## Convención de capas
+
+Cada módulo sigue el mismo patrón de tres capas, igual que el módulo de auth:
+
+```
+Ruta
+  └── fn () => view('...')          ← nunca apunta directo a la clase Livewire
+
+Vista wrapper  {modulo}/index.blade.php
+  └── <x-layouts.app>
+          @livewire('...')          ← invoca el componente
+
+Vista componente  {modulo}/_index.blade.php
+  └── <div> ... </div>              ← HTML real, sin layout
+
+Livewire  {Modulo}/Index.php
+  └── return view('...._index')     ← sin ->layout()
+```
+
+---
+
 ## Estructura actual
 
 ```
@@ -17,28 +38,24 @@ app/Livewire/App/
 resources/views/app/
 └── general/
     ├── dashboard/
-    │   ├── index.blade.php   ← wrapper (layout + @livewire)
-    │   └── _index.blade.php  ← componente
+    │   ├── index.blade.php    ← wrapper
+    │   └── _index.blade.php   ← componente
     └── settings/
-        ├── index.blade.php   ← wrapper
-        └── _index.blade.php  ← componente
+        ├── index.blade.php    ← wrapper
+        └── _index.blade.php   ← componente
 
 routes/
-├── web.php           ← público + auth (login, register)
-├── general.php       ← /dashboard y rutas globales del app
-├── operations.php    ← /operations/*
-└── sales.php         ← /sales/*
+├── web.php        ← público + auth (login, register)
+└── general.php    ← /dashboard, /settings y rutas globales del app
 ```
 
 ---
 
 ## Dominios registrados
 
-| Dominio | Prefijo URL | Nombre base | Archivo de rutas |
-|---|---|---|---|
-| General | `/` | `dashboard`, `profile`... | `routes/general.php` |
-| Operaciones | `/operations` | `operations.` | `routes/operations.php` |
-| Ventas | `/sales` | `sales.` | `routes/sales.php` |
+| Dominio | Prefijo URL | Archivo de rutas |
+|---|---|---|
+| General | `/` | `routes/general.php` |
 
 ---
 
@@ -188,11 +205,11 @@ Crear `resources/views/app/inventory/products/_index.blade.php`:
 ### 4. Ruta en routes/inventory.php
 
 ```php
-Route::get('/products', fn () => view('app.inventory.products'))
+Route::get('/products', fn () => view('app.inventory.products.index'))
     ->name('products.index');
 ```
 
-### 4. Menú en config/menu.php
+### 5. Menú en config/menu.php
 
 ```php
 [
@@ -210,8 +227,10 @@ Route::get('/products', fn () => view('app.inventory.products'))
 | Elemento | Convención | Ejemplo |
 |---|---|---|
 | Namespace Livewire | `App\Livewire\App\{Dominio}\{Módulo}` | `App\Livewire\App\Inventory\Products` |
-| Clase Livewire | PascalCase | `Index`, `Create`, `Edit`, `Show` |
-| Vista | `app.{dominio}.{modulo}.{acción}` | `app.inventory.products.index` |
+| Clase Livewire | Siempre `Index` dentro de su carpeta | `Products/Index.php` |
+| Vista wrapper | `app.{dominio}.{modulo}.index` | `app.inventory.products.index` |
+| Vista componente | `app.{dominio}.{modulo}._index` | `app.inventory.products._index` |
+| Ruta | `fn () => view('{wrapper}')` | `fn () => view('app.inventory.products.index')` |
 | Prefijo URL | kebab-case | `/inventory/products` |
 | Nombre de ruta | `{dominio}.{modulo}.{acción}` | `inventory.products.index` |
 | Archivo de rutas | `routes/{dominio}.php` | `routes/inventory.php` |
