@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "ddev-artisan": {
+            "command": "ddev",
+            "args": [
+                "exec",
+                "php",
+                "artisan",
+                "mcp:serve"
+            ]
+        }
+    }
+}
