@@ -65,6 +65,6 @@
 </div>
 
 @livewireScripts
-<x-toast />
+<x-ts-toast />
 </body>
 </html>

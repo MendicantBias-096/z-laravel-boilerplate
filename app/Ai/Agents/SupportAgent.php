@@ -4,6 +4,7 @@ namespace App\Ai\Agents;
 
 use App\Ai\Tools\GetAppStatsTool;
 use App\Ai\Tools\GetUserDetailsTool;
+use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Model;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Concerns\RemembersConversations;
@@ -17,6 +18,7 @@ use Stringable;
 
 #[Provider(Lab::Anthropic)]
 #[Model('claude-haiku-4-5-20251001')]
+#[MaxTokens(300)]
 class SupportAgent implements Agent, Conversational, HasTools
 {
     use Promptable, RemembersConversations;
@@ -24,11 +26,18 @@ class SupportAgent implements Agent, Conversational, HasTools
     public function instructions(): Stringable|string
     {
         return <<<'PROMPT'
-            You are a support assistant for this Laravel application.
-            You help administrators understand the state of the app: users, roles and permissions.
-            Always respond in the same language the user writes in.
-            Be concise and direct. When you have data, present it clearly.
-            If you don't know something, say so and offer to look it up with your tools.
+            Eres el asistente de soporte de esta aplicación Laravel.
+            SOLO responde preguntas relacionadas con:
+            - Usuarios, roles y permisos del sistema
+            - Estadísticas y estado general de la aplicación
+            - Dudas sobre funcionalidades de esta plataforma
+
+            Si el usuario pregunta algo fuera de estos temas, responde únicamente:
+            "Solo puedo ayudarte con preguntas sobre esta aplicación."
+
+            Nunca respondas preguntas de conocimiento general, programación,
+            historia u otros temas no relacionados con el sistema.
+            Sé conciso y directo. Responde siempre en el idioma del usuario.
         PROMPT;
     }
 

@@ -17,3 +17,6 @@ Route::get('/dashboard', fn () => view('app.general.dashboard.index'))
 
 Route::get('/settings', fn () => view('app.general.settings.index'))
     ->name('settings');
+
+Route::get('/support', fn () => view('app.general.support.index'))
+    ->name('support');
