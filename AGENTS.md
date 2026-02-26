@@ -24,6 +24,7 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 
 Activate the relevant skill whenever you work in that domain — don't wait until you're stuck.
 
+- `create-module` — Creates a domain or a simple module (no table, no form). Activate when the user asks to add a new domain or a plain module; when they mention "nuevo módulo", "nuevo dominio", "crear módulo", or "agregar módulo". If listing/create/edit is also needed, use `create-crud` instead.
 - `create-crud` — Generates a complete CRUD module. Activate when the user asks to create a new module with listing, create, and edit; when they mention "crud", "módulo nuevo", "generar módulo", or "tabla con formulario".
 - `livewire-development` — Develops reactive Livewire 4 components. Activate when creating or modifying Livewire components, using wire: directives, adding real-time behavior, or debugging component reactivity.
 - `powergrid-tables` — Builds PowerGrid v6 data tables. Activate when creating or modifying tables, adding columns, filters, actions, or bulk operations.
