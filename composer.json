@@ -9,8 +9,10 @@
         "php": "^8.4",
         "dedoc/scramble": "^0.13.14",
         "diglactic/laravel-breadcrumbs": "^10.0",
+        "laravel/ai": "^0.2.2",
         "laravel/fortify": "^1.34",
         "laravel/framework": "^12.0",
+        "laravel/mcp": "^0.5.9",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.32",
@@ -23,6 +25,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "laravel/boost": "^2.2",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",

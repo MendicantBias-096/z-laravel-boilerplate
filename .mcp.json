@@ -1,12 +1,12 @@
 {
     "mcpServers": {
-        "ddev-artisan": {
+        "laravel-boost": {
             "command": "ddev",
             "args": [
                 "exec",
                 "php",
                 "artisan",
-                "mcp:serve"
+                "boost:mcp"
             ]
         }
     }

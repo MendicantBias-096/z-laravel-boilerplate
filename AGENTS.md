@@ -17,6 +17,9 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 - **diglactic/laravel-breadcrumbs** — v10
 - **dedoc/scramble** — v0.13
 - **sentry/sentry-laravel** — v4
+- **laravel/ai** — latest
+- **laravel/mcp** — latest
+- **laravel/boost** — latest (dev)
 - **tailwindcss** — v4
 - **alpinejs** — v3
 
@@ -24,6 +27,7 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 
 Activate the relevant skill whenever you work in that domain — don't wait until you're stuck.
 
+- `create-mcp` — Creates an MCP server with tools, resources and prompts using `laravel/mcp`. Activate when the user wants to expose app functionality to AI clients; when they mention "mcp", "servidor mcp", "exponer al agente", or "mcp tool".
 - `create-module` — Creates a domain or a simple module (no table, no form). Activate when the user asks to add a new domain or a plain module; when they mention "nuevo módulo", "nuevo dominio", "crear módulo", or "agregar módulo". If listing/create/edit is also needed, use `create-crud` instead.
 - `create-crud` — Generates a complete CRUD module. Activate when the user asks to create a new module with listing, create, and edit; when they mention "crud", "módulo nuevo", "generar módulo", or "tabla con formulario".
 - `livewire-development` — Develops reactive Livewire 4 components. Activate when creating or modifying Livewire components, using wire: directives, adding real-time behavior, or debugging component reactivity.

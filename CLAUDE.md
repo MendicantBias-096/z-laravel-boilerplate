@@ -17,6 +17,9 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 - **diglactic/laravel-breadcrumbs** — v10
 - **dedoc/scramble** — v0.13
 - **sentry/sentry-laravel** — v4
+- **laravel/ai** — latest
+- **laravel/mcp** — latest
+- **laravel/boost** — latest (dev)
 - **tailwindcss** — v4
 - **alpinejs** — v3
 
@@ -24,6 +27,7 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 
 Activate the relevant skill whenever you work in that domain — don't wait until you're stuck.
 
+- `create-mcp` — Creates an MCP server with tools, resources and prompts using `laravel/mcp`. Activate when the user wants to expose app functionality to AI clients; when they mention "mcp", "servidor mcp", "exponer al agente", or "mcp tool".
 - `create-module` — Creates a domain or a simple module (no table, no form). Activate when the user asks to add a new domain or a plain module; when they mention "nuevo módulo", "nuevo dominio", "crear módulo", or "agregar módulo". If listing/create/edit is also needed, use `create-crud` instead.
 - `create-crud` — Generates a complete CRUD module. Activate when the user asks to create a new module with listing, create, and edit; when they mention "crud", "módulo nuevo", "generar módulo", or "tabla con formulario".
 - `livewire-development` — Develops reactive Livewire 4 components. Activate when creating or modifying Livewire components, using wire: directives, adding real-time behavior, or debugging component reactivity.
@@ -251,5 +255,107 @@ Read `.agents/skills/powergrid-tables/SKILL.md` for detailed examples.
 - Gate checks use `@can('permission-name')` in Blade or `$this->authorize('permission-name')` in Livewire.
 - Route-level protection uses `->middleware('permission:ver {model_es}')`.
 - Standard CRUD permissions per module: `ver`, `crear`, `editar`, `eliminar`, `restaurar`.
+
+=== laravel/ai rules ===
+
+# Laravel AI SDK
+
+Use `laravel/ai` when the user needs AI features: agents, embeddings, image generation, audio, or RAG.
+
+## Agents
+
+```php
+use function Laravel\Ai\{agent};
+
+// Anonymous agent (quick)
+$response = agent(instructions: 'You are a helpful assistant.')->prompt($input);
+
+// Class-based agent
+php artisan make:agent MyAgent
+php artisan make:tool MyTool
+```
+
+## Key patterns
+
+```php
+// Prompt
+$response = (new MyAgent)->prompt('...');
+return (string) $response;
+
+// Stream (for HTTP responses)
+return (new MyAgent)->stream('...')->usingVercelDataProtocol();
+
+// Queue (background)
+(new MyAgent)->queue('...')->then(fn ($r) => ...)->catch(fn ($e) => ...);
+
+// Embeddings
+$embeddings = Str::of('text')->toEmbeddings();
+
+// Image
+$path = Image::of('description')->landscape()->generate()->store();
+```
+
+## Rules
+
+- Always use `#[Provider(Lab::Anthropic)]` and `#[Model('claude-sonnet-4-6')]` attributes unless the user specifies otherwise.
+- Use `RemembersConversations` trait for multi-turn conversation persistence.
+- Use `HasTools` + `tools()` method to give agents access to app data.
+- Use `SimilaritySearch` tool for RAG patterns — don't build custom vector search unless needed.
+- Always test with `MyAgent::fake()` — never call real AI in tests.
+
+=== laravel/mcp rules ===
+
+# Laravel MCP
+
+Use `laravel/mcp` when exposing app functionality to external AI clients.
+Activate `create-mcp` skill for guided generation.
+
+## Key commands
+
+```bash
+ddev exec php artisan make:mcp-server {Name}
+ddev exec php artisan make:mcp-tool {Name}
+ddev exec php artisan make:mcp-resource {Name}
+ddev exec php artisan make:mcp-prompt {Name}
+ddev exec php artisan vendor:publish --tag=ai-routes   # creates routes/ai.php
+```
+
+## Rules
+
+- Register servers in `routes/ai.php` (published via vendor:publish).
+- Use `Mcp::local()` for CLI agents (Claude Code), `Mcp::web()` for remote HTTP clients.
+- Always annotate tools with `#[Description('...')]`.
+- Validate all inputs inside `handle()` with `$request->validate([...])`.
+- Prefer `Response::structured()` over text when returning data.
+
+=== laravel/boost rules ===
+
+# Laravel Boost
+
+`laravel/boost` (dev dependency) provides the MCP server that gives the AI agent real introspection tools.
+
+## MCP server tools available
+
+- **Application Info** — PHP/Laravel versions, installed packages, Eloquent models
+- **Database Schema** — table structure, columns, indexes
+- **Database Query** — run read queries against the DB
+- **List Routes** — all registered routes with middleware
+- **List Artisan Commands** — available commands
+- **Search Docs** — semantic search over Laravel 12 docs
+- **Tinker** — execute PHP inside the app
+- **Get Config** — read config values by dot notation
+- **Read Log Entries** — last N log entries
+- **Browser Logs** — browser console errors
+
+## MCP configuration
+
+The `.mcp.json` in this project points to `php artisan boost:mcp` via DDEV.
+Claude Code picks this up automatically at session start.
+
+## Updating
+
+```bash
+ddev exec php artisan boost:update
+```
 
 </boilerplate-guidelines>
