@@ -1,6 +1,5 @@
 <?php
 
-use App\Livewire\App\Dashboard;
 use App\Livewire\Public\About;
 use App\Livewire\Public\Home;
 use Illuminate\Support\Facades\Route;
@@ -19,10 +18,6 @@ Route::prefix('')->name('public.')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', fn () => view('auth.login'))->name('login');
     Route::get('/register', fn () => view('auth.register'))->name('register');
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', Dashboard::class)->name('dashboard');
 });
 
 // Required by Fortify when views => false + resetPasswords is active.

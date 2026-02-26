@@ -1,48 +1,55 @@
 # Cómo crear dominios y módulos
 
-Este proyecto organiza el área autenticada en **dominios** (ej. Operaciones, Ventas) y cada dominio tiene **módulos** (ej. Usuarios, Clientes, Reportes).
+Este proyecto organiza el área autenticada en **dominios** (ej. General, Operaciones, Ventas) y cada dominio tiene **módulos** (ej. Dashboard, Usuarios, Clientes).
 
 ---
 
-## Estructura de referencia
+## Estructura actual
 
 ```
 app/Livewire/App/
-├── Dashboard.php              ← home general tras login
+├── General/
+│   └── Dashboard.php
 ├── Operations/
-│   ├── Dashboard.php
-│   ├── Users/
-│   └── Roles/
+│   └── Dashboard.php
 └── Sales/
-    ├── Dashboard.php
-    └── Customers/
+    └── Dashboard.php
 
 resources/views/app/
-├── dashboard/
+├── general/
+│   └── dashboard/
+│       └── index.blade.php
 ├── operations/
-│   ├── dashboard/
-│   └── users/
+│   └── dashboard/
+│       └── index.blade.php
 └── sales/
-    ├── dashboard/
-    └── customers/
+    └── dashboard/
+        └── index.blade.php
 
 routes/
-├── web.php
-├── operations.php
-└── sales.php
+├── web.php           ← público + auth (login, register)
+├── general.php       ← /dashboard y rutas globales del app
+├── operations.php    ← /operations/*
+└── sales.php         ← /sales/*
 ```
+
+---
+
+## Dominios registrados
+
+| Dominio | Prefijo URL | Nombre base | Archivo de rutas |
+|---|---|---|---|
+| General | `/` | `dashboard`, `profile`... | `routes/general.php` |
+| Operaciones | `/operations` | `operations.` | `routes/operations.php` |
+| Ventas | `/sales` | `sales.` | `routes/sales.php` |
 
 ---
 
 ## Agregar un nuevo dominio
 
-Ejemplo: agregar el dominio **Inventario**.
+Ejemplo: agregar el dominio **Inventario** (`/inventory`).
 
-### 1. Carpetas Livewire
-
-```bash
-mkdir -p app/Livewire/App/Inventory
-```
+### 1. Livewire — Dashboard del dominio
 
 Crear `app/Livewire/App/Inventory/Dashboard.php`:
 
@@ -66,11 +73,7 @@ class Dashboard extends Component
 }
 ```
 
-### 2. Carpetas de vistas
-
-```bash
-mkdir -p resources/views/app/inventory/dashboard
-```
+### 2. Vista — Dashboard del dominio
 
 Crear `resources/views/app/inventory/dashboard/index.blade.php`:
 
@@ -98,12 +101,11 @@ Route::prefix('inventory')->name('inventory.')->group(function () {
         ->name('dashboard');
 
     // Route::get('/products', \App\Livewire\App\Inventory\Products\Index::class)->name('products.index');
-    // Route::get('/stock',    \App\Livewire\App\Inventory\Stock\Index::class)->name('stock.index');
 
 });
 ```
 
-### 4. Registrar las rutas en bootstrap/app.php
+### 4. Registrar en bootstrap/app.php
 
 Dentro del callback `then`, añadir:
 
@@ -112,7 +114,7 @@ Route::middleware(['web', 'auth'])
     ->group(base_path('routes/inventory.php'));
 ```
 
-### 5. Agregar al menú (config/menu.php)
+### 5. Añadir al menú (config/menu.php)
 
 ```php
 [
@@ -121,9 +123,8 @@ Route::middleware(['web', 'auth'])
     'active_route' => 'inventory.*',
     'items' => [
         [
-            'label'        => 'Dashboard',
-            'route'        => 'inventory.dashboard',
-            'active_route' => 'inventory.dashboard',
+            'label' => 'Dashboard',
+            'route' => 'inventory.dashboard',
         ],
     ],
 ],
@@ -131,15 +132,11 @@ Route::middleware(['web', 'auth'])
 
 ---
 
-## Agregar un módulo dentro de un dominio existente
+## Agregar un módulo dentro de un dominio
 
-Ejemplo: agregar **Productos** dentro de Inventario.
+Ejemplo: añadir **Productos** dentro de Inventario.
 
-### 1. Crear la carpeta y el componente Livewire
-
-```bash
-mkdir -p app/Livewire/App/Inventory/Products
-```
+### 1. Livewire
 
 Crear `app/Livewire/App/Inventory/Products/Index.php`:
 
@@ -163,11 +160,7 @@ class Index extends Component
 }
 ```
 
-### 2. Crear la vista
-
-```bash
-mkdir -p resources/views/app/inventory/products
-```
+### 2. Vista
 
 Crear `resources/views/app/inventory/products/index.blade.php`:
 
@@ -177,23 +170,21 @@ Crear `resources/views/app/inventory/products/index.blade.php`:
 </div>
 ```
 
-### 3. Añadir la ruta en routes/inventory.php
+### 3. Ruta en routes/inventory.php
 
 ```php
 Route::get('/products', \App\Livewire\App\Inventory\Products\Index::class)
     ->name('products.index');
 ```
 
-### 4. Añadir al menú en config/menu.php
-
-Dentro del grupo Inventario:
+### 4. Menú en config/menu.php
 
 ```php
 [
     'label'        => 'Productos',
     'route'        => 'inventory.products.index',
     'active_route' => 'inventory.products.*',
-    'permission'   => 'ver productos',  // opcional
+    'permission'   => 'ver productos', // opcional
 ],
 ```
 
@@ -204,18 +195,8 @@ Dentro del grupo Inventario:
 | Elemento | Convención | Ejemplo |
 |---|---|---|
 | Namespace Livewire | `App\Livewire\App\{Dominio}\{Módulo}` | `App\Livewire\App\Inventory\Products` |
-| Clase Livewire | PascalCase | `Index`, `Create`, `Edit` |
+| Clase Livewire | PascalCase | `Index`, `Create`, `Edit`, `Show` |
 | Vista | `app.{dominio}.{modulo}.{acción}` | `app.inventory.products.index` |
-| Ruta prefijo | kebab-case | `/inventory/products` |
+| Prefijo URL | kebab-case | `/inventory/products` |
 | Nombre de ruta | `{dominio}.{modulo}.{acción}` | `inventory.products.index` |
 | Archivo de rutas | `routes/{dominio}.php` | `routes/inventory.php` |
-
----
-
-## Dominios actuales
-
-| Dominio | Prefijo URL | Nombre base | Archivo de rutas |
-|---|---|---|---|
-| General | `/dashboard` | `dashboard` | `web.php` |
-| Operaciones | `/operations` | `operations.` | `routes/operations.php` |
-| Ventas | `/sales` | `sales.` | `routes/sales.php` |
