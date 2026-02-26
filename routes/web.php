@@ -1,6 +1,6 @@
 <?php
 
-use App\Livewire\Dashboard;
+use App\Livewire\App\Dashboard;
 use App\Livewire\Public\About;
 use App\Livewire\Public\Home;
 use Illuminate\Support\Facades\Route;

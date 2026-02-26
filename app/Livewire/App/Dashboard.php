@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\App;
 
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
@@ -11,7 +11,7 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('dashboard.index')
+        return view('app.dashboard.index')
             ->layout('components.layouts.app');
     }
 }
