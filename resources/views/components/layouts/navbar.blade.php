@@ -89,7 +89,7 @@
 
                 {{-- Acciones --}}
                 <div class="p-1">
-                    <a href="#" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-content-muted hover:bg-panel-alt hover:text-content">
+                    <a href="{{ route('settings') }}" wire:navigate class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-content-muted hover:bg-panel-alt hover:text-content">
                         <x-ui.icon name="cog-6-tooth" class="size-4 text-content-subtle" />
                         Configuración
                     </a>

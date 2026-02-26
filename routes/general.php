@@ -12,5 +12,8 @@ use Illuminate\Support\Facades\Route;
 | a ningún dominio específico (dashboard home, perfil, etc.)
 */
 
-Route::get('/dashboard', \App\Livewire\App\General\Dashboard::class)
+Route::get('/dashboard', fn () => view('app.general.dashboard.index'))
     ->name('dashboard');
+
+Route::get('/settings', fn () => view('app.general.settings.index'))
+    ->name('settings');

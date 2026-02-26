@@ -1,7 +1,5 @@
 <?php
 
-use App\Livewire\Public\About;
-use App\Livewire\Public\Home;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -9,10 +7,10 @@ use Illuminate\Support\Facades\Route;
 | Módulo público
 |--------------------------------------------------------------------------
 */
-Route::get('/', Home::class)->name('home');
+Route::get('/', fn () => view('public.home.index'))->name('home');
 
 Route::prefix('')->name('public.')->group(function () {
-    Route::get('/nosotros', About::class)->name('about');
+    Route::get('/nosotros', fn () => view('public.about.index'))->name('about');
 });
 
 Route::middleware('guest')->group(function () {

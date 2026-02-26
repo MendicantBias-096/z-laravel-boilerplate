@@ -8,23 +8,20 @@ Este proyecto organiza el área autenticada en **dominios** (ej. General, Operac
 
 ```
 app/Livewire/App/
-├── General/
-│   └── Dashboard.php
-├── Operations/
-│   └── Dashboard.php
-└── Sales/
-    └── Dashboard.php
+└── General/
+    ├── Dashboard/
+    │   └── Index.php
+    └── Settings/
+        └── Index.php
 
 resources/views/app/
-├── general/
-│   └── dashboard/
-│       └── index.blade.php
-├── operations/
-│   └── dashboard/
-│       └── index.blade.php
-└── sales/
-    └── dashboard/
-        └── index.blade.php
+└── general/
+    ├── dashboard/
+    │   ├── index.blade.php   ← wrapper (layout + @livewire)
+    │   └── _index.blade.php  ← componente
+    └── settings/
+        ├── index.blade.php   ← wrapper
+        └── _index.blade.php  ← componente
 
 routes/
 ├── web.php           ← público + auth (login, register)
@@ -51,31 +48,40 @@ Ejemplo: agregar el dominio **Inventario** (`/inventory`).
 
 ### 1. Livewire — Dashboard del dominio
 
-Crear `app/Livewire/App/Inventory/Dashboard.php`:
+Crear `app/Livewire/App/Inventory/Dashboard/Index.php`:
 
 ```php
 <?php
 
-namespace App\Livewire\App\Inventory;
+namespace App\Livewire\App\Inventory\Dashboard;
 
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
 
-class Dashboard extends Component
+class Index extends Component
 {
     use Interactions;
 
     public function render()
     {
-        return view('app.inventory.dashboard.index')
-            ->layout('components.layouts.app');
+        return view('app.inventory.dashboard._index');
     }
 }
 ```
 
-### 2. Vista — Dashboard del dominio
+### 2. Vista wrapper — Dashboard del dominio
 
 Crear `resources/views/app/inventory/dashboard/index.blade.php`:
+
+```blade
+<x-layouts.app>
+    @livewire('app.inventory.dashboard.index')
+</x-layouts.app>
+```
+
+### 3. Vista componente — Dashboard del dominio
+
+Crear `resources/views/app/inventory/dashboard/_index.blade.php`:
 
 ```blade
 <div>
@@ -86,7 +92,7 @@ Crear `resources/views/app/inventory/dashboard/index.blade.php`:
 </div>
 ```
 
-### 3. Archivo de rutas
+### 4. Archivo de rutas
 
 Crear `routes/inventory.php`:
 
@@ -97,15 +103,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('inventory')->name('inventory.')->group(function () {
 
-    Route::get('/dashboard', \App\Livewire\App\Inventory\Dashboard::class)
+    Route::get('/dashboard', fn () => view('app.inventory.dashboard.index'))
         ->name('dashboard');
 
-    // Route::get('/products', \App\Livewire\App\Inventory\Products\Index::class)->name('products.index');
+    // Route::get('/products', fn () => view('app.inventory.products.index'))->name('products.index');
 
 });
 ```
 
-### 4. Registrar en bootstrap/app.php
+### 5. Registrar en bootstrap/app.php
 
 Dentro del callback `then`, añadir:
 
@@ -114,7 +120,7 @@ Route::middleware(['web', 'auth'])
     ->group(base_path('routes/inventory.php'));
 ```
 
-### 5. Añadir al menú (config/menu.php)
+### 6. Añadir al menú (config/menu.php)
 
 ```php
 [
@@ -154,15 +160,24 @@ class Index extends Component
 
     public function render()
     {
-        return view('app.inventory.products.index')
-            ->layout('components.layouts.app');
+        return view('app.inventory.products._index');
     }
 }
 ```
 
-### 2. Vista
+### 2. Vista wrapper
 
 Crear `resources/views/app/inventory/products/index.blade.php`:
+
+```blade
+<x-layouts.app>
+    @livewire('app.inventory.products.index')
+</x-layouts.app>
+```
+
+### 3. Vista componente
+
+Crear `resources/views/app/inventory/products/_index.blade.php`:
 
 ```blade
 <div>
@@ -170,10 +185,10 @@ Crear `resources/views/app/inventory/products/index.blade.php`:
 </div>
 ```
 
-### 3. Ruta en routes/inventory.php
+### 4. Ruta en routes/inventory.php
 
 ```php
-Route::get('/products', \App\Livewire\App\Inventory\Products\Index::class)
+Route::get('/products', fn () => view('app.inventory.products'))
     ->name('products.index');
 ```
 
