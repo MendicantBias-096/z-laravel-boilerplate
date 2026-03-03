@@ -15,7 +15,6 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware(['web', 'auth'])
                 ->group(base_path('routes/general.php'));
 
-            require base_path('routes/ai.php');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
