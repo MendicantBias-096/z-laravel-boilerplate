@@ -28,13 +28,6 @@ return [
             'route' => 'dashboard',
         ],
 
-        [
-            'label'        => 'Asistente IA',
-            'icon'         => 'sparkles',
-            'route'        => 'support',
-            'active_route' => 'support',
-        ],
-
         // ── Operaciones ──────────────────────────────────────────────────
         // [
         //     'label'        => 'Operaciones',
