@@ -16,8 +16,9 @@ Trigger phrases: "crear crud", "nuevo módulo con tabla", "generar módulo", "cr
 
 - **SoftDeletes is mandatory** on every model. Always add `use SoftDeletes` and `$table->softDeletes()`.
 - **Never use `forceDelete`**. No button, route, or method should call `forceDelete()`.
-- The Table always shows trashed records (`withTrashed()`) and offers Restaurar instead of a hard delete.
+- The Table always includes trashed records (`withTrashed()`) and shows Restaurar for them.
 - The only way to permanently remove a record is via a manual DB operation outside the app.
+- Tables are **native Livewire components** — no PowerGrid or external table library.
 
 ---
 
@@ -31,7 +32,7 @@ Trigger phrases: "crear crud", "nuevo módulo con tabla", "generar módulo", "cr
 | `{model-slug}` | kebab-case plural (URLs) | `products` |
 | `{Domain}` | PascalCase domain | `General` |
 | `{domain}` | lowercase domain | `general` |
-| `{model_es}` | Spanish singular | `producto` |
+| `{model_es}` | Spanish plural (used in permissions) | `productos` |
 | `{Model_es}` | Spanish singular capitalized | `Producto` |
 | `{models_es}` | Spanish plural | `productos` |
 | `{Models_es}` | Spanish plural capitalized | `Productos` |
@@ -49,7 +50,7 @@ Create a task list before writing any file. Mark each step as completed.
 4. Factory
 5. Livewire Form object
 6. Livewire Form component
-7. Livewire PowerGrid Table
+7. Livewire Table component (native)
 8. Routes
 9. Views (5 files)
 10. Breadcrumbs
@@ -64,12 +65,9 @@ Create a task list before writing any file. Mark each step as completed.
 ```bash
 ddev exec php artisan make:model {Model} -mf
 ddev exec php artisan livewire:form {Model}Form
-ddev exec php artisan livewire:make App/{Domain}/{Model}/Form
-ddev exec php artisan powergrid:create {Model}/Table --model={Model}
+ddev exec php artisan livewire:make App/{Domain}/{Model}/Form --no-view
+ddev exec php artisan livewire:make App/{Domain}/{Model}/Table --no-view
 ```
-
-Move the PowerGrid generated file from `app/Livewire/{Model}/Table.php`
-to `app/Livewire/App/{Domain}/{Model}/Table.php` and fix its namespace.
 
 ---
 
@@ -239,7 +237,7 @@ class Form extends Component
 
 ---
 
-## Step 7 — PowerGrid Table `app/Livewire/App/{Domain}/{Model}/Table.php`
+## Step 7 — Livewire Table component `app/Livewire/App/{Domain}/{Model}/Table.php`
 
 ```php
 <?php
@@ -247,86 +245,61 @@ class Form extends Component
 namespace App\Livewire\App\{Domain}\{Model};
 
 use App\Models\{Model};
-use Illuminate\Database\Eloquent\Builder;
-use Livewire\Attributes\On;
-use PowerComponents\LivewirePowerGrid\Button;
-use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Components\SetUp\Footer;
-use PowerComponents\LivewirePowerGrid\Components\SetUp\Header;
-use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use Livewire\Component;
+use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
 
-final class Table extends PowerGridComponent
+class Table extends Component
 {
-    use Interactions;
+    use Interactions, WithPagination;
 
-    public string $tableName = '{model-slug}-table';
+    public string $search = '';
 
-    public function setUp(): array
+    public string $sortField = 'name';
+
+    public string $sortDirection = 'asc';
+
+    public function updatingSearch(): void
     {
-        return [
-            (new Header())
-                ->showSearchInput()
-                ->includeViewOnTop('app.{domain}.{model-slug}._toolbar'),
-            (new Footer())
-                ->showPerPage(25, [25, 50, 100])
-                ->showRecordCount(),
-        ];
+        $this->resetPage();
     }
 
-    public function datasource(): Builder
+    public function sort(string $field): void
     {
-        return {Model}::query()->withTrashed();
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 
-    public function fields(): PowerGridFields
-    {
-        return PowerGrid::fields()
-            ->add('id')
-            ->add('name')
-            ->add('deleted_at');
-    }
-
-    public function columns(): array
-    {
-        return [
-            Column::make('ID', 'id')->sortable()->hidden(),
-            Column::make('Nombre', 'name')->searchable()->sortable(),
-            Column::action('Acciones'),
-        ];
-    }
-
-    public function actions({Model} $row): array
-    {
-        return [
-            Button::add('edit')
-                ->slot('Editar')
-                ->route('{domain}.{model-slug}.edit', ['{model}' => $row->id])
-                ->can(auth()->user()?->can('editar {model_es}'))
-                ->class('pg-btn-white dark:ring-pg-primary-600'),
-
-            Button::add('destroy')
-                ->slot($row->trashed() ? 'Restaurar' : 'Eliminar')
-                ->dispatch($row->trashed() ? 'restore' : 'softDelete', ['id' => $row->id])
-                ->can(auth()->user()?->can($row->trashed() ? 'restaurar {model_es}' : 'eliminar {model_es}'))
-                ->class('pg-btn-white dark:ring-pg-primary-600'),
-        ];
-    }
-
-    #[On('softDelete')]
     public function softDelete(int $id): void
     {
+        $this->authorize('eliminar {model_es}');
+
         {Model}::find($id)?->delete();
-        $this->notification()->success('Éxito', '{Model_es} eliminado correctamente.');
+
+        $this->toast()->success('Éxito', '{Model_es} eliminado correctamente.')->send();
     }
 
-    #[On('restore')]
     public function restore(int $id): void
     {
+        $this->authorize('restaurar {model_es}');
+
         {Model}::withTrashed()->find($id)?->restore();
-        $this->notification()->success('Éxito', '{Model_es} restaurado correctamente.');
+
+        $this->toast()->success('Éxito', '{Model_es} restaurado correctamente.')->send();
+    }
+
+    public function render()
+    {
+        ${models} = {Model}::withTrashed()
+            ->when($this->search, fn ($q) => $q->where('name', 'ilike', "%{$this->search}%"))
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(25);
+
+        return view('app.{domain}.{model-slug}._index', compact('{models}'));
     }
 }
 ```
@@ -421,17 +394,96 @@ Route::prefix('{model-slug}')->name('{model-slug}.')->group(function () {
 </div>
 ```
 
-### `resources/views/app/{domain}/{model-slug}/_toolbar.blade.php`
+### `resources/views/app/{domain}/{model-slug}/_index.blade.php`
 ```blade
 <div>
-    @can('crear {model_es}')
-        <a href="{{ route('{domain}.{model-slug}.create') }}" wire:navigate
-           class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
-           style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
-            <x-ui.icon name="plus" class="size-4" />
-            Nuevo {model_es}
-        </a>
-    @endcan
+    {{-- Toolbar --}}
+    <div class="mb-4 flex items-center justify-between gap-4">
+        <x-ts-input
+            wire:model.live.debounce.300ms="search"
+            placeholder="Buscar {models_es}..."
+            class="w-full max-w-sm"
+        />
+
+        @can('crear {model_es}')
+            <a href="{{ route('{domain}.{model-slug}.create') }}" wire:navigate
+               class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
+               style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
+                <x-ui.icon name="plus" class="size-4" />
+                Nuevo {model_es}
+            </a>
+        @endcan
+    </div>
+
+    {{-- Tabla --}}
+    <x-ts-card>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-gray-200 text-left dark:border-white/10">
+                        <th class="pb-3 pr-4 font-medium text-content-muted">
+                            <button wire:click="sort('name')" class="flex items-center gap-1 hover:text-content">
+                                Nombre
+                                @if ($sortField === 'name')
+                                    <x-ui.icon name="{{ $sortDirection === 'asc' ? 'chevron-up' : 'chevron-down' }}" class="size-3" />
+                                @endif
+                            </button>
+                        </th>
+                        <th class="pb-3 font-medium text-content-muted">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                    @forelse (${models} as ${model})
+                        <tr class="{{ ${model}->trashed() ? 'opacity-50' : '' }}">
+                            <td class="py-3 pr-4 font-medium text-content">{{ ${model}->name }}</td>
+                            <td class="py-3">
+                                <div class="flex items-center gap-2">
+                                    @if (! ${model}->trashed())
+                                        @can('editar {model_es}')
+                                            <a href="{{ route('{domain}.{model-slug}.edit', ${model}) }}" wire:navigate
+                                               class="text-sm text-blue-600 hover:underline dark:text-blue-400">
+                                                Editar
+                                            </a>
+                                        @endcan
+                                    @endif
+
+                                    @if (${model}->trashed())
+                                        @can('restaurar {model_es}')
+                                            <button wire:click="restore({{ ${model}->id }})"
+                                                    wire:confirm="¿Restaurar este {model_es}?"
+                                                    class="text-sm text-green-600 hover:underline dark:text-green-400">
+                                                Restaurar
+                                            </button>
+                                        @endcan
+                                    @else
+                                        @can('eliminar {model_es}')
+                                            <button wire:click="softDelete({{ ${model}->id }})"
+                                                    wire:confirm="¿Eliminar este {model_es}?"
+                                                    class="text-sm text-red-600 hover:underline dark:text-red-400">
+                                                Eliminar
+                                            </button>
+                                        @endcan
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="2" class="py-8 text-center text-content-muted">
+                                No se encontraron {models_es}.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if (${models}->hasPages())
+            <x-slot:footer>
+                {{ ${models}->links() }}
+            </x-slot:footer>
+        @endif
+    </x-ts-card>
 </div>
 ```
 
@@ -439,20 +491,9 @@ Route::prefix('{model-slug}')->name('{model-slug}.')->group(function () {
 
 ## Step 10 — Breadcrumbs in `routes/breadcrumbs.php`
 
-If the file doesn't exist, create it with the base dashboard entry first:
+The file `routes/breadcrumbs.php` is auto-loaded by the ServiceProvider — do NOT require it in `bootstrap/app.php`.
 
-```php
-<?php
-
-use Diglactic\Breadcrumbs\Breadcrumbs;
-use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
-
-Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
-    $trail->push('Dashboard', route('dashboard'));
-});
-```
-
-Then add the module entries:
+Add the module entries:
 
 ```php
 // {models_es}
@@ -466,19 +507,23 @@ Breadcrumbs::for('{domain}.{model-slug}.create', function (BreadcrumbTrail $trai
     $trail->push('Nuevo {model_es}', route('{domain}.{model-slug}.create'));
 });
 
-Breadcrumbs::for('{domain}.{model-slug}.edit', function (BreadcrumbTrail $trail, ${model}) {
+Breadcrumbs::for('{domain}.{model-slug}.edit', function (BreadcrumbTrail $trail, {Model} ${model}) {
     $trail->parent('{domain}.{model-slug}.index');
     $trail->push(${model}->name, route('{domain}.{model-slug}.edit', ${model}));
 });
 ```
 
-If `routes/breadcrumbs.php` is new, register it in `bootstrap/app.php` inside `then`:
+If `routes/breadcrumbs.php` does not exist yet, create it with the dashboard root first:
 
 ```php
-then: function () {
-    require base_path('routes/breadcrumbs.php');
-    // ... other route files
-},
+<?php
+
+use Diglactic\Breadcrumbs\Breadcrumbs;
+use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
+
+Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
+    $trail->push('Dashboard', route('dashboard'));
+});
 ```
 
 ---
@@ -498,17 +543,19 @@ then: function () {
 
 ## Step 12 — Permissions
 
-List the permissions that must be seeded or registered:
+Add to `config/roles.php` under `permissions`:
 
-```
-ver {model_es}
-crear {model_es}
-editar {model_es}
-eliminar {model_es}
-restaurar {model_es}
+```php
+'{model_es}' => [
+    'ver {model_es}',
+    'crear {model_es}',
+    'editar {model_es}',
+    'eliminar {model_es}',
+    'restaurar {model_es}',
+],
 ```
 
-Inform the user they need to seed these permissions before the routes become accessible.
+Then seed: `ddev exec php artisan db:seed --class=RolesAndPermissionsSeeder`
 
 ---
 
@@ -521,8 +568,8 @@ feat: CRUD {Models_es}
 - Migración tabla `{models}` con campos: {Fields}
 - Form object `{Model}Form` con validación y updateOrCreate
 - Componente `Form` (create/edit) con toast de confirmación
-- Tabla PowerGrid `Table` con búsqueda, sort, soft delete y restore
-- Vistas: index, create, edit (wrappers) + _form, _toolbar (componentes)
+- Tabla Livewire nativa `Table` con búsqueda, sort, soft delete y restore
+- Vistas: index, create, edit (wrappers) + _form, _index (componentes)
 - Rutas protegidas por permiso en routes/{domain}.php
 - Breadcrumbs para el flujo completo
 - Entrada en config/menu.php
