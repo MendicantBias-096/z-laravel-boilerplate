@@ -13,23 +13,18 @@ class Table extends Component
 
     public string $search = '';
 
-    public string $sortField = 'name';
+    public int $quantity = 25;
 
-    public string $sortDirection = 'asc';
+    public array $sort = ['column' => 'name', 'direction' => 'asc'];
 
     public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
-    public function sort(string $field): void
+    public function updatingQuantity(): void
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        $this->resetPage();
     }
 
     public function softDelete(int $id): void
@@ -52,15 +47,31 @@ class Table extends Component
 
     public function render()
     {
+        $headers = [
+            ['index' => 'name',  'label' => 'Nombre'],
+            ['index' => 'email', 'label' => 'Correo'],
+            ['index' => 'role',  'label' => 'Rol', 'sortable' => false],
+            ['index' => 'status', 'label' => 'Estado', 'sortable' => false],
+            ['index' => 'action', 'label' => 'Acciones', 'sortable' => false],
+        ];
+
         $users = User::withTrashed()
             ->with('roles')
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('name', 'ilike', "%{$this->search}%")
                   ->orWhere('email', 'ilike', "%{$this->search}%");
             }))
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(25);
+            ->orderBy($this->sort['column'], $this->sort['direction'])
+            ->paginate($this->quantity);
 
-        return view('app.personal.users._index', compact('users'));
+        // Append virtual fields
+        $users->getCollection()->transform(function (User $user) {
+            $user->role   = $user->roles->first()?->name ?? '—';
+            $user->status = $user->trashed() ? 'Eliminado' : 'Activo';
+
+            return $user;
+        });
+
+        return view('app.personal.users._index', compact('headers', 'users'));
     }
 }
