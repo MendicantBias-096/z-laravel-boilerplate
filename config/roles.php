@@ -46,6 +46,7 @@ return [
             'crear usuarios',
             'editar usuarios',
             'eliminar usuarios',
+            'restaurar usuarios',
         ],
 
         /*

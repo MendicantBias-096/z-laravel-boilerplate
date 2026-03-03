@@ -12,6 +12,15 @@ Trigger phrases: "crear crud", "nuevo módulo con tabla", "generar módulo", "cr
 
 ---
 
+## Hard rules — never break these
+
+- **SoftDeletes is mandatory** on every model. Always add `use SoftDeletes` and `$table->softDeletes()`.
+- **Never use `forceDelete`**. No button, route, or method should call `forceDelete()`.
+- The Table always shows trashed records (`withTrashed()`) and offers Restaurar instead of a hard delete.
+- The only way to permanently remove a record is via a manual DB operation outside the app.
+
+---
+
 ## Required variables — ask if missing
 
 | Variable | Description | Example |
