@@ -28,6 +28,21 @@ return [
             'route' => 'dashboard',
         ],
 
+        // ── Personal ──────────────────────────────────────────────────────
+        [
+            'label'        => 'Personal',
+            'icon'         => 'users',
+            'active_route' => 'personal.*',
+            'items'        => [
+                [
+                    'label'        => 'Usuarios',
+                    'route'        => 'personal.usuarios.index',
+                    'active_route' => 'personal.usuarios.*',
+                    'permission'   => 'ver usuarios',
+                ],
+            ],
+        ],
+
         // ── Operaciones ──────────────────────────────────────────────────
         // [
         //     'label'        => 'Operaciones',
