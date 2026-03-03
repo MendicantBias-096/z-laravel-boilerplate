@@ -255,23 +255,18 @@ class Table extends Component
 
     public string $search = '';
 
-    public string $sortField = 'name';
+    public int $quantity = 25;
 
-    public string $sortDirection = 'asc';
+    public array $sort = ['column' => 'name', 'direction' => 'asc'];
 
     public function updatingSearch(): void
     {
         $this->resetPage();
     }
 
-    public function sort(string $field): void
+    public function updatingQuantity(): void
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
+        $this->resetPage();
     }
 
     public function softDelete(int $id): void
@@ -294,12 +289,17 @@ class Table extends Component
 
     public function render()
     {
+        $headers = [
+            ['index' => 'name',   'label' => 'Nombre'],
+            ['index' => 'action', 'label' => 'Acciones', 'sortable' => false],
+        ];
+
         ${models} = {Model}::withTrashed()
             ->when($this->search, fn ($q) => $q->where('name', 'ilike', "%{$this->search}%"))
-            ->orderBy($this->sortField, $this->sortDirection)
-            ->paginate(25);
+            ->orderBy($this->sort['column'], $this->sort['direction'])
+            ->paginate($this->quantity);
 
-        return view('app.{domain}.{model-slug}._index', compact('{models}'));
+        return view('app.{domain}.{model-slug}._index', compact('headers', '{models}'));
     }
 }
 ```
@@ -397,14 +397,7 @@ Route::prefix('{model-slug}')->name('{model-slug}.')->group(function () {
 ### `resources/views/app/{domain}/{model-slug}/_index.blade.php`
 ```blade
 <div>
-    {{-- Toolbar --}}
-    <div class="mb-4 flex items-center justify-between gap-4">
-        <x-ts-input
-            wire:model.live.debounce.300ms="search"
-            placeholder="Buscar {models_es}..."
-            class="w-full max-w-sm"
-        />
-
+    <div class="mb-4 flex justify-end">
         @can('crear {model_es}')
             <a href="{{ route('{domain}.{model-slug}.create') }}" wire:navigate
                class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
@@ -415,75 +408,46 @@ Route::prefix('{model-slug}')->name('{model-slug}.')->group(function () {
         @endcan
     </div>
 
-    {{-- Tabla --}}
-    <x-ts-card>
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="border-b border-gray-200 text-left dark:border-white/10">
-                        <th class="pb-3 pr-4 font-medium text-content-muted">
-                            <button wire:click="sort('name')" class="flex items-center gap-1 hover:text-content">
-                                Nombre
-                                @if ($sortField === 'name')
-                                    <x-ui.icon name="{{ $sortDirection === 'asc' ? 'chevron-up' : 'chevron-down' }}" class="size-3" />
-                                @endif
-                            </button>
-                        </th>
-                        <th class="pb-3 font-medium text-content-muted">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-white/5">
-                    @forelse (${models} as ${model})
-                        <tr class="{{ ${model}->trashed() ? 'opacity-50' : '' }}">
-                            <td class="py-3 pr-4 font-medium text-content">{{ ${model}->name }}</td>
-                            <td class="py-3">
-                                <div class="flex items-center gap-2">
-                                    @if (! ${model}->trashed())
-                                        @can('editar {model_es}')
-                                            <a href="{{ route('{domain}.{model-slug}.edit', ${model}) }}" wire:navigate
-                                               class="text-sm text-blue-600 hover:underline dark:text-blue-400">
-                                                Editar
-                                            </a>
-                                        @endcan
-                                    @endif
+    <x-ts-table
+        :headers="$headers"
+        :rows="${models}"
+        :sort="$sort"
+        :filter="true"
+        :quantity="[10, 25, 50, 100]"
+        paginate
+        striped
+    >
+        @interact('column_action', $row)
+            <div class="flex items-center gap-3">
+                @if (! $row->trashed())
+                    @can('editar {model_es}')
+                        <a href="{{ route('{domain}.{model-slug}.edit', $row) }}" wire:navigate
+                           class="text-sm text-blue-600 hover:underline dark:text-blue-400">
+                            Editar
+                        </a>
+                    @endcan
+                @endif
 
-                                    @if (${model}->trashed())
-                                        @can('restaurar {model_es}')
-                                            <button wire:click="restore({{ ${model}->id }})"
-                                                    wire:confirm="¿Restaurar este {model_es}?"
-                                                    class="text-sm text-green-600 hover:underline dark:text-green-400">
-                                                Restaurar
-                                            </button>
-                                        @endcan
-                                    @else
-                                        @can('eliminar {model_es}')
-                                            <button wire:click="softDelete({{ ${model}->id }})"
-                                                    wire:confirm="¿Eliminar este {model_es}?"
-                                                    class="text-sm text-red-600 hover:underline dark:text-red-400">
-                                                Eliminar
-                                            </button>
-                                        @endcan
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="2" class="py-8 text-center text-content-muted">
-                                No se encontraron {models_es}.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        @if (${models}->hasPages())
-            <x-slot:footer>
-                {{ ${models}->links() }}
-            </x-slot:footer>
-        @endif
-    </x-ts-card>
+                @if ($row->trashed())
+                    @can('restaurar {model_es}')
+                        <button wire:click="restore({{ $row->id }})"
+                                wire:confirm="¿Restaurar este {model_es}?"
+                                class="text-sm text-green-600 hover:underline dark:text-green-400">
+                            Restaurar
+                        </button>
+                    @endcan
+                @else
+                    @can('eliminar {model_es}')
+                        <button wire:click="softDelete({{ $row->id }})"
+                                wire:confirm="¿Eliminar este {model_es}?"
+                                class="text-sm text-red-600 hover:underline dark:text-red-400">
+                            Eliminar
+                        </button>
+                    @endcan
+                @endif
+            </div>
+        @endinteract
+    </x-ts-table>
 </div>
 ```
 
@@ -568,7 +532,7 @@ feat: CRUD {Models_es}
 - Migración tabla `{models}` con campos: {Fields}
 - Form object `{Model}Form` con validación y updateOrCreate
 - Componente `Form` (create/edit) con toast de confirmación
-- Tabla Livewire nativa `Table` con búsqueda, sort, soft delete y restore
+- Tabla x-ts-table de TallStackUI `Table` con búsqueda, sort, soft delete y restore
 - Vistas: index, create, edit (wrappers) + _form, _index (componentes)
 - Rutas protegidas por permiso en routes/{domain}.php
 - Breadcrumbs para el flujo completo
