@@ -9,8 +9,10 @@
         "php": "^8.4",
         "dedoc/scramble": "^0.13.14",
         "diglactic/laravel-breadcrumbs": "^10.0",
+        "harris21/laravel-fuse": "^0.3.0",
         "laravel/fortify": "^1.34",
         "laravel/framework": "^12.0",
+        "laravel/reverb": "^1.8",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.32",
@@ -22,6 +24,7 @@
         "tallstackui/tallstackui": "^2.0.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^4.0",
         "fakerphp/faker": "^1.23",
         "laravel/boost": "*",
         "laravel/pail": "^1.2.2",
@@ -29,7 +32,8 @@
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5.3",
+        "zidbih/laravel-deadlock": "^0.3.0"
     },
     "autoload": {
         "psr-4": {
