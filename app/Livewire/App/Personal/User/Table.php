@@ -3,89 +3,64 @@
 namespace App\Livewire\App\Personal\User;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use Livewire\Attributes\On;
-use PowerComponents\LivewirePowerGrid\Button;
-use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Components\SetUp\Footer;
-use PowerComponents\LivewirePowerGrid\Components\SetUp\Header;
-use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use Livewire\Component;
+use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
 
-final class Table extends PowerGridComponent
+class Table extends Component
 {
-    use Interactions;
+    use Interactions, WithPagination;
 
-    public string $tableName = 'usuarios-table';
+    public string $search = '';
 
-    public function setUp(): array
+    public string $sortField = 'name';
+
+    public string $sortDirection = 'asc';
+
+    public function updatingSearch(): void
     {
-        return [
-            (new Header())
-                ->showSearchInput()
-                ->includeViewOnTop('app.personal.users._toolbar'),
-            (new Footer())
-                ->showPerPage(25, [25, 50, 100])
-                ->showRecordCount(),
-        ];
+        $this->resetPage();
     }
 
-    public function datasource(): Builder
+    public function sort(string $field): void
     {
-        return User::query()->withTrashed()->with('roles');
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }
 
-    public function fields(): PowerGridFields
-    {
-        return PowerGrid::fields()
-            ->add('id')
-            ->add('name')
-            ->add('email')
-            ->add('role', fn (User $user) => $user->roles->first()?->name ?? '—')
-            ->add('deleted_at');
-    }
-
-    public function columns(): array
-    {
-        return [
-            Column::make('ID', 'id')->sortable()->hidden(),
-            Column::make('Nombre', 'name')->searchable()->sortable(),
-            Column::make('Correo', 'email')->searchable()->sortable(),
-            Column::make('Rol', 'role'),
-            Column::action('Acciones'),
-        ];
-    }
-
-    public function actions(User $row): array
-    {
-        return [
-            Button::add('edit')
-                ->slot('Editar')
-                ->route('personal.usuarios.edit', ['user' => $row->id])
-                ->can(auth()->user()?->can('editar usuarios') && ! $row->trashed())
-                ->class('pg-btn-white dark:ring-pg-primary-600'),
-
-            Button::add('destroy')
-                ->slot($row->trashed() ? 'Restaurar' : 'Eliminar')
-                ->dispatch($row->trashed() ? 'restore' : 'softDelete', ['id' => $row->id])
-                ->can(auth()->user()?->can($row->trashed() ? 'restaurar usuarios' : 'eliminar usuarios'))
-                ->class('pg-btn-white dark:ring-pg-primary-600'),
-        ];
-    }
-
-    #[On('softDelete')]
     public function softDelete(int $id): void
     {
+        $this->authorize('eliminar usuarios');
+
         User::find($id)?->delete();
-        $this->notification()->success('Éxito', 'Usuario eliminado correctamente.');
+
+        $this->toast()->success('Éxito', 'Usuario eliminado correctamente.')->send();
     }
 
-    #[On('restore')]
     public function restore(int $id): void
     {
+        $this->authorize('restaurar usuarios');
+
         User::withTrashed()->find($id)?->restore();
-        $this->notification()->success('Éxito', 'Usuario restaurado correctamente.');
+
+        $this->toast()->success('Éxito', 'Usuario restaurado correctamente.')->send();
+    }
+
+    public function render()
+    {
+        $users = User::withTrashed()
+            ->with('roles')
+            ->when($this->search, fn ($q) => $q->where(function ($q) {
+                $q->where('name', 'ilike', "%{$this->search}%")
+                  ->orWhere('email', 'ilike', "%{$this->search}%");
+            }))
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->paginate(25);
+
+        return view('app.personal.users._index', compact('users'));
     }
 }
