@@ -8,13 +8,18 @@ database:
   type: postgres
   version: "16"
 
-# Cuando el código corre DENTRO del contenedor DDEV, sobreescribe la DB del .env
+# Variables inyectadas dentro del contenedor DDEV — sobreescriben el .env
+# El .env queda como config de Herd; DDEV no lo toca.
 web_environment:
+  - APP_URL=https://laravel12-boilerplate.ddev.site
   - DB_HOST=db
   - DB_PORT=5432
   - DB_DATABASE=db
   - DB_USERNAME=db
   - DB_PASSWORD=db
+  - VITE_DEV_SERVER_URL=https://laravel12-boilerplate.ddev.site:5173
+  - MAIL_HOST=mailpit
+  - MAIL_PORT=1025
 
 # ── Vite HMR port ──────────────────────────────────────────────────────────
 web_extra_exposed_ports:
@@ -28,4 +33,19 @@ composer_version: "2"
 
 # ── Hooks ──────────────────────────────────────────────────────────────────
 # Bun is installed via .ddev/web-build/Dockerfile
-# No post-start hooks needed for Bun
+
+hooks:
+  post-stop:
+    # Al parar DDEV, actualiza solo las keys de entorno en .env para Herd.
+    # No sobreescribe el .env completo para preservar secretos (API keys, etc.)
+    - exec-host: |
+        if [ -f .env ]; then
+          sed -i '' 's|^APP_URL=.*|APP_URL=https://z-laravel-boilerplate.test|' .env
+          sed -i '' 's|^DB_HOST=.*|DB_HOST=127.0.0.1|' .env
+          sed -i '' 's|^DB_DATABASE=.*|DB_DATABASE=z_laravel_boilerplate|' .env
+          sed -i '' 's|^DB_USERNAME=.*|DB_USERNAME=am-mac|' .env
+          sed -i '' 's|^DB_PASSWORD=.*|DB_PASSWORD=|' .env
+          sed -i '' 's|^MAIL_HOST=.*|MAIL_HOST=127.0.0.1|' .env
+          sed -i '' 's|^MAIL_PORT=.*|MAIL_PORT=1025|' .env
+          echo '.env actualizado para Herd'
+        fi
