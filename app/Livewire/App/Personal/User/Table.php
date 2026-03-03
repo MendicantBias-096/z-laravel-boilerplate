@@ -23,10 +23,10 @@ final class Table extends PowerGridComponent
     public function setUp(): array
     {
         return [
-            Header::make()
+            (new Header())
                 ->showSearchInput()
                 ->includeViewOnTop('app.personal.users._toolbar'),
-            Footer::make()
+            (new Footer())
                 ->showPerPage(25, [25, 50, 100])
                 ->showRecordCount(),
         ];
