@@ -51,7 +51,7 @@
 
         <main id="page-content" class="flex max-w-full flex-auto flex-col pt-16">
             @if ($icon || $title)
-                <div class="flex items-center gap-3 border-b border-line px-4 py-4 lg:px-8">
+                <div class="sticky top-16 z-30 flex items-center gap-3 border-b border-line bg-canvas px-4 py-4 lg:px-8">
                     @if ($icon)
                         <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 dark:bg-primary-950">
                             <x-ui.icon :name="$icon" class="size-5 text-primary-600 dark:text-primary-400" />
