@@ -20,10 +20,12 @@ class Form extends Component
     {
         if ($this->record) {
             $this->form->fill([
-                'id'    => $this->record->id,
-                'name'  => $this->record->name,
-                'email' => $this->record->email,
-                'role'  => $this->record->roles->first()?->name,
+                'id'         => $this->record->id,
+                'username'   => $this->record->username,
+                'email'      => $this->record->email,
+                'first_name' => $this->record->profile?->first_name ?? '',
+                'last_name'  => $this->record->profile?->last_name ?? '',
+                'role'       => $this->record->roles->first()?->name,
             ]);
         }
     }

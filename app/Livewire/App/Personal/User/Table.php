@@ -3,19 +3,28 @@
 namespace App\Livewire\App\Personal\User;
 
 use App\Models\User;
+use App\Traits\Livewire\HasSoftDeletes;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Spatie\Permission\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Table extends Component
 {
-    use Interactions, WithPagination;
+    use Interactions, WithPagination, HasSoftDeletes;
+
+    protected string $modelClass = User::class;
+    protected string $deletePermission = 'eliminar usuarios';
+    protected string $restorePermission = 'restaurar usuarios';
+    protected string $modelLabel = 'Usuario';
 
     public string $search = '';
+    public string $filterEmail = '';
+    public string $filterRole = '';
 
     public int $quantity = 25;
 
-    public array $sort = ['column' => 'name', 'direction' => 'asc'];
+    public array $sort = ['column' => 'username', 'direction' => 'asc'];
 
     public function updatingSearch(): void
     {
@@ -27,44 +36,48 @@ class Table extends Component
         $this->resetPage();
     }
 
-    public function softDelete(int $id): void
+    public function updatingFilterEmail(): void
     {
-        $this->authorize('eliminar usuarios');
-
-        User::find($id)?->delete();
-
-        $this->toast()->success('Éxito', 'Usuario eliminado correctamente.')->send();
+        $this->resetPage();
     }
 
-    public function restore(int $id): void
+    public function updatingFilterRole(): void
     {
-        $this->authorize('restaurar usuarios');
+        $this->resetPage();
+    }
 
-        User::withTrashed()->find($id)?->restore();
-
-        $this->toast()->success('Éxito', 'Usuario restaurado correctamente.')->send();
+    public function clearFilters(): void
+    {
+        $this->reset('filterEmail', 'filterRole');
+        $this->resetPage();
     }
 
     public function render()
     {
         $headers = [
-            ['index' => 'name',  'label' => 'Nombre'],
-            ['index' => 'email', 'label' => 'Correo'],
-            ['index' => 'role',  'label' => 'Rol', 'sortable' => false],
+            ['index' => 'username', 'label' => 'Usuario'],
+            ['index' => 'name',     'label' => 'Nombre', 'sortable' => false],
+            ['index' => 'email',    'label' => 'Correo'],
+            ['index' => 'role',   'label' => 'Rol', 'sortable' => false],
             ['index' => 'status', 'label' => 'Estado', 'sortable' => false],
             ['index' => 'action', 'label' => 'Acciones', 'sortable' => false],
         ];
 
         $users = User::withTrashed()
-            ->with('roles')
+            ->with(['roles', 'profile'])
             ->when($this->search, fn ($q) => $q->where(function ($q) {
-                $q->where('name', 'ilike', "%{$this->search}%")
-                  ->orWhere('email', 'ilike', "%{$this->search}%");
+                $q->where('username', 'ilike', "%{$this->search}%")
+                  ->orWhere('email', 'ilike', "%{$this->search}%")
+                  ->orWhereHas('profile', fn ($q) => $q
+                      ->where('first_name', 'ilike', "%{$this->search}%")
+                      ->orWhere('last_name', 'ilike', "%{$this->search}%")
+                  );
             }))
+            ->when($this->filterEmail, fn ($q) => $q->where('email', 'ilike', "%{$this->filterEmail}%"))
+            ->when($this->filterRole, fn ($q) => $q->whereHas('roles', fn ($q) => $q->where('name', $this->filterRole)))
             ->orderBy($this->sort['column'], $this->sort['direction'])
             ->paginate($this->quantity);
 
-        // Append virtual fields
         $users->getCollection()->transform(function (User $user) {
             $user->role   = $user->roles->first()?->name ?? '—';
             $user->status = $user->trashed() ? 'Eliminado' : 'Activo';
@@ -72,6 +85,8 @@ class Table extends Component
             return $user;
         });
 
-        return view('app.personal.users._index', compact('headers', 'users'));
+        $roles = Role::orderBy('name')->pluck('name', 'name')->toArray();
+
+        return view('app.personal.users._index', compact('headers', 'users', 'roles'));
     }
 }

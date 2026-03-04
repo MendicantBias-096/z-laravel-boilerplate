@@ -1,3 +1,4 @@
+@props(['icon' => null, 'title' => null, 'parent' => null])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -18,6 +19,7 @@
 <body class="antialiased">
 
 <div
+    id="app-root"
     x-data="{
         mobileSidebarOpen: false,
         desktopSidebarOpen: true,
@@ -42,6 +44,22 @@
         @endpersist
 
         <main id="page-content" class="flex max-w-full flex-auto flex-col pt-16">
+            @if ($icon || $title)
+                <div class="flex items-center gap-3 border-b border-line px-4 py-4 lg:px-8">
+                    @if ($icon)
+                        <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 dark:bg-primary-950">
+                            <x-ui.icon :name="$icon" class="size-5 text-primary-600 dark:text-primary-400" />
+                        </div>
+                    @endif
+                    <h1 class="text-lg font-semibold text-content">
+                        @if ($parent)
+                            <span class="font-normal text-content-muted">{{ $parent }}</span>
+                            <span class="mx-1.5 font-normal text-content-subtle">|</span>
+                        @endif
+                        {{ $title }}
+                    </h1>
+                </div>
+            @endif
             <div class="w-full p-4 lg:p-8">
                 {{ $slot }}
             </div>
@@ -62,9 +80,11 @@
             </div>
         </footer>
     </div>
+
+    <x-ts-toast />
+    <x-ts-dialog />
 </div>
 
 @livewireScripts
-<x-ts-toast />
 </body>
 </html>
