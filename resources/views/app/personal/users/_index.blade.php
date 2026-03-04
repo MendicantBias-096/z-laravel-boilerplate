@@ -111,6 +111,25 @@
         :sort="$sort"
         striped
     >
+        @interact('column_photo', $row)
+            <div class="flex justify-center">
+                @if ($row->profile?->photo_url)
+                    <img
+                        src="{{ $row->profile->photo_url }}"
+                        alt="{{ $row->username }}"
+                        class="h-8 w-8 flex-shrink-0 rounded-full object-cover"
+                    >
+                @else
+                    <div
+                        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                        style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);"
+                    >
+                        {{ mb_strtoupper(mb_substr($row->username, 0, 1)) }}
+                    </div>
+                @endif
+            </div>
+        @endinteract
+
         @interact('column_status', $row)
             @if ($row->trashed())
                 <x-ts-badge text="Eliminado" color="red" />

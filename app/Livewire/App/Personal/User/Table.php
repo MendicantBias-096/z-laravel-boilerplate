@@ -55,6 +55,7 @@ class Table extends Component
     public function render()
     {
         $headers = [
+            ['index' => 'photo',    'label' => '',        'sortable' => false],
             ['index' => 'username', 'label' => 'Usuario'],
             ['index' => 'name',     'label' => 'Nombre', 'sortable' => false],
             ['index' => 'email',    'label' => 'Correo'],
@@ -65,7 +66,7 @@ class Table extends Component
 
         $users = User::withTrashed()
             ->where('id', '!=', auth()->id())
-            ->with(['roles', 'profile'])
+            ->with(['roles', 'profile.media'])
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('username', 'ilike', "%{$this->search}%")
                   ->orWhere('email', 'ilike', "%{$this->search}%")
@@ -80,7 +81,7 @@ class Table extends Component
             ->paginate($this->quantity);
 
         $users->getCollection()->transform(function (User $user) {
-            $user->role   = $user->roles->first()?->name ?? '—';
+            $user->role   = ucfirst($user->roles->first()?->name ?? '—');
             $user->status = $user->trashed() ? 'Eliminado' : 'Activo';
 
             return $user;

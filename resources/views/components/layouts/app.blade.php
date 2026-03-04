@@ -5,6 +5,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Laravel') }}</title>
+    <script>
+        (function () {
+            var cookie = document.cookie.match(/darkMode=([^;]+)/);
+            var isDark = cookie ? cookie[1] !== 'false' : true;
+            var bg = isDark ? '#080c18' : '#F7F8FA';
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.backgroundColor = bg;
+            if (!cookie) {
+                document.cookie = 'darkMode=true;path=/;max-age=31536000;SameSite=Lax';
+            }
+        })();
+    </script>
     <style>
         [x-cloak] { display: none !important; }
         @media (min-width: 1024px) {
@@ -20,18 +32,12 @@
 
 <div
     id="app-root"
+    class="{{ request()->cookie('darkMode', 'true') !== 'false' ? 'dark' : '' }}"
     x-data="{
         mobileSidebarOpen: false,
         desktopSidebarOpen: true,
-        darkMode: localStorage.getItem('darkMode') !== null
-            ? localStorage.getItem('darkMode') === 'true'
-            : window.matchMedia('(prefers-color-scheme: dark)').matches,
-        toggleDark() {
-            this.darkMode = !this.darkMode;
-            localStorage.setItem('darkMode', this.darkMode);
-        },
     }"
-    x-bind:class="{ 'dark': darkMode }"
+    x-bind:class="{ 'dark': $store.theme?.dark }"
     x-bind:style="{ '--sidebar-w': desktopSidebarOpen ? '16rem' : '0rem' }"
 >
     <div
@@ -83,6 +89,7 @@
 
     <x-ts-toast />
     <x-ts-dialog />
+
 </div>
 
 @livewireScripts
