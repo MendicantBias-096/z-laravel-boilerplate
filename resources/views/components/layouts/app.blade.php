@@ -40,7 +40,7 @@
     >
         @persist('shell')
             <x-layouts.sidebar />
-            <x-layouts.navbar />
+            @livewire('layouts.navbar')
         @endpersist
 
         <main id="page-content" class="flex max-w-full flex-auto flex-col pt-16">

@@ -34,6 +34,8 @@ class AccountForm extends Component
             'email'    => $this->email,
         ]);
 
+        $this->dispatch('profile-updated');
+
         $this->toast()->success('Cuenta actualizada', 'Tu usuario y correo han sido guardados.')->send();
     }
 

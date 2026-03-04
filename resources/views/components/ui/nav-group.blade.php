@@ -18,36 +18,45 @@
         : $visibleItems->contains(
             fn ($item) => request()->routeIs($item['active_route'] ?? $item['route'])
         );
+
+    $childBases = $visibleItems
+        ->map(fn ($item) => parse_url(route($item['route']), PHP_URL_PATH))
+        ->values()
+        ->toJson();
 @endphp
 
-<div x-data="{ open: {{ $groupActive ? 'true' : 'false' }} }">
+<div
+    x-data="{
+        open: {{ $groupActive ? 'true' : 'false' }},
+        isActive: {{ $groupActive ? 'true' : 'false' }},
+        childBases: {{ $childBases }},
+        check() {
+            this.isActive = this.childBases.some(b => window.location.pathname === b || window.location.pathname.startsWith(b + '/'));
+            this.open = this.isActive;
+        },
+        init() {
+            document.addEventListener('livewire:navigated', () => this.check());
+        },
+    }"
+>
 
     <button
         type="button"
         @click="open = !open"
-        @class([
-            'group flex w-full items-center gap-2 px-5 py-0.5 text-sm font-medium transition',
-            $groupActive ? 'text-primary-800 dark:text-primary-200' : 'text-content-muted hover:bg-panel-alt hover:text-content',
-        ])
+        class="group flex w-full cursor-pointer items-center gap-2 px-5 py-0.5 text-sm font-medium transition"
+        :class="isActive
+            ? 'text-primary-600 dark:text-primary-400 hover:bg-primary-50/60 dark:hover:bg-primary-950/30'
+            : 'text-content-muted hover:bg-panel-alt hover:text-content'"
     >
         @if ($icon)
-            <span class="flex flex-none items-center opacity-75">
-                <x-ui.icon
-                    :name="$icon"
-                    @class([
-                        'size-5',
-                        'text-primary-600 dark:text-primary-400' => $groupActive,
-                        'text-content-subtle group-hover:text-content-muted' => ! $groupActive,
-                    ])
-                />
-            </span>
+            <x-ui.icon :name="$icon" class="size-5 flex-none opacity-80 transition-colors" />
         @endif
 
         <span class="grow py-2 text-left">{{ __($label) }}</span>
 
         <x-ui.icon
             name="chevron-down"
-            class="size-4 text-content-subtle transition-transform duration-200"
+            class="size-4 transition-all duration-200"
             x-bind:class="{ 'rotate-180': open }"
         />
     </button>
