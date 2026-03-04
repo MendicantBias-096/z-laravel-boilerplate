@@ -11,6 +11,12 @@ class Index extends Component
 
     public function render()
     {
-        return view('app.general.settings._index');
+        $system = [
+            ['label' => 'Versión',  'value' => 'v' . config('app.version', '1.0.0')],
+            ['label' => 'Laravel',  'value' => app()->version()],
+            ['label' => 'PHP',      'value' => PHP_VERSION],
+        ];
+
+        return view('app.general.settings._index', compact('system'));
     }
 }
