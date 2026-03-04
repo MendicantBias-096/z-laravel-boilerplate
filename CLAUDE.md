@@ -214,7 +214,8 @@ TallStackUI provides pre-built Blade components for this project. Use them befor
 - `x-ts-input` — text inputs with label and error display
 - `x-ts-card` — content cards with optional header/footer slots
 - `x-ts-button` — buttons with loading states
-- `x-ts-select` — select dropdowns
+- `x-ts-select.styled` — select con búsqueda y opciones array
+- `x-ts-select.native` — select HTML nativo
 - `x-ts-modal` — modal dialogs
 - `x-ts-toast` — toast notifications (via `$this->toast()->success(...)`)
 - `x-ts-badge` — status badges
