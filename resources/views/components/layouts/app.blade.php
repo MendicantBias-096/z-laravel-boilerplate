@@ -67,27 +67,25 @@
                 </div>
             @endif
 
-            <div class="flex flex-1 flex-col overflow-y-auto">
-                <div class="w-full flex-1 p-4 lg:p-8">
-                    {{ $slot }}
-                </div>
-
-                <footer class="flex flex-none items-center border-t border-line">
-                    <div class="flex w-full items-center justify-between px-4 py-4 lg:px-8">
-                        <span class="text-sm text-content-subtle">
-                            © {{ date('Y') }} <span class="font-medium text-content-muted">{{ config('app.name') }}</span>
-                        </span>
-                        @if(config('app.developer'))
-                        <span class="text-sm text-content-subtle flex items-center gap-1.5">
-                            Desarrollado con
-                            <x-ui.icon name="heart" class="size-3.5 text-red-500 fill-red-500" />
-                            <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
-                        </span>
-                        @endif
-                    </div>
-                </footer>
+            <div class="flex-1 overflow-y-auto p-4 lg:p-8">
+                {{ $slot }}
             </div>
         </main>
+
+        <footer class="flex flex-none items-center border-t border-line">
+            <div class="flex w-full items-center justify-between px-4 py-4 lg:px-8">
+                <span class="text-sm text-content-subtle">
+                    © {{ date('Y') }} <span class="font-medium text-content-muted">{{ config('app.name') }}</span>
+                </span>
+                @if(config('app.developer'))
+                <span class="text-sm text-content-subtle flex items-center gap-1.5">
+                    Desarrollado con
+                    <x-ui.icon name="heart" class="size-3.5 text-red-500 fill-red-500" />
+                    <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
+                </span>
+                @endif
+            </div>
+        </footer>
     </div>
 
     <x-ts-toast />
