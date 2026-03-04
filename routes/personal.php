@@ -26,7 +26,11 @@ Route::prefix('personal')->name('personal.')->group(function () {
             ->name('create');
 
         Route::middleware('permission:editar usuarios')
-            ->get('/{user}/edit', fn (User $user) => view('app.personal.users.edit', ['user' => $user]))
+            ->get('/{user}/edit', function (User $user) {
+                abort_if($user->id === auth()->id(), 403);
+
+                return view('app.personal.users.edit', ['user' => $user]);
+            })
             ->name('edit');
     });
 });

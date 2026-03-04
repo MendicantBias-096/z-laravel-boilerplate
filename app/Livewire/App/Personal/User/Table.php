@@ -64,6 +64,7 @@ class Table extends Component
         ];
 
         $users = User::withTrashed()
+            ->where('id', '!=', auth()->id())
             ->with(['roles', 'profile'])
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('username', 'ilike', "%{$this->search}%")
