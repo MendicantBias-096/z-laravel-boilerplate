@@ -1,37 +1,66 @@
+# ── Logs ─────────────────────────────────────────────────────────────────────
 *.log
+
+# ── Sistema operativo ─────────────────────────────────────────────────────────
 .DS_Store
+Thumbs.db
+
+# ── Variables de entorno ──────────────────────────────────────────────────────
 .env
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
+/auth.json
+
+# ── IDEs y editores ───────────────────────────────────────────────────────────
 /.fleet
 /.idea
 /.nova
-/.phpunit.cache
 /.vscode
 /.zed
-/auth.json
+/.phpactor.json
+.history/
+
+# ── PHP / Composer ────────────────────────────────────────────────────────────
+/vendor
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+.phpunit.result.cache
+/.phpunit.cache
+
+# ── Node / Frontend ───────────────────────────────────────────────────────────
 /node_modules
+
+# ── Laravel — assets compilados y storage ────────────────────────────────────
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
 /storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
-Thumbs.db
-/docker
-/sail
+
+# ── Laravel — assets de vendor publicados (se regeneran con vendor:publish) ──
 /public/vendor
 /resources/views/vendor/livewire
 /resources/views/vendor/mail
 /resources/views/vendor/notifications
 /resources/views/vendor/scramble
+
+# ── Laravel Sail — el entorno es DDEV ─────────────────────────────
+/docker
+/sail
+
+# ── Homestead — el entorno es DDEV ────────────────────────────────
+Homestead.json
+Homestead.yaml
+
+# ── Laravel AI / MCP — solo pertenece a la rama feature/ia ───────────────────
 /routes/ai.php
 /resources/views/mcp
+
+# ── Paquetes dev no incluidos en el stack ─────────────────────────────────────
 /config/debugbar.php
-.history/
+
+# ── Claude Code ───────────────────────────────────────────────────────────────
 .claude/
+
+# ── Documentación local (no se versiona) ─────────────────────────────────────
 /docs
