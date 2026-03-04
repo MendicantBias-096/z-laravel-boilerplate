@@ -9,9 +9,13 @@ class UserForm extends Form
 {
     public ?int $id = null;
 
-    public string $name = '';
+    public string $username = '';
 
     public string $email = '';
+
+    public string $first_name = '';
+
+    public string $last_name = '';
 
     public string $password = '';
 
@@ -22,8 +26,10 @@ class UserForm extends Form
     public function rules(): array
     {
         return [
-            'name'                  => ['required', 'string', 'max:255'],
+            'username'              => ['required', 'string', 'max:255', 'alpha_dash', 'unique:users,username,' . ($this->id ?? 'NULL')],
             'email'                 => ['required', 'email', 'max:255', 'unique:users,email,' . ($this->id ?? 'NULL')],
+            'first_name'            => ['required', 'string', 'max:255'],
+            'last_name'             => ['required', 'string', 'max:255'],
             'password'              => $this->id ? ['nullable', 'string', 'min:8', 'confirmed'] : ['required', 'string', 'min:8', 'confirmed'],
             'password_confirmation' => ['nullable', 'string'],
             'role'                  => ['required', 'string', 'exists:roles,name'],
@@ -33,8 +39,8 @@ class UserForm extends Form
     public function store(): User
     {
         $data = [
-            'name'  => $this->name,
-            'email' => $this->email,
+            'username' => $this->username,
+            'email'    => $this->email,
         ];
 
         if ($this->password) {
@@ -42,6 +48,11 @@ class UserForm extends Form
         }
 
         $user = User::updateOrCreate(['id' => $this->id], $data);
+
+        $user->profile()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['first_name' => $this->first_name, 'last_name' => $this->last_name]
+        );
 
         $user->syncRoles([$this->role]);
 
