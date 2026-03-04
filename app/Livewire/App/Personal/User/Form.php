@@ -5,16 +5,20 @@ namespace App\Livewire\App\Personal\User;
 use App\Livewire\Forms\UserForm;
 use App\Models\User;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Form extends Component
 {
-    use Interactions;
+    use Interactions, WithFileUploads;
 
     public ?User $record = null;
 
     public UserForm $form;
+
+    /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null */
+    public $photo = null;
 
     public function mount(): void
     {
@@ -32,11 +36,19 @@ class Form extends Component
 
     public function save(): void
     {
+        $this->validate(['photo' => ['nullable', 'image', 'max:2048']]);
+
         $this->form->validate();
 
         $isEdit = $this->form->id !== null;
 
-        $this->form->store();
+        $user = $this->form->store();
+
+        if ($this->photo) {
+            $user->profile->addMedia($this->photo->getRealPath())
+                ->usingFileName($this->photo->getClientOriginalName())
+                ->toMediaCollection('photo');
+        }
 
         $this->toast()
             ->success('Éxito', $isEdit

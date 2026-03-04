@@ -105,6 +105,11 @@
     --pub-card-border: rgba(255,255,255,0.07);
 }
 
+/* ── Fondo base — evita destellos blancos durante wire:navigate ── */
+html, body {
+    background-color: var(--ui-canvas);
+}
+
 /* ── Exponer como utilidades Tailwind ── */
 @theme inline {
     --color-canvas:         var(--ui-canvas);

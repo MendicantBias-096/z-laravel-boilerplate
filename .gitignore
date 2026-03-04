@@ -22,6 +22,16 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/docker
+/sail
+/public/vendor
+/resources/views/vendor/livewire
+/resources/views/vendor/mail
+/resources/views/vendor/notifications
+/resources/views/vendor/scramble
+/routes/ai.php
+/resources/views/mcp
+/config/debugbar.php
 .history/
 .claude/
 /docs

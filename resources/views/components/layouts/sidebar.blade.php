@@ -38,12 +38,12 @@
             {{-- Dark mode toggle --}}
             <button
                 type="button"
-                @click="toggleDark()"
+                @click="$store.theme.toggle()"
                 class="inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 text-content-subtle hover:bg-panel-alt hover:text-content"
                 title="Cambiar tema"
             >
-                <x-ui.icon name="sun"  class="size-5" x-show="darkMode"  x-cloak />
-                <x-ui.icon name="moon" class="size-5" x-show="!darkMode" />
+                <x-ui.icon name="sun"  class="size-5" x-show="$store.theme?.dark"  x-cloak />
+                <x-ui.icon name="moon" class="size-5" x-show="!$store.theme?.dark" />
             </button>
 
             {{-- Cerrar móvil --}}
