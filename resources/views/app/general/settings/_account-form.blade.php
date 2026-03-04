@@ -1,6 +1,6 @@
 <div>
-    <x-ts-card>
-        <form wire:submit="save">
+    <form wire:submit="save">
+        <x-ts-card>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <x-ts-input
                     label="Usuario"
@@ -23,6 +23,6 @@
                     </x-ts-button>
                 </div>
             </x-slot:footer>
-        </form>
-    </x-ts-card>
+        </x-ts-card>
+    </form>
 </div>

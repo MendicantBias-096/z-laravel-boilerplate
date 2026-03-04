@@ -1,5 +1,5 @@
 @php
-    $user = auth()->user();
+    $user  ??= auth()->user()->load('profile');
     $role = $user->getRoleNames()->first() ?? null;
 @endphp
 
@@ -45,13 +45,20 @@
             <button
                 type="button"
                 @click="open = !open"
-                class="inline-flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-panel-alt focus:outline-none"
+                class="inline-flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-panel-alt focus:outline-none"
             >
-                <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
-                     style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
-
-                    {{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}
-                </div>
+                @if ($user->profile?->photo_url)
+                    <img
+                        src="{{ $user->profile->photo_url }}"
+                        alt="{{ $user->name }}"
+                        class="h-8 w-8 flex-shrink-0 rounded-full object-cover"
+                    >
+                @else
+                    <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
+                         style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
+                        {{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}
+                    </div>
+                @endif
 
                 <div class="hidden text-left sm:block">
                     <p class="text-sm font-semibold leading-tight text-content">{{ $user->name }}</p>
@@ -98,7 +105,7 @@
                 <div class="border-t border-line p-1">
                     <form method="POST" action="/logout">
                         @csrf
-                        <button type="submit" class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-danger hover:bg-danger/10">
+                        <button type="submit" class="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-danger hover:bg-danger/10">
                             <x-ui.icon name="arrow-right-on-rectangle" class="size-4" />
                             Cerrar sesión
                         </button>
