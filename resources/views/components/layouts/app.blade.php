@@ -49,7 +49,7 @@
             @livewire('layouts.navbar')
         @endpersist
 
-        <main id="page-content" class="flex max-w-full flex-auto flex-col overflow-hidden pt-16">
+        <main id="page-content" class="flex max-w-full flex-auto flex-col overflow-hidden pt-16 min-h-0">
             @if ($icon || $title)
                 <div class="flex flex-none items-center gap-3 border-b border-line px-4 py-4 lg:px-8">
                     @if ($icon)
@@ -67,7 +67,7 @@
                 </div>
             @endif
 
-            <div class="flex-1 overflow-y-auto p-4 lg:p-8">
+            <div class="min-h-0 flex-1 overflow-y-auto p-4 lg:p-8">
                 {{ $slot }}
             </div>
         </main>
