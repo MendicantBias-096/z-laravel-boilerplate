@@ -56,8 +56,6 @@ Homestead.yaml
 /routes/ai.php
 /resources/views/mcp
 
-# ── Paquetes dev no incluidos en el stack ─────────────────────────────────────
-/config/debugbar.php
 
 # ── Claude Code ───────────────────────────────────────────────────────────────
 .claude/
