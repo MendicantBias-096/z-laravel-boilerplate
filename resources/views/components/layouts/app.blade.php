@@ -42,16 +42,16 @@
 >
     <div
         id="page-container"
-        class="mx-auto flex min-h-screen w-full min-w-[320px] flex-col bg-canvas text-content transition-all duration-300 ease-out"
+        class="mx-auto flex h-screen w-full min-w-[320px] flex-col overflow-hidden bg-canvas text-content transition-all duration-300 ease-out"
     >
         @persist('shell')
             <x-layouts.sidebar />
             @livewire('layouts.navbar')
         @endpersist
 
-        <main id="page-content" class="flex max-w-full flex-auto flex-col pt-16">
+        <main id="page-content" class="flex max-w-full flex-auto flex-col overflow-hidden pt-16">
             @if ($icon || $title)
-                <div class="sticky top-16 z-30 flex items-center gap-3 border-b border-line bg-canvas px-4 py-4 lg:px-8">
+                <div class="flex flex-none items-center gap-3 border-b border-line px-4 py-4 lg:px-8">
                     @if ($icon)
                         <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 dark:bg-primary-950">
                             <x-ui.icon :name="$icon" class="size-5 text-primary-600 dark:text-primary-400" />
@@ -66,25 +66,28 @@
                     </h1>
                 </div>
             @endif
-            <div class="w-full p-4 lg:p-8">
-                {{ $slot }}
+
+            <div class="flex flex-1 flex-col overflow-y-auto">
+                <div class="w-full flex-1 p-4 lg:p-8">
+                    {{ $slot }}
+                </div>
+
+                <footer class="flex flex-none items-center border-t border-line">
+                    <div class="flex w-full items-center justify-between px-4 py-4 lg:px-8">
+                        <span class="text-sm text-content-subtle">
+                            © {{ date('Y') }} <span class="font-medium text-content-muted">{{ config('app.name') }}</span>
+                        </span>
+                        @if(config('app.developer'))
+                        <span class="text-sm text-content-subtle flex items-center gap-1.5">
+                            Desarrollado con
+                            <x-ui.icon name="heart" class="size-3.5 text-red-500 fill-red-500" />
+                            <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
+                        </span>
+                        @endif
+                    </div>
+                </footer>
             </div>
         </main>
-
-        <footer class="flex flex-none items-center border-t border-line">
-            <div class="flex w-full items-center justify-between px-4 py-4 lg:px-8">
-                <span class="text-sm text-content-subtle">
-                    © {{ date('Y') }} <span class="font-medium text-content-muted">{{ config('app.name') }}</span>
-                </span>
-                @if(config('app.developer'))
-                <span class="text-sm text-content-subtle flex items-center gap-1.5">
-                    Desarrollado con
-                    <x-ui.icon name="heart" class="size-3.5 text-red-500 fill-red-500" />
-                    <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
-                </span>
-                @endif
-            </div>
-        </footer>
     </div>
 
     <x-ts-toast />
