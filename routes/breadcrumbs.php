@@ -4,14 +4,16 @@ use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
-Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
-    $trail->push('Dashboard', route('dashboard'));
+// ── Personal ──────────────────────────────────────────────────────────────
+
+Breadcrumbs::for('personal', function (BreadcrumbTrail $trail) {
+    $trail->push('Personal'); // sin URL — solo etiqueta de dominio
 });
 
 // ── Personal › Usuarios ───────────────────────────────────────────────────
 
 Breadcrumbs::for('personal.usuarios.index', function (BreadcrumbTrail $trail) {
-    $trail->parent('dashboard');
+    $trail->parent('personal');
     $trail->push('Usuarios', route('personal.usuarios.index'));
 });
 
