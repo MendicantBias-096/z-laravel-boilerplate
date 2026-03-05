@@ -58,10 +58,11 @@ document.addEventListener('livewire:navigate', () => {
 
 document.addEventListener('livewire:navigated', () => {
     // Restore scroll position saved before a language change redirect.
+    // setTimeout defers until after Livewire's own scroll-to-top runs.
     const savedY = sessionStorage.getItem('restoreScroll');
     if (savedY !== null) {
-        window.scrollTo({ top: parseInt(savedY), behavior: 'instant' });
         sessionStorage.removeItem('restoreScroll');
+        setTimeout(() => window.scrollTo({ top: parseInt(savedY), behavior: 'instant' }), 0);
     }
 
     const el = document.getElementById('page-content');

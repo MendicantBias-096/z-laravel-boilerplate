@@ -1,5 +1,24 @@
 <div class="space-y-10">
 
+    {{-- ── [TEST SCROLL] Secciones de relleno para probar preservación de scroll ── --}}
+    @foreach (['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon'] as $section)
+    <div class="md:grid md:grid-cols-3 md:gap-8">
+        <div class="md:col-span-1">
+            <h3 class="text-sm font-semibold text-content">Sección {{ $section }}</h3>
+            <p class="mt-1 text-sm text-content-muted">Contenido de prueba para generar scroll.</p>
+        </div>
+        <div class="mt-4 md:col-span-2 md:mt-0">
+            <x-ts-card>
+                <div class="h-24 rounded-lg bg-panel-alt flex items-center justify-center text-content-subtle text-sm">
+                    Placeholder {{ $section }}
+                </div>
+            </x-ts-card>
+        </div>
+    </div>
+    <div class="border-t border-line"></div>
+    @endforeach
+    {{-- ── [/TEST SCROLL] ──────────────────────────────────────────────────── --}}
+
     {{-- ── Sistema ───────────────────────────────────────────────────────── --}}
     @can('administrar sistema')
     <div class="md:grid md:grid-cols-3 md:gap-8">

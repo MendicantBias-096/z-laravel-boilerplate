@@ -49,4 +49,7 @@ return [
     'nav_settings'         => 'Settings',
     'nav_logout'           => 'Log out',
 
+    // Footer
+    'developed_with'       => 'Developed with',
+
 ];
