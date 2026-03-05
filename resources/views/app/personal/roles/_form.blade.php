@@ -18,17 +18,6 @@
                     </div>
                 @endif
 
-                <x-slot:footer>
-                    <div class="flex items-center justify-end gap-3">
-                        <a href="{{ route('personal.roles.index') }}" wire:navigate
-                           class="text-sm text-content-muted hover:text-content">
-                            Cancelar
-                        </a>
-                        <x-ts-button type="submit" wire:loading.attr="disabled" sm>
-                            Guardar
-                        </x-ts-button>
-                    </div>
-                </x-slot:footer>
             </x-ts-card>
 
             {{-- ── Permisos ───────────────────────────────────────────────────── --}}
