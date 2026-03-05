@@ -98,7 +98,7 @@
                 <div class="p-1">
                     <a href="{{ route('settings') }}" wire:navigate class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-content-muted hover:bg-panel-alt hover:text-content">
                         <x-ui.icon name="cog-6-tooth" class="size-4 text-content-subtle" />
-                        Configuración
+                        {{ __('settings.nav_settings') }}
                     </a>
                 </div>
 
@@ -107,7 +107,7 @@
                         @csrf
                         <button type="submit" class="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-danger hover:bg-danger/10">
                             <x-ui.icon name="arrow-right-on-rectangle" class="size-4" />
-                            Cerrar sesión
+                            {{ __('settings.nav_logout') }}
                         </button>
                     </form>
                 </div>

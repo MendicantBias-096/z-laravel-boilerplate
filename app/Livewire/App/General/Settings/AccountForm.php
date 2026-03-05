@@ -36,7 +36,7 @@ class AccountForm extends Component
 
         $this->dispatch('profile-updated');
 
-        $this->toast()->success('Cuenta actualizada', 'Tu usuario y correo han sido guardados.')->send();
+        $this->toast()->success(__('settings.account_updated'), __('settings.account_saved'))->send();
     }
 
     public function render()
