@@ -55,7 +55,7 @@ class ProfileForm extends Component
         $this->toast()->success('Perfil actualizado', 'Tu información personal ha sido guardada.')->flash()->send();
 
         if ($localeChanged) {
-            $this->redirect(request()->url(), navigate: false);
+            $this->redirect(route('settings'), navigate: false);
         }
     }
 
