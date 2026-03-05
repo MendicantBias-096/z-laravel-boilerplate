@@ -10,6 +10,23 @@ Breadcrumbs::for('personal', function (BreadcrumbTrail $trail) {
     $trail->push('Personal'); // sin URL — solo etiqueta de dominio
 });
 
+// ── Personal › Roles ──────────────────────────────────────────────────────
+
+Breadcrumbs::for('personal.roles.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('personal');
+    $trail->push('Roles', route('personal.roles.index'));
+});
+
+Breadcrumbs::for('personal.roles.create', function (BreadcrumbTrail $trail) {
+    $trail->parent('personal.roles.index');
+    $trail->push('Nuevo rol', route('personal.roles.create'));
+});
+
+Breadcrumbs::for('personal.roles.edit', function (BreadcrumbTrail $trail, \Spatie\Permission\Models\Role $role) {
+    $trail->parent('personal.roles.index');
+    $trail->push($role->name, route('personal.roles.edit', $role));
+});
+
 // ── Personal › Usuarios ───────────────────────────────────────────────────
 
 Breadcrumbs::for('personal.usuarios.index', function (BreadcrumbTrail $trail) {
