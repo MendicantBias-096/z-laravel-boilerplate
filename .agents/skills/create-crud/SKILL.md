@@ -22,6 +22,7 @@ Trigger phrases: "crear crud", "nuevo módulo con tabla", "generar módulo", "cr
 - **Never use PowerGrid**. Use `x-ts-table` from TallStackUI with native Livewire state.
 - The `x-ts-table` is used **without** built-in filter/quantity/paginate props — all handled manually.
 - Every floating panel (dropdowns, selects inside tables) must use `x-teleport="#app-root"` + `position:fixed` to escape overflow clipping.
+- **Card footers** (where save/cancel buttons live) have a subtle primary-brand tint applied globally via `AppServiceProvider`. Never override this background manually — just use `<x-slot:footer>` normally.
 
 ---
 

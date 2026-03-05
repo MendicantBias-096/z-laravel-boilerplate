@@ -52,6 +52,8 @@ $icons = [
 
     'rotate-ccw' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v5h5"/>',
 
+    'information-circle' => '<circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8h.01"/>',
+
     // ── Aliases HeroIcons → Lucide ───────────────────────────────────────
     // Permiten seguir usando los nombres HeroIcons en sidebar, navbar y menu.php
 

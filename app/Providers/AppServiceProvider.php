@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         TallStackUi::personalize()
             ->card()
-            ->block('footer.wrapper', 'text-secondary-700 dark:text-dark-300 dark:border-t-dark-600 rounded-lg rounded-t-none border-t border-t-secondary-200 px-4 py-2');
+            ->block('footer.wrapper', 'text-secondary-700 dark:text-dark-300 dark:border-t-dark-600 rounded-lg rounded-t-none border-t border-t-secondary-200 bg-primary-50 dark:bg-primary-950/60 px-4 py-2');
 
     }
 }
