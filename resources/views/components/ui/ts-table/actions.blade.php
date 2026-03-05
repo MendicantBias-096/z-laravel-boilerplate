@@ -5,7 +5,9 @@
     'deletePermission'  => null,
     'restorePermission' => null,
     'model'             => 'registro',
+    'softDeletes'       => true,
 ])
+@php $isTrashed = $softDeletes && method_exists($row, 'trashed') && $row->trashed(); @endphp
 
 <div
     x-data="{
@@ -43,7 +45,7 @@
             class="min-w-[9rem] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg dark:border-dark-600 dark:bg-dark-700"
         >
             {{-- Editar (solo si no está eliminado) --}}
-            @if (! $row->trashed() && $editRoute && $editPermission)
+            @if (! $isTrashed && $editRoute && $editPermission)
                 @can($editPermission)
                     <a
                         href="{{ route($editRoute, $row) }}"
@@ -57,8 +59,8 @@
                 @endcan
             @endif
 
-            {{-- Restaurar (solo si está eliminado) --}}
-            @if ($row->trashed() && $restorePermission)
+            {{-- Restaurar (solo si está eliminado, con soft deletes) --}}
+            @if ($isTrashed && $restorePermission)
                 @can($restorePermission)
                     <button
                         type="button"
@@ -71,8 +73,8 @@
                     </button>
                 @endcan
 
-            {{-- Eliminar (solo si no está eliminado) --}}
-            @elseif (! $row->trashed() && $deletePermission)
+            {{-- Eliminar --}}
+            @elseif (! $isTrashed && $deletePermission)
                 @can($deletePermission)
                     <button
                         type="button"

@@ -40,6 +40,12 @@ return [
                     'active_route' => 'personal.usuarios.*',
                     'permission'   => 'ver usuarios',
                 ],
+                [
+                    'label'        => 'Roles y permisos',
+                    'route'        => 'personal.roles.index',
+                    'active_route' => 'personal.roles.*',
+                    'permission'   => 'ver roles',
+                ],
             ],
         ],
 

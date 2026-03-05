@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('personal')->name('personal.')->group(function () {
+
+    // ── Roles ─────────────────────────────────────────────────────────────
+    Route::prefix('roles')->name('roles.')->group(function () {
+
+        Route::middleware('permission:ver roles')
+            ->get('/', fn () => view('app.personal.roles.index'))
+            ->name('index');
+
+        Route::middleware('permission:crear roles')
+            ->get('/create', fn () => view('app.personal.roles.create'))
+            ->name('create');
+
+        Route::middleware('permission:editar roles')
+            ->get('/{role}/edit', fn (Role $role) => view('app.personal.roles.edit', ['role' => $role]))
+            ->name('edit');
+    });
 
     // ── Usuarios ──────────────────────────────────────────────────────────
     Route::prefix('usuarios')->name('usuarios.')->group(function () {
