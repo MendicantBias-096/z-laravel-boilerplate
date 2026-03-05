@@ -49,10 +49,8 @@
         id="page-container"
         class="mx-auto flex min-h-screen w-full min-w-[320px] flex-col bg-canvas text-content transition-all duration-300 ease-out"
     >
-        @persist('shell')
-            <x-layouts.sidebar />
-            @livewire('layouts.navbar')
-        @endpersist
+        <x-layouts.sidebar />
+        @livewire('layouts.navbar')
 
         {{-- Page subheader: fijo debajo del navbar --}}
         @if ($icon || $title)
@@ -94,7 +92,7 @@
                 </span>
                 @if(config('app.developer'))
                 <span class="text-sm text-content-subtle flex items-center gap-1.5">
-                    Desarrollado con
+                    {{ __('settings.developed_with') }}
                     <x-ui.icon name="heart" class="size-3.5 text-red-500 fill-red-500" />
                     <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
                 </span>

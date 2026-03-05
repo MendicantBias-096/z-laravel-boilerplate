@@ -49,4 +49,7 @@ return [
     'nav_settings'         => 'Configuración',
     'nav_logout'           => 'Cerrar sesión',
 
+    // Footer
+    'developed_with'       => 'Desarrollado con',
+
 ];
