@@ -1,16 +1,14 @@
 <div>
     <form wire:submit="save" x-on:submit="sessionStorage.setItem('restoreScroll', window.scrollY)">
         <x-ts-card>
-            <x-ts-select.native
+            <x-ts-select.styled
                 label="{{ __('settings.language_label') }}"
-                wire:model="locale"
-                :options="[
-                    ['label' => 'Español', 'value' => 'es'],
-                    ['label' => 'English', 'value' => 'en'],
-                ]"
+                wire:model.live="locale"
+                :options="$languages"
                 option-label="label"
                 option-value="value"
                 hint="{{ __('settings.language_hint') }}"
+                searchable
             />
 
             <x-slot:footer>

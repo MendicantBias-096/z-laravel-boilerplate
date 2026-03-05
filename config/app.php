@@ -83,7 +83,7 @@ return [
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'es'),
 
-    'supported_locales' => ['es', 'en'],
+    'supported_locales' => \App\Enums\Language::values(),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'es_ES'),
 
