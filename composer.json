@@ -15,21 +15,21 @@
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.32",
         "livewire/livewire": "^4.0",
-        "power-components/livewire-powergrid": "^6.9",
         "sentry/sentry-laravel": "^4.20",
         "spatie/laravel-medialibrary": "^11.21",
         "spatie/laravel-permission": "^7.2",
         "tallstackui/tallstackui": "^2.0.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^4.0",
         "fakerphp/faker": "^1.23",
         "laravel/boost": "*",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
-        "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "phpunit/phpunit": "^11.5.3",
+        "zidbih/laravel-deadlock": "^0.3.0"
     },
     "autoload": {
         "psr-4": {

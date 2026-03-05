@@ -43,7 +43,6 @@ Activate the relevant skill whenever you work in that domain — don't wait unti
 ## Documentation Files
 
 - Only create documentation files if explicitly requested.
-- Project docs live in `docs/` — read them before asking questions.
 
 ## Replies
 
@@ -156,7 +155,7 @@ routes/{domain}.php
 |---|---|---|
 | General | `/` | `routes/general.php` |
 
-Read `docs/modulos.md` for full instructions on creating new domains and modules.
+Use the `create-module` skill for full instructions on creating new domains and modules.
 
 === crud generation ===
 
@@ -170,7 +169,7 @@ Before generating anything, ask for:
 - Fields (name and type)
 - Spanish name (singular and plural)
 
-Read `docs/crud.md` for the complete step-by-step generation guide adapted to this boilerplate.
+Use the `create-crud` skill for the complete step-by-step generation guide adapted to this boilerplate.
 
 === livewire/core rules ===
 
@@ -214,7 +213,8 @@ TallStackUI provides pre-built Blade components for this project. Use them befor
 - `x-ts-input` — text inputs with label and error display
 - `x-ts-card` — content cards with optional header/footer slots
 - `x-ts-button` — buttons with loading states
-- `x-ts-select` — select dropdowns
+- `x-ts-select.styled` — select con búsqueda y opciones array
+- `x-ts-select.native` — select HTML nativo
 - `x-ts-modal` — modal dialogs
 - `x-ts-toast` — toast notifications (via `$this->toast()->success(...)`)
 - `x-ts-badge` — status badges

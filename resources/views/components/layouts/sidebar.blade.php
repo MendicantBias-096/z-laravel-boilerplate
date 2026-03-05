@@ -1,6 +1,6 @@
 {{-- Overlay móvil --}}
 <div
-    x-show="mobileSidebarOpen"
+    x-show="$store.sidebar?.mobileOpen"
     x-cloak
     x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="opacity-0"
@@ -8,7 +8,7 @@
     x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    @click="mobileSidebarOpen = false"
+    @click="$store.sidebar.mobileOpen = false"
     class="fixed inset-0 z-40 bg-gray-950/60 lg:hidden"
 ></div>
 
@@ -16,40 +16,57 @@
     id="page-sidebar"
     class="fixed start-0 top-0 bottom-0 z-50 flex h-full w-64 flex-col border-r border-line bg-panel transition-transform duration-300 ease-out"
     x-bind:class="{
-        'ltr:-translate-x-full': !mobileSidebarOpen,
-        'ltr:translate-x-0':     mobileSidebarOpen,
-        'lg:ltr:-translate-x-full': !desktopSidebarOpen,
-        'lg:ltr:translate-x-0':     desktopSidebarOpen,
+        'ltr:-translate-x-full': !$store.sidebar?.mobileOpen,
+        'ltr:translate-x-0':      $store.sidebar?.mobileOpen,
+        'lg:ltr:-translate-x-full': !$store.sidebar?.desktopOpen,
+        'lg:ltr:translate-x-0':      $store.sidebar?.desktopOpen,
     }"
     aria-label="Navegación principal"
 >
     {{-- Header --}}
-    <div class="flex h-16 flex-none items-center justify-between border-b border-line px-5">
-        <a href="{{ route('dashboard') }}" wire:navigate class="group inline-flex items-center gap-2.5 font-semibold text-content hover:opacity-80 transition-opacity">
-            <div class="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
-                 style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);
-                        box-shadow: 0 0 14px rgba(245,48,3,0.45);">
-                <x-ui.icon name="bolt" class="size-4 text-white" />
-            </div>
-            <span>{{ config('app.name') }}</span>
+    @php
+        $sidebarLogoPath = \App\Models\Setting::get('logo_path');
+        $sidebarLogoUrl  = $sidebarLogoPath ? Storage::disk('public')->url($sidebarLogoPath) : null;
+        $sidebarName     = \App\Models\Setting::get('app_short_name') ?: \App\Models\Setting::get('app_name', config('app.name'));
+    @endphp
+    <div
+        class="flex h-16 flex-none items-center justify-between border-b border-line px-5"
+        x-data="{
+            logoUrl: {{ $sidebarLogoUrl ? "'" . $sidebarLogoUrl . "'" : 'null' }},
+            name:    '{{ addslashes($sidebarName) }}'
+        }"
+        @system-updated.window="logoUrl = $event.detail.logoUrl; name = $event.detail.name"
+    >
+        <a href="{{ route('dashboard') }}" wire:navigate class="group inline-flex min-w-0 items-center gap-2.5 font-semibold text-content hover:opacity-80 transition-opacity">
+            <template x-if="logoUrl">
+                <img :src="logoUrl" alt="Logo" class="h-8 w-8 shrink-0 rounded-lg object-cover">
+            </template>
+            <template x-if="!logoUrl">
+                <div class="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+                     style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);
+                            box-shadow: 0 0 14px rgba(245,48,3,0.45);">
+                    <x-ui.icon name="bolt" class="size-4 text-white" />
+                </div>
+            </template>
+            <span class="truncate" x-text="name"></span>
         </a>
 
         <div class="flex items-center gap-1">
             {{-- Dark mode toggle --}}
             <button
                 type="button"
-                @click="toggleDark()"
+                @click="$store.theme.toggle()"
                 class="inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 text-content-subtle hover:bg-panel-alt hover:text-content"
                 title="Cambiar tema"
             >
-                <x-ui.icon name="sun"  class="size-5" x-show="darkMode"  x-cloak />
-                <x-ui.icon name="moon" class="size-5" x-show="!darkMode" />
+                <x-ui.icon name="sun"  class="size-5" x-show="$store.theme?.dark"  x-cloak />
+                <x-ui.icon name="moon" class="size-5" x-show="!$store.theme?.dark" />
             </button>
 
             {{-- Cerrar móvil --}}
             <button
                 type="button"
-                @click="mobileSidebarOpen = false"
+                @click="$store.sidebar.mobileOpen = false"
                 class="inline-flex items-center justify-center rounded-md p-1.5 text-content-subtle hover:bg-danger/10 hover:text-danger lg:hidden"
             >
                 <x-ui.icon name="x-mark" class="size-5" />

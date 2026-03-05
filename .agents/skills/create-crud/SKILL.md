@@ -12,6 +12,20 @@ Trigger phrases: "crear crud", "nuevo módulo con tabla", "generar módulo", "cr
 
 ---
 
+## Hard rules — never break these
+
+- **SoftDeletes is mandatory** on every model. Always add `use SoftDeletes` and `$table->softDeletes()`.
+- **Never use `forceDelete`**. No button, route, or method should call `forceDelete()`.
+- The Table always includes trashed records (`withTrashed()`) and shows Restaurar for them.
+- The only way to permanently remove a record is via a manual DB operation outside the app.
+- Tables are **native Livewire components** — no PowerGrid or external table library.
+- **Never use PowerGrid**. Use `x-ts-table` from TallStackUI with native Livewire state.
+- The `x-ts-table` is used **without** built-in filter/quantity/paginate props — all handled manually.
+- Every floating panel (dropdowns, selects inside tables) must use `x-teleport="#app-root"` + `position:fixed` to escape overflow clipping.
+- **Card footers** (where save/cancel buttons live) have a subtle primary-brand tint applied globally via `AppServiceProvider`. Never override this background manually — just use `<x-slot:footer>` normally.
+
+---
+
 ## Required variables — ask if missing
 
 | Variable | Description | Example |
@@ -22,10 +36,12 @@ Trigger phrases: "crear crud", "nuevo módulo con tabla", "generar módulo", "cr
 | `{model-slug}` | kebab-case plural (URLs) | `products` |
 | `{Domain}` | PascalCase domain | `General` |
 | `{domain}` | lowercase domain | `general` |
-| `{model_es}` | Spanish singular | `producto` |
+| `{Domain_es}` | Spanish domain name capitalized | `Personal` |
+| `{model_es}` | Spanish plural (used in permissions) | `productos` |
 | `{Model_es}` | Spanish singular capitalized | `Producto` |
 | `{models_es}` | Spanish plural | `productos` |
 | `{Models_es}` | Spanish plural capitalized | `Productos` |
+| `{icon}` | Lucide icon name for the module | `package` |
 | `{Fields}` | Fields with types | `name string, price decimal` |
 
 ---
@@ -40,7 +56,7 @@ Create a task list before writing any file. Mark each step as completed.
 4. Factory
 5. Livewire Form object
 6. Livewire Form component
-7. Livewire PowerGrid Table
+7. Livewire Table component (native)
 8. Routes
 9. Views (5 files)
 10. Breadcrumbs
@@ -55,12 +71,9 @@ Create a task list before writing any file. Mark each step as completed.
 ```bash
 ddev exec php artisan make:model {Model} -mf
 ddev exec php artisan livewire:form {Model}Form
-ddev exec php artisan livewire:make App/{Domain}/{Model}/Form
-ddev exec php artisan powergrid:create {Model}/Table --model={Model}
+ddev exec php artisan livewire:make App/{Domain}/{Model}/Form --no-view
+ddev exec php artisan livewire:make App/{Domain}/{Model}/Table --no-view
 ```
-
-Move the PowerGrid generated file from `app/Livewire/{Model}/Table.php`
-to `app/Livewire/App/{Domain}/{Model}/Table.php` and fix its namespace.
 
 ---
 
@@ -230,7 +243,10 @@ class Form extends Component
 
 ---
 
-## Step 7 — PowerGrid Table `app/Livewire/App/{Domain}/{Model}/Table.php`
+## Step 7 — Livewire Table component `app/Livewire/App/{Domain}/{Model}/Table.php`
+
+The table uses native Livewire state for search, sort, quantity, and filters.
+Add filter properties only for the fields the module requires.
 
 ```php
 <?php
@@ -238,86 +254,72 @@ class Form extends Component
 namespace App\Livewire\App\{Domain}\{Model};
 
 use App\Models\{Model};
-use Illuminate\Database\Eloquent\Builder;
-use Livewire\Attributes\On;
-use PowerComponents\LivewirePowerGrid\Button;
-use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\PowerGridFields;
+use App\Traits\Livewire\HasSoftDeletes;
+use Livewire\Component;
+use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
 
-final class Table extends PowerGridComponent
+class Table extends Component
 {
-    use Interactions;
+    use Interactions, WithPagination, HasSoftDeletes;
 
-    public string $tableName = '{model-slug}-table';
+    protected string $modelClass = {Model}::class;
+    protected string $deletePermission = 'eliminar {model_es}';
+    protected string $restorePermission = 'restaurar {model_es}';
+    protected string $modelLabel = '{Model_es}';
 
-    public function setUp(): array
+    public string $search = '';
+    // Add filter properties as needed:
+    // public string $filterName = '';
+
+    public int $quantity = 25;
+
+    public array $sort = ['column' => 'name', 'direction' => 'asc'];
+
+    public function updatingSearch(): void
     {
-        return [
-            Header::make()
-                ->showSearchInput()
-                ->includeViewOnTop('app.{domain}.{model-slug}._toolbar'),
-            Footer::make()
-                ->showPerPage(25, [25, 50, 100])
-                ->showRecordCount(),
+        $this->resetPage();
+    }
+
+    public function updatingQuantity(): void
+    {
+        $this->resetPage();
+    }
+
+    // Add updatingFilter* methods for each filter:
+    // public function updatingFilterName(): void { $this->resetPage(); }
+
+    public function clearFilters(): void
+    {
+        // $this->reset('filterName');
+        $this->resetPage();
+    }
+
+    public function render()
+    {
+        $headers = [
+            ['index' => 'name',   'label' => 'Nombre'],
+            ['index' => 'status', 'label' => 'Estado',   'sortable' => false],
+            ['index' => 'action', 'label' => 'Acciones', 'sortable' => false],
         ];
-    }
 
-    public function datasource(): Builder
-    {
-        return {Model}::query()->withTrashed();
-    }
+        ${models} = {Model}::withTrashed()
+            ->when($this->search, fn ($q) => $q->where(function ($q) {
+                $q->where('name', 'ilike', "%{$this->search}%");
+            }))
+            // ->when($this->filterName, fn ($q) => $q->where('name', 'ilike', "%{$this->filterName}%"))
+            ->orderBy($this->sort['column'], $this->sort['direction'])
+            ->paginate($this->quantity);
 
-    public function fields(): PowerGridFields
-    {
-        return PowerGrid::fields()
-            ->add('id')
-            ->add('name')
-            ->add('deleted_at');
-    }
+        ${models}->getCollection()->transform(function ({Model} $item) {
+            $item->status = $item->trashed() ? 'Eliminado' : 'Activo';
+            return $item;
+        });
 
-    public function columns(): array
-    {
-        return [
-            Column::make('ID', 'id')->sortable()->hidden(),
-            Column::make('Nombre', 'name')->searchable()->sortable(),
-            Column::action('Acciones'),
-        ];
-    }
+        // Pass filter option arrays as needed:
+        // $options = SomeModel::orderBy('name')->pluck('name', 'name')->toArray();
 
-    public function actions({Model} $row): array
-    {
-        return [
-            Button::add('edit')
-                ->slot('Editar')
-                ->route('{domain}.{model-slug}.edit', ['{model}' => $row->id])
-                ->can(auth()->user()?->can('editar {model_es}'))
-                ->class('pg-btn-white dark:ring-pg-primary-600'),
-
-            Button::add('destroy')
-                ->slot($row->trashed() ? 'Restaurar' : 'Eliminar')
-                ->dispatch($row->trashed() ? 'restore' : 'softDelete', ['id' => $row->id])
-                ->can(auth()->user()?->can($row->trashed() ? 'restaurar {model_es}' : 'eliminar {model_es}'))
-                ->class('pg-btn-white dark:ring-pg-primary-600'),
-        ];
-    }
-
-    #[On('softDelete')]
-    public function softDelete(int $id): void
-    {
-        {Model}::find($id)?->delete();
-        $this->notification()->success('Éxito', '{Model_es} eliminado correctamente.');
-    }
-
-    #[On('restore')]
-    public function restore(int $id): void
-    {
-        {Model}::withTrashed()->find($id)?->restore();
-        $this->notification()->success('Éxito', '{Model_es} restaurado correctamente.');
+        return view('app.{domain}.{model-slug}._index', compact('headers', '{models}'));
     }
 }
 ```
@@ -354,36 +356,39 @@ Route::prefix('{model-slug}')->name('{model-slug}.')->group(function () {
 
 ## Step 9 — Views (5 files)
 
-### `resources/views/app/{domain}/{model-slug}/index.blade.php`
+### Wrapper views
+
+All wrappers pass `icon`, `parent` (domain label), and `title` to the layout.
+
+#### `resources/views/app/{domain}/{model-slug}/index.blade.php`
 ```blade
-<x-layouts.app>
+<x-layouts.app icon="{icon}" parent="{Domain_es}" title="{Models_es}">
+    {{ Breadcrumbs::render('{domain}.{model-slug}.index') }}
     @livewire('app.{domain}.{model-slug}.table')
 </x-layouts.app>
 ```
 
-### `resources/views/app/{domain}/{model-slug}/create.blade.php`
+#### `resources/views/app/{domain}/{model-slug}/create.blade.php`
 ```blade
-<x-layouts.app>
+<x-layouts.app icon="{icon}" parent="{Domain_es}" title="Nuevo {model_es}">
+    {{ Breadcrumbs::render('{domain}.{model-slug}.create') }}
     @livewire('app.{domain}.{model-slug}.form')
 </x-layouts.app>
 ```
 
-### `resources/views/app/{domain}/{model-slug}/edit.blade.php`
+#### `resources/views/app/{domain}/{model-slug}/edit.blade.php`
 ```blade
-<x-layouts.app>
+<x-layouts.app icon="{icon}" parent="{Domain_es}" title="Editar {model_es}">
+    {{ Breadcrumbs::render('{domain}.{model-slug}.edit', ${model}) }}
     @livewire('app.{domain}.{model-slug}.form', ['record' => ${model}])
 </x-layouts.app>
 ```
 
+---
+
 ### `resources/views/app/{domain}/{model-slug}/_form.blade.php`
 ```blade
 <div>
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-content">
-            {{ $record ? 'Editar {model_es}' : 'Nuevo {model_es}' }}
-        </h1>
-    </div>
-
     <form wire:submit="save">
         <x-ts-card>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -412,43 +417,250 @@ Route::prefix('{model-slug}')->name('{model-slug}.')->group(function () {
 </div>
 ```
 
-### `resources/views/app/{domain}/{model-slug}/_toolbar.blade.php`
+---
+
+### `resources/views/app/{domain}/{model-slug}/_index.blade.php`
+
+This is the main table view. It follows this layout:
+1. **Top bar**: search input | filter toggle button | spacer | action buttons
+2. **Filter panel**: collapsible, with header showing active filter count + limpiar button
+3. **Table**: `x-ts-table` without built-in filter/quantity/paginate
+4. **Footer**: quantity selector (left) + paginator (right)
+
 ```blade
-<div>
-    @can('crear {model_es}')
-        <a href="{{ route('{domain}.{model-slug}.create') }}" wire:navigate
-           class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
-           style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
-            <x-ui.icon name="plus" class="size-4" />
-            Nuevo {model_es}
-        </a>
-    @endcan
+<div x-data="{ showFilters: false }">
+
+    {{-- ── Barra superior ──────────────────────────────────────────────── --}}
+    <div class="mb-3 flex items-center gap-2">
+
+        {{-- Búsqueda --}}
+        <div class="relative w-64">
+            <x-ui.icon name="search"
+                class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-content-subtle" />
+            <input
+                wire:model.live.debounce.400ms="search"
+                type="search"
+                placeholder="Buscar..."
+                class="w-full rounded-lg border border-line bg-panel py-2 pl-9 pr-4 text-sm text-content placeholder-content-subtle focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-panel"
+            />
+        </div>
+
+        {{-- Botón filtros (mostrar solo si hay filtros definidos) --}}
+        <button
+            type="button"
+            @click="showFilters = !showFilters"
+            :class="showFilters || @js($filterName)
+                ? 'border-primary-500 bg-primary-50 text-primary-600 dark:bg-primary-950 dark:text-primary-400'
+                : 'border-line bg-panel text-content-muted hover:bg-panel-alt hover:text-content dark:bg-panel'"
+            class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition-colors"
+        >
+            <x-ui.icon name="sliders-horizontal" class="size-4" />
+            Filtros
+            @if ($filterName)
+                <span class="flex size-2 rounded-full bg-primary-500"></span>
+            @endif
+        </button>
+
+        {{-- Separador --}}
+        <div class="flex-1"></div>
+
+        {{-- Botón nueva acción --}}
+        @can('crear {model_es}')
+            <a href="{{ route('{domain}.{model-slug}.create') }}" wire:navigate
+               class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
+               style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
+                <x-ui.icon name="plus" class="size-4" />
+                Nuevo {model_es}
+            </a>
+        @endcan
+    </div>
+
+    {{-- ── Panel de filtros ────────────────────────────────────────────── --}}
+    <div
+        x-show="showFilters"
+        x-transition:enter="transition ease-out duration-150"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-100"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+        x-cloak
+        class="mb-4 overflow-hidden rounded-lg border border-line bg-panel shadow-sm"
+    >
+        {{-- Cabecera del panel --}}
+        <div class="flex items-center justify-between border-b border-line bg-panel-alt px-4 py-2.5">
+            <div class="flex items-center gap-2 text-sm font-medium text-content-muted">
+                <x-ui.icon name="sliders-horizontal" class="size-3.5" />
+                Filtros
+            </div>
+            @php $activeCount = (int) (bool) $filterName; @endphp
+            @if ($activeCount)
+                <span class="inline-flex items-center rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-primary-950 dark:text-primary-300">
+                    {{ $activeCount }} {{ Str::plural('activo', $activeCount) }}
+                </span>
+            @endif
+        </div>
+
+        {{-- Campos --}}
+        <div class="flex flex-wrap items-end gap-3 p-4">
+
+            <x-ui.ts-table.filter-input
+                label="Nombre"
+                icon="search"
+                wire:model.live.debounce.400ms="filterName"
+                placeholder="Filtrar por nombre..."
+            />
+
+            {{-- Para filtros de selección (ej: estado, rol, categoría): --}}
+            {{-- <x-ui.ts-table.filter-select
+                label="Estado"
+                wire:model.live="filterStatus"
+                placeholder="Todos"
+                :options="$statusOptions"
+            /> --}}
+
+            @if ($filterName)
+                <div class="group relative self-end">
+                    <button
+                        type="button"
+                        wire:click="clearFilters"
+                        class="flex cursor-pointer items-center justify-center rounded-md border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:border-red-300 hover:bg-red-100 dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:border-red-700 dark:hover:bg-red-900"
+                    >
+                        <x-ui.icon name="rotate-ccw" class="size-3.5" />
+                    </button>
+                    <div class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:bg-dark-600">
+                        Limpiar filtros
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- ── Tabla ────────────────────────────────────────────────────────── --}}
+    <x-ts-table
+        :headers="$headers"
+        :rows="${models}"
+        :sort="$sort"
+        striped
+    >
+        @interact('column_status', $row)
+            @if ($row->trashed())
+                <x-ts-badge text="Eliminado" color="red" />
+            @else
+                <x-ts-badge text="Activo" color="green" />
+            @endif
+        @endinteract
+
+        @interact('column_action', $row)
+            <x-ui.ts-table.actions
+                :row="$row"
+                edit-route="{domain}.{model-slug}.edit"
+                edit-permission="editar {model_es}"
+                delete-permission="eliminar {model_es}"
+                restore-permission="restaurar {model_es}"
+                model="{model_es}"
+            />
+        @endinteract
+    </x-ts-table>
+
+    {{-- ── Footer: conteo + paginador ──────────────────────────────────── --}}
+    @if (${models}->total() > 0)
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+
+            {{-- Selector de cantidad --}}
+            <div class="flex items-center gap-1.5 text-sm text-content-muted">
+                Mostrando
+                <select
+                    wire:model.live="quantity"
+                    class="rounded-md border border-line bg-panel px-2 py-1 text-sm text-content focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                resultados de {{ ${models}->total() }}
+            </div>
+
+            {{-- Paginador --}}
+            @if (${models}->hasPages())
+                {{ ${models}->links('tallstack-ui::components.table.paginators') }}
+            @endif
+
+        </div>
+    @endif
+
 </div>
 ```
 
 ---
 
-## Step 10 — Breadcrumbs in `routes/breadcrumbs.php`
+## Filter components reference
 
-If the file doesn't exist, create it with the base dashboard entry first:
+These reusable components live in `resources/views/components/ui/ts-table/`.
 
-```php
-<?php
+### `x-ui.ts-table.filter-input`
 
-use Diglactic\Breadcrumbs\Breadcrumbs;
-use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
+Text filter with optional leading icon.
 
-Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
-    $trail->push('Dashboard', route('dashboard'));
-});
+```blade
+<x-ui.ts-table.filter-input
+    label="Correo"
+    icon="search"
+    wire:model.live.debounce.400ms="filterEmail"
+    placeholder="Filtrar por correo..."
+/>
 ```
 
-Then add the module entries:
+Props: `label`, `placeholder` (default `''`), `icon` (optional, Lucide name).
+
+### `x-ui.ts-table.filter-select`
+
+Custom select with search, teleported panel (escapes overflow), and `$wire.entangle` binding.
+
+```blade
+<x-ui.ts-table.filter-select
+    label="Rol"
+    wire:model.live="filterRole"
+    placeholder="Todos los roles"
+    :options="$roles"
+/>
+```
+
+Props: `label`, `placeholder` (default `'Todos'`), `options` (associative array `[value => label]`).
+
+The `options` array is typically built in the Livewire component:
+```php
+$roles = Role::orderBy('name')->pluck('name', 'name')->toArray();
+```
+
+### `x-ui.ts-table.actions`
+
+Dropdown action menu (edit / restore / delete) with dialog confirmation, teleported panel.
+
+```blade
+<x-ui.ts-table.actions
+    :row="$row"
+    edit-route="{domain}.{model-slug}.edit"
+    edit-permission="editar {model_es}"
+    delete-permission="eliminar {model_es}"
+    restore-permission="restaurar {model_es}"
+    model="{model_es}"
+/>
+```
+
+The Livewire Table component must use `HasSoftDeletes` trait which provides `softDelete()`, `restore()`, `confirmDelete()`, and `confirmRestore()`.
+
+---
+
+## Step 10 — Breadcrumbs in `routes/breadcrumbs.php`
+
+The domain level is a **non-linked label** (no route). `dashboard` is NOT a parent for domain modules.
 
 ```php
 // {models_es}
 Breadcrumbs::for('{domain}.{model-slug}.index', function (BreadcrumbTrail $trail) {
-    $trail->parent('dashboard');
+    $trail->push('{Domain_es}');
     $trail->push('{Models_es}', route('{domain}.{model-slug}.index'));
 });
 
@@ -457,19 +669,19 @@ Breadcrumbs::for('{domain}.{model-slug}.create', function (BreadcrumbTrail $trai
     $trail->push('Nuevo {model_es}', route('{domain}.{model-slug}.create'));
 });
 
-Breadcrumbs::for('{domain}.{model-slug}.edit', function (BreadcrumbTrail $trail, ${model}) {
+Breadcrumbs::for('{domain}.{model-slug}.edit', function (BreadcrumbTrail $trail, {Model} ${model}) {
     $trail->parent('{domain}.{model-slug}.index');
     $trail->push(${model}->name, route('{domain}.{model-slug}.edit', ${model}));
 });
 ```
 
-If `routes/breadcrumbs.php` is new, register it in `bootstrap/app.php` inside `then`:
+If `routes/breadcrumbs.php` does not exist yet, create it:
 
 ```php
-then: function () {
-    require base_path('routes/breadcrumbs.php');
-    // ... other route files
-},
+<?php
+
+use Diglactic\Breadcrumbs\Breadcrumbs;
+use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 ```
 
 ---
@@ -479,6 +691,7 @@ then: function () {
 ```php
 [
     'label'        => '{Models_es}',
+    'icon'         => '{icon}',
     'route'        => '{domain}.{model-slug}.index',
     'active_route' => '{domain}.{model-slug}.*',
     'permission'   => 'ver {model_es}',
@@ -489,17 +702,19 @@ then: function () {
 
 ## Step 12 — Permissions
 
-List the permissions that must be seeded or registered:
+Add to `config/roles.php` under `permissions`:
 
-```
-ver {model_es}
-crear {model_es}
-editar {model_es}
-eliminar {model_es}
-restaurar {model_es}
+```php
+'{model_es}' => [
+    'ver {model_es}',
+    'crear {model_es}',
+    'editar {model_es}',
+    'eliminar {model_es}',
+    'restaurar {model_es}',
+],
 ```
 
-Inform the user they need to seed these permissions before the routes become accessible.
+Then seed: `ddev exec php artisan db:seed --class=RolesAndPermissionsSeeder`
 
 ---
 
@@ -512,10 +727,12 @@ feat: CRUD {Models_es}
 - Migración tabla `{models}` con campos: {Fields}
 - Form object `{Model}Form` con validación y updateOrCreate
 - Componente `Form` (create/edit) con toast de confirmación
-- Tabla PowerGrid `Table` con búsqueda, sort, soft delete y restore
-- Vistas: index, create, edit (wrappers) + _form, _toolbar (componentes)
+- Tabla nativa Livewire `Table` con búsqueda, filtros, sort, paginación, soft delete y restore
+- Vistas: index, create, edit (wrappers con icon/parent/title) + _form, _index
+- Panel de filtros colapsable con filter-input y filter-select
+- Footer con selector de cantidad y paginador TallStackUI
 - Rutas protegidas por permiso en routes/{domain}.php
-- Breadcrumbs para el flujo completo
+- Breadcrumbs con dominio como etiqueta no enlazada
 - Entrada en config/menu.php
 - Permisos: ver, crear, editar, eliminar, restaurar {model_es}
 ```

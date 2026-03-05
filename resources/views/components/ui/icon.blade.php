@@ -40,6 +40,20 @@ $icons = [
 
     'heart' => '<path stroke-linecap="round" stroke-linejoin="round" d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
 
+    'plus'             => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14"/>',
+    'ellipsis-vertical'   => '<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',
+    'search'              => '<circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35"/>',
+    'check'               => '<path stroke-linecap="round" stroke-linejoin="round" d="M20 6 9 17l-5-5"/>',
+    'sliders-horizontal'  => '<line stroke-linecap="round" x1="21" x2="14" y1="4" y2="4"/><line stroke-linecap="round" x1="10" x2="3" y1="4" y2="4"/><line stroke-linecap="round" x1="21" x2="12" y1="12" y2="12"/><line stroke-linecap="round" x1="8" x2="3" y1="12" y2="12"/><line stroke-linecap="round" x1="21" x2="16" y1="20" y2="20"/><line stroke-linecap="round" x1="12" x2="3" y1="20" y2="20"/><circle cx="12" cy="4" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="20" r="2"/>',
+
+    'pencil'     => '<path stroke-linecap="round" stroke-linejoin="round" d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>',
+
+    'trash-2'    => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 11v6M14 11v6"/>',
+
+    'rotate-ccw' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v5h5"/>',
+
+    'information-circle' => '<circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8h.01"/>',
+
     // ── Aliases HeroIcons → Lucide ───────────────────────────────────────
     // Permiten seguir usando los nombres HeroIcons en sidebar, navbar y menu.php
 

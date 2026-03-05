@@ -23,9 +23,30 @@ return [
      */
     'menu' => [
         [
-            'label' => 'Dashboard',
+            'label' => 'menu.dashboard',
             'icon'  => 'home',
             'route' => 'dashboard',
+        ],
+
+        // ── Personal ──────────────────────────────────────────────────────
+        [
+            'label'        => 'menu.personal',
+            'icon'         => 'users',
+            'active_route' => 'personal.*',
+            'items'        => [
+                [
+                    'label'        => 'menu.users',
+                    'route'        => 'personal.usuarios.index',
+                    'active_route' => 'personal.usuarios.*',
+                    'permission'   => 'ver usuarios',
+                ],
+                [
+                    'label'        => 'menu.roles',
+                    'route'        => 'personal.roles.index',
+                    'active_route' => 'personal.roles.*',
+                    'permission'   => 'ver roles',
+                ],
+            ],
         ],
 
         // ── Operaciones ──────────────────────────────────────────────────

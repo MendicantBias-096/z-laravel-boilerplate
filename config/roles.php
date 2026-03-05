@@ -27,6 +27,8 @@ return [
     'roles_modules' => [
         'admin' => [
             'usuarios',
+            'roles',
+            'sistema',
         ],
         'user' => [],
     ],
@@ -46,20 +48,34 @@ return [
             'crear usuarios',
             'editar usuarios',
             'eliminar usuarios',
+            'restaurar usuarios',
         ],
 
-        /*
-         |----------------------------------------------------------------------
-         | Módulos adicionales (descomentar según necesidad)
-         |----------------------------------------------------------------------
-         */
+        'roles' => [
+            'ver roles',
+            'crear roles',
+            'editar roles',
+            'eliminar roles',
+        ],
 
-        // 'roles' => [
-        //     'ver roles',
-        //     'crear roles',
-        //     'editar roles',
-        //     'eliminar roles',
-        // ],
+        'sistema' => [
+            'administrar sistema',
+        ],
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Grupos de módulos
+     |--------------------------------------------------------------------------
+     |
+     | Agrupa módulos bajo una sección visual en el formulario de roles.
+     | Los módulos que no estén en ningún grupo aparecen en "Otros".
+     |
+     */
+    'module_groups' => [
+        'personal'      => ['usuarios', 'roles'],
+        'configuracion' => ['sistema'],
+    ],
+
 
 ];
