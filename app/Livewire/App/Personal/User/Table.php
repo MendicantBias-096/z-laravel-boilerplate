@@ -6,21 +6,19 @@ use App\Models\User;
 use App\Traits\Livewire\HasSoftDeletes;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Spatie\Permission\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Table extends Component
 {
     use Interactions, WithPagination, HasSoftDeletes;
 
-    protected string $modelClass = User::class;
+    protected string $modelClass       = User::class;
     protected string $deletePermission = 'eliminar usuarios';
     protected string $restorePermission = 'restaurar usuarios';
-    protected string $modelLabel = 'Usuario';
+    protected string $modelLabel       = 'Usuario';
 
-    public string $search = '';
+    public string $search      = '';
     public string $filterEmail = '';
-    public string $filterRole = '';
 
     public int $quantity = 25;
 
@@ -41,32 +39,29 @@ class Table extends Component
         $this->resetPage();
     }
 
-    public function updatingFilterRole(): void
-    {
-        $this->resetPage();
-    }
-
     public function clearFilters(): void
     {
-        $this->reset('filterEmail', 'filterRole');
+        $this->reset('filterEmail');
         $this->resetPage();
     }
 
     public function render()
     {
         $headers = [
-            ['index' => 'photo',    'label' => '',        'sortable' => false],
-            ['index' => 'username', 'label' => 'Usuario'],
-            ['index' => 'name',     'label' => 'Nombre', 'sortable' => false],
-            ['index' => 'email',    'label' => 'Correo'],
-            ['index' => 'role',   'label' => 'Rol', 'sortable' => false],
-            ['index' => 'status', 'label' => 'Estado', 'sortable' => false],
-            ['index' => 'action', 'label' => 'Acciones', 'sortable' => false],
+            ['index' => 'photo',       'label' => '',          'sortable' => false],
+            ['index' => 'username',    'label' => 'Usuario'],
+            ['index' => 'name',        'label' => 'Nombre',    'sortable' => false],
+            ['index' => 'email',       'label' => 'Correo'],
+            ['index' => 'role',        'label' => 'Rol',        'sortable' => false],
+            ['index' => 'permissions', 'label' => 'Permisos',  'sortable' => false],
+            ['index' => 'status',      'label' => 'Estado',    'sortable' => false],
+            ['index' => 'action',      'label' => 'Acciones',  'sortable' => false],
         ];
 
         $users = User::withTrashed()
             ->where('id', '!=', auth()->id())
             ->with(['roles', 'profile.media'])
+            ->withCount('permissions')
             ->when($this->search, fn ($q) => $q->where(function ($q) {
                 $q->where('username', 'ilike', "%{$this->search}%")
                   ->orWhere('email', 'ilike', "%{$this->search}%")
@@ -76,19 +71,16 @@ class Table extends Component
                   );
             }))
             ->when($this->filterEmail, fn ($q) => $q->where('email', 'ilike', "%{$this->filterEmail}%"))
-            ->when($this->filterRole, fn ($q) => $q->whereHas('roles', fn ($q) => $q->where('name', $this->filterRole)))
             ->orderBy($this->sort['column'], $this->sort['direction'])
             ->paginate($this->quantity);
 
         $users->getCollection()->transform(function (User $user) {
-            $user->role   = ucfirst($user->roles->first()?->name ?? '—');
+            $user->role   = $user->roles->first()?->display_name ?? $user->roles->first()?->name ?? '—';
             $user->status = $user->trashed() ? 'Eliminado' : 'Activo';
 
             return $user;
         });
 
-        $roles = Role::orderBy('name')->pluck('name', 'name')->toArray();
-
-        return view('app.personal.users._index', compact('headers', 'users', 'roles'));
+        return view('app.personal.users._index', compact('headers', 'users'));
     }
 }

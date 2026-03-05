@@ -19,14 +19,14 @@
         <button
             type="button"
             @click="showFilters = !showFilters"
-            :class="showFilters || @js($filterEmail || $filterRole)
+            :class="showFilters || @js($filterEmail)
                 ? 'border-primary-500 bg-primary-50 text-primary-600 dark:bg-primary-950 dark:text-primary-400'
                 : 'border-line bg-panel text-content-muted hover:bg-panel-alt hover:text-content dark:bg-panel'"
             class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition-colors"
         >
             <x-ui.icon name="sliders-horizontal" class="size-4" />
             Filtros
-            @if ($filterEmail || $filterRole)
+            @if ($filterEmail)
                 <span class="flex size-2 rounded-full bg-primary-500"></span>
             @endif
         </button>
@@ -63,7 +63,7 @@
                 <x-ui.icon name="sliders-horizontal" class="size-3.5" />
                 Filtros
             </div>
-            @php $activeCount = (int) (bool) $filterEmail + (int) (bool) $filterRole; @endphp
+            @php $activeCount = (int) (bool) $filterEmail; @endphp
             @if ($activeCount)
                 <span class="inline-flex items-center rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-primary-950 dark:text-primary-300">
                     {{ $activeCount }} {{ Str::plural('activo', $activeCount) }}
@@ -80,14 +80,7 @@
                 placeholder="Filtrar por correo..."
             />
 
-            <x-ui.ts-table.filter-select
-                label="Rol"
-                wire:model.live="filterRole"
-                placeholder="Todos los roles"
-                :options="$roles"
-            />
-
-            @if ($filterEmail || $filterRole)
+            @if ($filterEmail)
                 <div class="group relative self-end">
                     <button
                         type="button"
@@ -128,6 +121,10 @@
                     </div>
                 @endif
             </div>
+        @endinteract
+
+        @interact('column_permissions', $row)
+            <x-ts-badge :text="$row->permissions_count . ' ' . Str::plural('permiso', $row->permissions_count)" color="blue" />
         @endinteract
 
         @interact('column_status', $row)

@@ -32,7 +32,7 @@ class UserForm extends Form
             'last_name'             => ['required', 'string', 'max:255'],
             'password'              => $this->id ? ['nullable', 'string', 'min:8', 'confirmed'] : ['required', 'string', 'min:8', 'confirmed'],
             'password_confirmation' => ['nullable', 'string'],
-            'role'                  => ['required', 'string', 'exists:roles,name'],
+            'role'                  => ['nullable', 'string', 'exists:roles,name'],
         ];
     }
 
@@ -54,7 +54,7 @@ class UserForm extends Form
             ['first_name' => $this->first_name, 'last_name' => $this->last_name]
         );
 
-        $user->syncRoles([$this->role]);
+        $user->syncRoles($this->role ? [$this->role] : []);
 
         return $user;
     }
