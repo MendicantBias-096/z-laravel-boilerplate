@@ -38,7 +38,22 @@
             <span class="text-sm">{{ config('app.name') }}</span>
         </a>
 
-        {{-- Derecha: usuario --}}
+        {{-- Derecha: idioma + usuario --}}
+        <div class="flex items-center gap-2">
+
+        {{-- Selector de idioma --}}
+        @php $currentLocale = app()->getLocale(); @endphp
+        <div class="flex items-center rounded-lg border border-line bg-panel overflow-hidden">
+            <a href="{{ route('locale.switch', 'es') }}"
+               class="inline-flex items-center justify-center w-8 h-8 text-xs font-semibold transition-colors {{ $currentLocale === 'es' ? 'bg-panel-alt text-content' : 'text-content-subtle hover:text-content' }}"
+               title="Español">ES</a>
+            <div class="w-px h-4 bg-line"></div>
+            <a href="{{ route('locale.switch', 'en') }}"
+               class="inline-flex items-center justify-center w-8 h-8 text-xs font-semibold transition-colors {{ $currentLocale === 'en' ? 'bg-panel-alt text-content' : 'text-content-subtle hover:text-content' }}"
+               title="English">EN</a>
+        </div>
+
+        {{-- Dropdown usuario --}}
         <div class="relative" x-data="{ open: false }">
 
             {{-- Trigger --}}
@@ -113,5 +128,7 @@
                 </div>
             </div>
         </div>
+
+        </div>{{-- /Derecha: idioma + usuario --}}
     </div>
 </header>
