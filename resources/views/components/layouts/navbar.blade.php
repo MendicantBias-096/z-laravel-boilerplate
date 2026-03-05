@@ -13,7 +13,7 @@
         <div class="flex items-center gap-2">
             <button
                 type="button"
-                @click="mobileSidebarOpen = true"
+                @click="$store.sidebar.mobileOpen = true"
                 class="inline-flex cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:hidden"
             >
                 <x-ui.icon name="bars-3" class="size-5" />
@@ -21,7 +21,7 @@
 
             <button
                 type="button"
-                @click="desktopSidebarOpen = !desktopSidebarOpen"
+                @click="$store.sidebar.desktopOpen = !$store.sidebar.desktopOpen"
                 class="hidden cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:inline-flex"
             >
                 <x-ui.icon name="bars-3" class="size-5" />

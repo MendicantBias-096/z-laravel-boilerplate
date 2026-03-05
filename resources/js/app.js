@@ -26,6 +26,11 @@ document.addEventListener('alpine:init', () => {
             applyDark(this.dark);
         },
     });
+
+    Alpine.store('sidebar', {
+        desktopOpen: true,
+        mobileOpen: false,
+    });
 });
 
 // MutationObserver: re-applies dark class the instant morphdom removes it from <html>.

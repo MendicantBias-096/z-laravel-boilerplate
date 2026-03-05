@@ -27,6 +27,7 @@ return [
     'roles_modules' => [
         'admin' => [
             'usuarios',
+            'sistema',
         ],
         'user' => [],
     ],
@@ -47,6 +48,10 @@ return [
             'editar usuarios',
             'eliminar usuarios',
             'restaurar usuarios',
+        ],
+
+        'sistema' => [
+            'administrar sistema',
         ],
 
         /*
