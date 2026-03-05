@@ -51,7 +51,7 @@
                     wire:model="last_name"
                     placeholder="Ej. García"
                 />
-                <x-ts-select.styled
+                <x-ts-select.native
                     label="Idioma del sistema"
                     wire:model="locale"
                     :options="[
