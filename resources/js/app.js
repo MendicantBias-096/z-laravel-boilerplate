@@ -57,6 +57,13 @@ document.addEventListener('livewire:navigate', () => {
 });
 
 document.addEventListener('livewire:navigated', () => {
+    // Restore scroll position saved before a language change redirect.
+    const savedY = sessionStorage.getItem('restoreScroll');
+    if (savedY !== null) {
+        window.scrollTo({ top: parseInt(savedY), behavior: 'instant' });
+        sessionStorage.removeItem('restoreScroll');
+    }
+
     const el = document.getElementById('page-content');
     if (el) {
         requestAnimationFrame(() => {
