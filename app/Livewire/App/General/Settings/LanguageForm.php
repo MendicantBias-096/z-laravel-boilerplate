@@ -32,7 +32,7 @@ class LanguageForm extends Component
             ->flash()
             ->send();
 
-        $this->redirect(route('settings'), navigate: false);
+        $this->redirect(route('settings'), navigate: true);
     }
 
     public function render()
