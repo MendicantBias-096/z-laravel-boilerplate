@@ -24,7 +24,7 @@ class PasswordForm extends Component
 
         $this->reset('current_password', 'password', 'password_confirmation');
 
-        $this->toast()->success('Contraseña actualizada', 'Tu contraseña ha sido cambiada correctamente.')->send();
+        $this->toast()->success(__('settings.password_updated'), __('settings.password_saved'))->send();
     }
 
     public function render()

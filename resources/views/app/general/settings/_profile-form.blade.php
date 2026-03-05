@@ -7,13 +7,13 @@
                     @if ($photo)
                         <img
                             src="{{ $photo->temporaryUrl() }}"
-                            alt="Vista previa"
+                            alt="{{ __('settings.profile_photo') }}"
                             class="h-20 w-20 rounded-full object-cover ring-2 ring-line"
                         >
                     @elseif (auth()->user()->profile?->photo_url)
                         <img
                             src="{{ auth()->user()->profile->photo_url }}"
-                            alt="Foto de perfil"
+                            alt="{{ __('settings.profile_photo') }}"
                             class="h-20 w-20 rounded-full object-cover ring-2 ring-line"
                         >
                     @else
@@ -27,7 +27,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-content mb-1">Foto de perfil</label>
+                    <label class="block text-sm font-medium text-content mb-1">{{ __('settings.profile_photo') }}</label>
                     <input
                         type="file"
                         wire:model="photo"
@@ -42,32 +42,19 @@
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <x-ts-input
-                    label="Nombre"
+                    label="{{ __('settings.first_name') }}"
                     wire:model="first_name"
-                    placeholder="Ej. Juan"
                 />
                 <x-ts-input
-                    label="Apellido"
+                    label="{{ __('settings.last_name') }}"
                     wire:model="last_name"
-                    placeholder="Ej. García"
-                />
-                <x-ts-select.native
-                    label="Idioma del sistema"
-                    wire:model="locale"
-                    :options="[
-                        ['label' => 'Español', 'value' => 'es'],
-                        ['label' => 'English', 'value' => 'en'],
-                    ]"
-                    option-label="label"
-                    option-value="value"
-                    hint="Se aplica en todo el sistema al iniciar sesión."
                 />
             </div>
 
             <x-slot:footer>
                 <div class="flex justify-end">
                     <x-ts-button type="submit" wire:loading.attr="disabled" sm>
-                        Guardar cambios
+                        {{ __('settings.save_changes') }}
                     </x-ts-button>
                 </div>
             </x-slot:footer>

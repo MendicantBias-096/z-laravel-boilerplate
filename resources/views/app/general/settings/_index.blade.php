@@ -4,8 +4,8 @@
     @can('administrar sistema')
     <div class="md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">Sistema</h3>
-            <p class="mt-1 text-sm text-content-muted">Nombre e identidad visual de la aplicación.</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.system') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.system_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
             @livewire('app.general.settings.system-form')
@@ -17,8 +17,8 @@
     {{-- ── Perfil ────────────────────────────────────────────────────────── --}}
     <div class="md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">Perfil</h3>
-            <p class="mt-1 text-sm text-content-muted">Tu nombre visible para otros usuarios del sistema.</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.profile') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.profile_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
             @livewire('app.general.settings.profile-form')
@@ -28,8 +28,8 @@
     {{-- ── Cuenta ────────────────────────────────────────────────────────── --}}
     <div class="md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">Cuenta</h3>
-            <p class="mt-1 text-sm text-content-muted">Tu nombre de usuario y correo electrónico de acceso.</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.account') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.account_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
             @livewire('app.general.settings.account-form')
@@ -39,11 +39,22 @@
     {{-- ── Seguridad ─────────────────────────────────────────────────────── --}}
     <div class="md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">Seguridad</h3>
-            <p class="mt-1 text-sm text-content-muted">Actualiza tu contraseña para mantener tu cuenta segura.</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.security') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.security_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
             @livewire('app.general.settings.password-form')
+        </div>
+    </div>
+
+    {{-- ── Idioma ────────────────────────────────────────────────────────── --}}
+    <div class="md:grid md:grid-cols-3 md:gap-8">
+        <div class="md:col-span-1">
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.language') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.language_desc') }}</p>
+        </div>
+        <div class="mt-4 md:col-span-2 md:mt-0">
+            @livewire('app.general.settings.language-form')
         </div>
     </div>
 
@@ -52,8 +63,8 @@
     {{-- ── Mis permisos ──────────────────────────────────────────────────── --}}
     <div class="md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">Mis permisos</h3>
-            <p class="mt-1 text-sm text-content-muted">Accesos que tienes asignados en el sistema.</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.permissions') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.permissions_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
             @php
