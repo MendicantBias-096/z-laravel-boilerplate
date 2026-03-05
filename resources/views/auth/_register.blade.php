@@ -1,8 +1,8 @@
 <div>
     {{-- Header --}}
     <div class="mb-7 text-center">
-        <h1 class="text-2xl font-bold mb-1.5" style="color: var(--ui-content);">Crear cuenta</h1>
-        <p class="text-sm" style="color: var(--ui-content-muted);">Completa los datos para registrarte</p>
+        <h1 class="text-2xl font-bold mb-1.5" style="color: var(--ui-content);">{{ __('public.register_title') }}</h1>
+        <p class="text-sm" style="color: var(--ui-content-muted);">{{ __('public.register_subtitle') }}</p>
     </div>
 
     <form wire:submit="register" class="flex flex-col gap-4" novalidate>
@@ -10,8 +10,8 @@
         {{-- Nombre --}}
         <x-ui.auth-input
             wire:model="name"
-            label="Nombre completo"
-            placeholder="Tu nombre"
+            label="{{ __('public.full_name') }}"
+            placeholder="{{ __('public.full_name_hint') }}"
             autocomplete="name"
         />
 
@@ -19,7 +19,7 @@
         <x-ui.auth-input
             wire:model="email"
             type="email"
-            label="Email"
+            label="{{ __('public.email') }}"
             placeholder="tu@email.com"
             autocomplete="email"
         />
@@ -27,16 +27,16 @@
         {{-- Password --}}
         <x-ui.auth-password
             wire:model="password"
-            label="Contraseña"
-            placeholder="Mínimo 8 caracteres"
+            label="{{ __('public.password') }}"
+            placeholder="{{ __('public.password_hint') }}"
             autocomplete="new-password"
         />
 
         {{-- Confirm Password --}}
         <x-ui.auth-password
             wire:model="password_confirmation"
-            label="Confirmar contraseña"
-            placeholder="Repite tu contraseña"
+            label="{{ __('public.confirm_password') }}"
+            placeholder="{{ __('public.confirm_hint') }}"
             autocomplete="new-password"
         />
 
@@ -51,12 +51,12 @@
                 onmouseout="this.style.boxShadow='0 4px 20px rgba(245,48,3,0.35)';this.style.transform='translateY(0)';">
             <span wire:loading.class="opacity-0 -translate-y-2"
                   class="absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out">
-                Crear cuenta
+                {{ __('public.register_button') }}
             </span>
             <span wire:loading.class.remove="opacity-0 translate-y-2"
                   class="absolute inset-0 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out opacity-0 translate-y-2">
                 <x-ui.icon name="loader-circle" class="w-4 h-4 animate-spin" />
-                Registrando...
+                {{ __('public.registering') }}
             </span>
         </button>
 
@@ -65,7 +65,7 @@
     {{-- Divider --}}
     <div class="flex items-center gap-3 my-6">
         <div class="flex-1 h-px" style="background: var(--auth-divider);"></div>
-        <span class="text-xs" style="color: var(--ui-content-subtle);">¿Ya tienes cuenta?</span>
+        <span class="text-xs" style="color: var(--ui-content-subtle);">{{ __('public.have_account') }}</span>
         <div class="flex-1 h-px" style="background: var(--auth-divider);"></div>
     </div>
 
@@ -76,6 +76,6 @@
        style="color: var(--ui-content-muted); background: var(--auth-link-bg); border: 1px solid var(--auth-link-border);"
        onmouseover="this.style.background='var(--auth-link-bg-hover)';this.style.borderColor='var(--auth-link-border-hover)';this.style.color='var(--ui-content)';"
        onmouseout="this.style.background='var(--auth-link-bg)';this.style.borderColor='var(--auth-link-border)';this.style.color='var(--ui-content-muted)';">
-        Iniciar sesión
+        {{ __('public.login_link') }}
     </a>
 </div>

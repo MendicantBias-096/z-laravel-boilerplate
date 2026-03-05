@@ -24,6 +24,10 @@ health: '/up',
         $middleware->redirectGuestsTo('/login');
         $middleware->statefulApi();
 
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
+
         $middleware->alias([
             'abilities'          => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
             'ability'            => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,

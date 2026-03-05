@@ -13,6 +13,16 @@ Route::prefix('')->name('public.')->group(function () {
     Route::get('/nosotros', fn () => view('public.about.index'))->name('about');
 });
 
+Route::get('/locale/{locale}', function (string $locale) {
+    $supported = config('app.supported_locales', ['es', 'en']);
+
+    if (in_array($locale, $supported)) {
+        session(['locale' => $locale]);
+    }
+
+    return redirect()->back();
+})->name('locale.switch');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', fn () => view('auth.login'))->name('login');
     Route::get('/register', fn () => view('auth.register'))->name('register');
