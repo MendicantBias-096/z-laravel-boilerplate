@@ -51,16 +51,16 @@
                     wire:model="last_name"
                     placeholder="Ej. García"
                 />
-                <x-ts-select.native
-                    label="Idioma"
+                <x-ts-select.styled
+                    label="Idioma del sistema"
                     wire:model="locale"
-                    hint="Afecta el idioma de las vistas públicas (login, registro)."
                     :options="[
                         ['label' => 'Español', 'value' => 'es'],
                         ['label' => 'English', 'value' => 'en'],
                     ]"
                     option-label="label"
                     option-value="value"
+                    hint="Se aplica en todo el sistema al iniciar sesión."
                 />
             </div>
 
