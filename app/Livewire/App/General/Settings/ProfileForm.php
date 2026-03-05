@@ -35,6 +35,8 @@ class ProfileForm extends Component
             'photo'      => ['nullable', 'image', 'max:2048'],
         ]);
 
+        $localeChanged = auth()->user()->profile?->locale !== $this->locale;
+
         $profile = auth()->user()->profile()->updateOrCreate(
             ['user_id' => auth()->id()],
             ['first_name' => $this->first_name, 'last_name' => $this->last_name, 'locale' => $this->locale]
@@ -50,7 +52,11 @@ class ProfileForm extends Component
 
         $this->dispatch('profile-updated');
 
-        $this->toast()->success('Perfil actualizado', 'Tu información personal ha sido guardada.')->send();
+        $this->toast()->success('Perfil actualizado', 'Tu información personal ha sido guardada.')->flash()->send();
+
+        if ($localeChanged) {
+            $this->redirect(request()->url(), navigate: false);
+        }
     }
 
     public function render()
