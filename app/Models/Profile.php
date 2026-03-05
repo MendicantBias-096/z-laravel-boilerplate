@@ -21,6 +21,7 @@ class Profile extends Model implements HasMedia
         'user_id',
         'first_name',
         'last_name',
+        'locale',
     ];
 
     public function user(): BelongsTo

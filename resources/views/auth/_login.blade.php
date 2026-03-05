@@ -1,8 +1,8 @@
 <div>
     {{-- Header --}}
     <div class="mb-7 text-center">
-        <h1 class="text-2xl font-bold mb-1.5" style="color: var(--ui-content);">Bienvenido de vuelta</h1>
-        <p class="text-sm" style="color: var(--ui-content-muted);">Ingresa tus credenciales para continuar</p>
+        <h1 class="text-2xl font-bold mb-1.5" style="color: var(--ui-content);">{{ __('public.welcome_back') }}</h1>
+        <p class="text-sm" style="color: var(--ui-content-muted);">{{ __('public.login_subtitle') }}</p>
     </div>
 
     <form wire:submit="login" class="flex flex-col gap-4" novalidate>
@@ -11,7 +11,7 @@
         <x-ui.auth-input
             wire:model="email"
             type="email"
-            label="Email"
+            label="{{ __('public.email') }}"
             placeholder="tu@email.com"
             autocomplete="email"
         />
@@ -19,7 +19,7 @@
         {{-- Password con show/hide y link "olvidé" --}}
         <x-ui.auth-password
             wire:model="password"
-            label="Contraseña"
+            label="{{ __('public.password') }}"
             placeholder="••••••••"
             autocomplete="current-password"
         >
@@ -28,7 +28,7 @@
                    style="color:rgba(245,48,3,0.8);"
                    onmouseover="this.style.color='#f53003';"
                    onmouseout="this.style.color='rgba(245,48,3,0.8)';">
-                    ¿Olvidaste tu contraseña?
+                    {{ __('public.forgot_password') }}
                 </a>
             </x-slot:hint>
         </x-ui.auth-password>
@@ -47,7 +47,7 @@
                     </svg>
                 </div>
             </div>
-            <span class="text-xs" style="color: var(--ui-content-muted);">Mantener sesión iniciada</span>
+            <span class="text-xs" style="color: var(--ui-content-muted);">{{ __('public.remember_me') }}</span>
         </label>
 
         {{-- Submit --}}
@@ -61,12 +61,12 @@
                 onmouseout="this.style.boxShadow='0 4px 20px rgba(245,48,3,0.35)';this.style.transform='translateY(0)';">
             <span wire:loading.class="opacity-0 -translate-y-2"
                   class="absolute inset-0 flex items-center justify-center transition-all duration-200 ease-in-out">
-                Iniciar sesión
+                {{ __('public.login_button') }}
             </span>
             <span wire:loading.class.remove="opacity-0 translate-y-2"
                   class="absolute inset-0 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out opacity-0 translate-y-2">
                 <x-ui.icon name="loader-circle" class="w-4 h-4 animate-spin" />
-                Verificando...
+                {{ __('public.verifying') }}
             </span>
         </button>
 
@@ -75,7 +75,7 @@
     {{-- Divider --}}
     <div class="flex items-center gap-3 my-6">
         <div class="flex-1 h-px" style="background: var(--auth-divider);"></div>
-        <span class="text-xs" style="color: var(--ui-content-subtle);">¿No tienes cuenta?</span>
+        <span class="text-xs" style="color: var(--ui-content-subtle);">{{ __('public.no_account') }}</span>
         <div class="flex-1 h-px" style="background: var(--auth-divider);"></div>
     </div>
 
@@ -86,6 +86,6 @@
        style="color: var(--ui-content-muted); background: var(--auth-link-bg); border: 1px solid var(--auth-link-border);"
        onmouseover="this.style.background='var(--auth-link-bg-hover)';this.style.borderColor='var(--auth-link-border-hover)';this.style.color='var(--ui-content)';"
        onmouseout="this.style.background='var(--auth-link-bg)';this.style.borderColor='var(--auth-link-border)';this.style.color='var(--ui-content-muted)';">
-        Crear cuenta nueva
+        {{ __('public.create_account') }}
     </a>
 </div>
