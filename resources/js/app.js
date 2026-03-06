@@ -17,6 +17,16 @@ function applyDark(isDark) {
     document.cookie = 'darkMode=' + isDark + ';path=/;max-age=31536000;SameSite=Lax';
 }
 
+// Global toggle — usable from cualquier layout (onclick="toggleTheme()")
+window.toggleTheme = function () {
+    const store = window.Alpine?.store('theme');
+    if (store) {
+        store.toggle();
+    } else {
+        applyDark(!resolveDark());
+    }
+};
+
 // Global Alpine store — survives wire:navigate morphdom re-inits.
 document.addEventListener('alpine:init', () => {
     Alpine.store('theme', {
