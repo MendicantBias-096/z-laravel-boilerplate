@@ -3,12 +3,19 @@
 namespace App\Livewire\Auth;
 
 use App\Actions\Fortify\CreateNewUser;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Register extends Component
 {
+    #[Validate('required|string|max:255')]
+    public string $first_name = '';
+
+    #[Validate('required|string|max:255')]
+    public string $last_name = '';
+
     #[Validate('required|string|max:255|unique:users,username')]
     public string $username = '';
 
@@ -26,15 +33,23 @@ class Register extends Component
         $this->validate();
 
         $user = $creator->create([
+            'first_name'            => $this->first_name,
+            'last_name'             => $this->last_name,
             'username'              => $this->username,
             'email'                 => $this->email,
             'password'              => $this->password,
             'password_confirmation' => $this->password_confirmation,
         ]);
 
+        event(new Registered($user));
+
         Auth::login($user);
 
-        $this->redirectRoute('dashboard', navigate: true);
+        if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+            $this->redirectRoute('verification.notice', navigate: true);
+        } else {
+            $this->redirectRoute('dashboard', navigate: true);
+        }
     }
 
     public function render()

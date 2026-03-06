@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Models\Profile;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -21,19 +22,29 @@ class CreateNewUser implements CreatesNewUsers
     public function create(array $input): User
     {
         Validator::make($input, [
-            'username' => ['required', 'string', 'max:255', Rule::unique(User::class)],
-            'email'    => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
-            'password' => $this->passwordRules(),
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name'  => ['required', 'string', 'max:255'],
+            'username'   => ['required', 'string', 'max:255', Rule::unique(User::class)],
+            'email'      => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'password'   => $this->passwordRules(),
         ])->validate();
 
-        $user = User::create([
-            'username' => $input['username'],
-            'email'    => $input['email'],
-            'password' => Hash::make($input['password']),
-        ]);
+        return DB::transaction(function () use ($input) {
+            $user = User::create([
+                'username' => $input['username'],
+                'email'    => $input['email'],
+                'password' => Hash::make($input['password']),
+            ]);
 
-        Profile::create(['user_id' => $user->id]);
+            Profile::create([
+                'user_id'    => $user->id,
+                'first_name' => $input['first_name'],
+                'last_name'  => $input['last_name'],
+            ]);
 
-        return $user;
+            $user->assignRole('user');
+
+            return $user;
+        });
     }
 }
