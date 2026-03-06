@@ -15,7 +15,7 @@
                 <div>
                     <p class="text-sm text-content-muted">Rol</p>
                     <p class="text-lg font-semibold text-content">
-                        {{ auth()->user()->getRoleNames()->first() ?? '—' }}
+                        {{ auth()->user()->roles->first()?->display_name ?? '—' }}
                     </p>
                 </div>
             </div>
