@@ -21,8 +21,15 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         // Crear roles y asignarles los permisos de sus módulos
-        foreach (config('roles.roles') as $roleName) {
-            $role = Role::firstOrCreate(['name' => $roleName]);
+        foreach (config('roles.roles') as $roleName => $displayName) {
+            $role = Role::firstOrCreate(
+                ['name' => $roleName],
+                ['display_name' => $displayName],
+            );
+
+            if (! $role->wasRecentlyCreated && $role->display_name !== $displayName) {
+                $role->update(['display_name' => $displayName]);
+            }
 
             $modules = config("roles.roles_modules.{$roleName}", []);
 

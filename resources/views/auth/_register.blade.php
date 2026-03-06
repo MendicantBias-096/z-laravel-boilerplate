@@ -7,12 +7,12 @@
 
     <form wire:submit="register" class="flex flex-col gap-4" novalidate>
 
-        {{-- Nombre --}}
+        {{-- Nombre de usuario --}}
         <x-ui.auth-input
-            wire:model="name"
+            wire:model="username"
             label="{{ __('public.full_name') }}"
             placeholder="{{ __('public.full_name_hint') }}"
-            autocomplete="name"
+            autocomplete="username"
         />
 
         {{-- Email --}}
@@ -55,7 +55,7 @@
             </span>
             <span wire:loading.class.remove="opacity-0 translate-y-2"
                   class="absolute inset-0 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out opacity-0 translate-y-2">
-                <x-ui.icon name="loader-circle" class="w-4 h-4 animate-spin" />
+                @svg('lucide-loader-circle', 'w-4 h-4 animate-spin')
                 {{ __('public.registering') }}
             </span>
         </button>

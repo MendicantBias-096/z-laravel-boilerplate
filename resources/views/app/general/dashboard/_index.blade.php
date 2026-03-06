@@ -10,7 +10,7 @@
         <div class="rounded-lg border border-line bg-panel p-6">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-950/50">
-                    <x-ui.icon name="users" class="size-6 text-primary-600 dark:text-primary-400" />
+                    @svg('lucide-users', 'size-6 text-primary-600 dark:text-primary-400')
                 </div>
                 <div>
                     <p class="text-sm text-content-muted">Rol</p>
@@ -24,7 +24,7 @@
         <div class="rounded-lg border border-line bg-panel p-6">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-success/10">
-                    <x-ui.icon name="shield-check" class="size-6 text-success" />
+                    @svg('lucide-shield-check', 'size-6 text-success')
                 </div>
                 <div>
                     <p class="text-sm text-content-muted">Permisos</p>
@@ -38,7 +38,7 @@
         <div class="rounded-lg border border-line bg-panel p-6">
             <div class="flex items-center gap-4">
                 <div class="flex h-12 w-12 items-center justify-center rounded-lg bg-warning/10">
-                    <x-ui.icon name="bell" class="size-6 text-warning" />
+                    @svg('lucide-bell', 'size-6 text-warning')
                 </div>
                 <div>
                     <p class="text-sm text-content-muted">Entorno</p>

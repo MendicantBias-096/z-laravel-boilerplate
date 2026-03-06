@@ -60,7 +60,7 @@
                             >
                         @else
                             <div class="flex h-16 w-16 items-center justify-center rounded-xl border-2 border-dashed border-line bg-panel-alt">
-                                <x-ui.icon name="link" class="size-6 text-content-subtle" />
+                                @svg('lucide-link', 'size-6 text-content-subtle')
                             </div>
                         @endif
                     </div>
@@ -98,7 +98,7 @@
             {{-- Nota técnica sutil --}}
             <details class="mt-4 group">
                 <summary class="flex cursor-pointer items-center gap-1.5 text-xs text-content-subtle select-none hover:text-content-muted transition-colors">
-                    <x-ui.icon name="information-circle" class="size-3.5 shrink-0" />
+                    @svg('lucide-info', 'size-3.5 shrink-0')
                     ¿El nombre no aparece en la pestaña del navegador?
                 </summary>
                 <p class="mt-2 text-xs text-content-subtle leading-relaxed pl-5">

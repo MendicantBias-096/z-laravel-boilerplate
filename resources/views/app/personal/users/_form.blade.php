@@ -109,7 +109,7 @@
                                     wire:click="restorePermissions"
                                     class="flex cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-1.5 text-content-muted transition-colors hover:border-primary-400 hover:text-primary-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
                                 >
-                                    <x-ui.icon name="rotate-ccw" class="size-3.5" />
+                                    @svg('lucide-rotate-ccw', 'size-3.5')
                                 </button>
                                 <div class="pointer-events-none absolute right-0 top-full mt-2 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:bg-dark-600 z-10">
                                     Restaurar permisos originales
@@ -149,7 +149,7 @@
                                                     'border-line bg-panel' => !$allSelected,
                                                 ])>
                                                     @if ($allSelected)
-                                                        <x-ui.icon name="check" class="size-2 text-white" />
+                                                        @svg('lucide-check', 'size-2 text-white')
                                                     @endif
                                                 </span>
                                                 <span class="text-xs font-semibold tracking-wide text-primary-600 dark:text-primary-400">
@@ -187,7 +187,7 @@
                                                         />
                                                         <span class="absolute inset-0 rounded border border-line bg-panel transition-colors peer-checked:border-primary-500 peer-checked:bg-primary-500"></span>
                                                         <span class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity peer-checked:opacity-100">
-                                                            <x-ui.icon name="check" class="size-2 text-white" />
+                                                            @svg('lucide-check', 'size-2 text-white')
                                                         </span>
                                                     </span>
                                                     <span class="text-xs font-semibold text-content-muted leading-tight line-clamp-2">{{ $permLabel }}</span>

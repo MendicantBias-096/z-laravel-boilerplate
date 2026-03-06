@@ -4,8 +4,7 @@
     <label class="text-xs font-medium text-content-muted">{{ $label }}</label>
     <div class="relative">
         @if ($icon)
-            <x-ui.icon :name="$icon"
-                class="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-content-subtle" />
+            @svg($icon, 'pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-content-subtle')
         @endif
         <input
             {{ $attributes->merge(['type' => 'text']) }}

@@ -60,7 +60,7 @@
             >
                 @if ($icon)
                     <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 dark:bg-primary-950" style="margin-left: 2rem;">
-                        <x-ui.icon :name="$icon" class="size-5 text-primary-600 dark:text-primary-400" />
+                        @svg($icon, 'size-5 text-primary-600 dark:text-primary-400')
                     </div>
                 @endif
                 <h1 class="text-lg font-semibold text-content">
@@ -93,7 +93,7 @@
                 @if(config('app.developer'))
                 <span class="text-sm text-content-subtle flex items-center gap-1.5">
                     {{ __('settings.developed_with') }}
-                    <x-ui.icon name="heart" class="size-3.5 text-red-500 fill-red-500" />
+                    @svg('lucide-heart', 'size-3.5 text-red-500 fill-red-500')
                     <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
                 </span>
                 @endif

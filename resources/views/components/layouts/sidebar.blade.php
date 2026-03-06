@@ -45,7 +45,7 @@
                 <div class="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
                      style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);
                             box-shadow: 0 0 14px rgba(245,48,3,0.45);">
-                    <x-ui.icon name="bolt" class="size-4 text-white" />
+                    @svg('lucide-zap', 'size-4 text-white')
                 </div>
             </template>
             <span class="truncate" x-text="name"></span>
@@ -59,8 +59,8 @@
                 class="inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 text-content-subtle hover:bg-panel-alt hover:text-content"
                 title="Cambiar tema"
             >
-                <x-ui.icon name="sun"  class="size-5" x-show="$store.theme?.dark"  x-cloak />
-                <x-ui.icon name="moon" class="size-5" x-show="!$store.theme?.dark" />
+                @svg('lucide-sun', 'size-5', ['x-show' => '$store.theme?.dark', 'x-cloak' => true])
+                @svg('lucide-moon', 'size-5', ['x-show' => '!$store.theme?.dark'])
             </button>
 
             {{-- Cerrar móvil --}}
@@ -69,7 +69,7 @@
                 @click="$store.sidebar.mobileOpen = false"
                 class="inline-flex items-center justify-center rounded-md p-1.5 text-content-subtle hover:bg-danger/10 hover:text-danger lg:hidden"
             >
-                <x-ui.icon name="x-mark" class="size-5" />
+                @svg('lucide-x', 'size-5')
             </button>
         </div>
     </div>

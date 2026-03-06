@@ -5,8 +5,7 @@
 
         {{-- Búsqueda --}}
         <div class="relative w-64">
-            <x-ui.icon name="search"
-                class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-content-subtle" />
+            @svg('lucide-search', 'pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-content-subtle')
             <input
                 wire:model.live.debounce.400ms="search"
                 type="search"
@@ -24,7 +23,7 @@
                 : 'border-line bg-panel text-content-muted hover:bg-panel-alt hover:text-content dark:bg-panel'"
             class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition-colors"
         >
-            <x-ui.icon name="sliders-horizontal" class="size-4" />
+            @svg('lucide-sliders-horizontal', 'size-4')
             Filtros
             @if ($filterEmail)
                 <span class="flex size-2 rounded-full bg-primary-500"></span>
@@ -39,7 +38,7 @@
             <a href="{{ route('personal.usuarios.create') }}" wire:navigate
                class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
                style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
-                <x-ui.icon name="plus" class="size-4" />
+                @svg('lucide-plus', 'size-4')
                 Nuevo usuario
             </a>
         @endcan
@@ -60,7 +59,7 @@
         {{-- Cabecera del panel --}}
         <div class="flex items-center justify-between border-b border-line bg-panel-alt px-4 py-2.5">
             <div class="flex items-center gap-2 text-sm font-medium text-content-muted">
-                <x-ui.icon name="sliders-horizontal" class="size-3.5" />
+                @svg('lucide-sliders-horizontal', 'size-3.5')
                 Filtros
             </div>
             @php $activeCount = (int) (bool) $filterEmail; @endphp
@@ -75,7 +74,7 @@
         <div class="flex flex-wrap items-end gap-3 p-4">
             <x-ui.ts-table.filter-input
                 label="Correo"
-                icon="search"
+                icon="lucide-search"
                 wire:model.live.debounce.400ms="filterEmail"
                 placeholder="Filtrar por correo..."
             />
@@ -87,7 +86,7 @@
                         wire:click="clearFilters"
                         class="flex cursor-pointer items-center justify-center rounded-md border border-red-200 bg-red-50 p-2 text-red-600 transition-colors hover:border-red-300 hover:bg-red-100 dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:border-red-700 dark:hover:bg-red-900"
                     >
-                        <x-ui.icon name="rotate-ccw" class="size-3.5" />
+                        @svg('lucide-rotate-ccw', 'size-3.5')
                     </button>
                     <div class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:bg-dark-600">
                         Limpiar filtros

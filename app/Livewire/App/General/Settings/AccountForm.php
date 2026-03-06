@@ -23,16 +23,24 @@ class AccountForm extends Component
     public function save(): void
     {
         $userId = auth()->id();
+        $user   = auth()->user();
 
         $this->validate([
             'username' => ['required', 'string', 'max:255', 'alpha_dash', "unique:users,username,{$userId}"],
             'email'    => ['required', 'email', 'max:255', "unique:users,email,{$userId}"],
         ]);
 
-        auth()->user()->update([
-            'username' => $this->username,
-            'email'    => $this->email,
+        $emailChanged = $user->email !== $this->email;
+
+        $user->update([
+            'username'          => $this->username,
+            'email'             => $this->email,
+            'email_verified_at' => $emailChanged ? null : $user->email_verified_at,
         ]);
+
+        if ($emailChanged) {
+            $user->sendEmailVerificationNotification();
+        }
 
         $this->dispatch('profile-updated');
 

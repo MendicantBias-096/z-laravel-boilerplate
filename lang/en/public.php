@@ -28,6 +28,24 @@ return [
     'have_account'        => 'Already have an account?',
     'login_link'          => 'Sign in',
 
+    // Verify email
+    'verify_email_title'    => 'Verify your email',
+    'verify_email_subtitle' => 'We sent a verification link to your email. Check your inbox.',
+    'verify_email_sent'     => 'Verification email resent. Check your inbox.',
+    'resend_verification'   => 'Resend verification email',
+    'sending'               => 'Sending...',
+    'logout'                => 'Log out',
+
+    // Two-factor challenge
+    'two_factor_title'             => 'Two-step verification',
+    'two_factor_subtitle'          => 'Enter the 6-digit code from your authenticator app.',
+    'two_factor_recovery_subtitle' => 'Enter one of your recovery codes.',
+    'two_factor_code'              => 'Authentication code',
+    'two_factor_recovery_code'     => 'Recovery code',
+    'use_recovery_code'            => 'Use a recovery code',
+    'use_auth_code'                => 'Use authentication code',
+    'verify'                       => 'Verify',
+
     // Branding panel
     'platform_desc'       => 'Modern management platform.<br>Secure, fast and ready to scale.',
 

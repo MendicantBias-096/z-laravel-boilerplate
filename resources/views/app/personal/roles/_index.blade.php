@@ -5,8 +5,7 @@
 
         {{-- Búsqueda --}}
         <div class="relative w-64">
-            <x-ui.icon name="search"
-                class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-content-subtle" />
+            @svg('lucide-search', 'pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-content-subtle')
             <input
                 wire:model.live.debounce.400ms="search"
                 type="search"
@@ -21,7 +20,7 @@
             <a href="{{ route('personal.roles.create') }}" wire:navigate
                class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
                style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
-                <x-ui.icon name="plus" class="size-4" />
+                @svg('lucide-plus', 'size-4')
                 Nuevo rol
             </a>
         @endcan

@@ -11,8 +11,12 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->user()?->profile?->locale
-            ?? config('app.locale');
+        if ($request->user()) {
+            $locale = session('locale') ?? $request->user()->profile?->locale ?? config('app.locale');
+            session(['locale' => $locale]);
+        } else {
+            $locale = config('app.locale');
+        }
 
         App::setLocale($locale);
 

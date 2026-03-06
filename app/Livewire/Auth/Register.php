@@ -9,8 +9,8 @@ use Livewire\Component;
 
 class Register extends Component
 {
-    #[Validate('required|string|max:255')]
-    public string $name = '';
+    #[Validate('required|string|max:255|unique:users,username')]
+    public string $username = '';
 
     #[Validate('required|email|max:255|unique:users,email')]
     public string $email = '';
@@ -26,7 +26,7 @@ class Register extends Component
         $this->validate();
 
         $user = $creator->create([
-            'name'                  => $this->name,
+            'username'              => $this->username,
             'email'                 => $this->email,
             'password'              => $this->password,
             'password_confirmation' => $this->password_confirmation,

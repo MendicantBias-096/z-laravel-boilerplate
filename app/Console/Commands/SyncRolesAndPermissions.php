@@ -26,6 +26,19 @@ class SyncRolesAndPermissions extends Command
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
+        // ── 0. Validar consistencia del config ───────────────────────────────
+        $definedModules = array_keys(config('roles.permissions', []));
+
+        foreach (config('roles.roles_modules', []) as $role => $modules) {
+            foreach ($modules as $module) {
+                if (! in_array($module, $definedModules)) {
+                    $this->error("Config inválida: el módulo '{$module}' asignado al rol '{$role}' no está definido en roles.permissions.");
+
+                    return self::FAILURE;
+                }
+            }
+        }
+
         // ── 1. Crear permisos nuevos ──────────────────────────────────────────
         $this->info('Sincronizando permisos...');
 
@@ -49,8 +62,16 @@ class SyncRolesAndPermissions extends Command
         // ── 2. Crear roles nuevos y actualizar sus permisos ───────────────────
         $this->info('Sincronizando roles...');
 
-        foreach (config('roles.roles', []) as $roleName) {
-            $role      = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
+        foreach (config('roles.roles', []) as $roleName => $displayName) {
+            $role = Role::firstOrCreate(
+                ['name' => $roleName, 'guard_name' => 'web'],
+                ['display_name' => $displayName],
+            );
+
+            if (! $role->wasRecentlyCreated && $role->display_name !== $displayName) {
+                $role->update(['display_name' => $displayName]);
+            }
+
             $modules   = config("roles.roles_modules.{$roleName}", []);
             $rolePerms = collect($modules)
                 ->flatMap(fn ($m) => config("roles.permissions.{$m}", []))
@@ -59,7 +80,7 @@ class SyncRolesAndPermissions extends Command
             $role->syncPermissions($rolePerms);
 
             $status = $role->wasRecentlyCreated ? '<fg=green>creado</>' : 'actualizado';
-            $this->line("  {$status}: {$roleName} (" . count($rolePerms) . ' permisos)');
+            $this->line("  {$status}: {$roleName} ({$displayName}) — " . count($rolePerms) . ' permisos');
         }
 
         // ── 3. Asignar permisos nuevos a usuarios con el rol indicado ────────

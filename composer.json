@@ -7,7 +7,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
-        "dedoc/scramble": "^0.13.14",
         "diglactic/laravel-breadcrumbs": "^10.0",
         "laravel/fortify": "^1.34",
         "laravel/framework": "^12.0",

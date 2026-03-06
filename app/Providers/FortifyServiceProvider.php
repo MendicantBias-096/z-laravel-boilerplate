@@ -37,6 +37,9 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
+        Fortify::verifyEmailView(fn () => view('auth.verify-email'));
+        Fortify::twoFactorChallengeView(fn () => view('auth.two-factor-challenge'));
+
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
 

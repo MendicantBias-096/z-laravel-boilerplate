@@ -58,7 +58,7 @@
                                                     'border-line bg-panel' => !$allSelected,
                                                 ])>
                                                     @if ($allSelected)
-                                                        <x-ui.icon name="check" class="size-2 text-white" />
+                                                        @svg('lucide-check', 'size-2 text-white')
                                                     @endif
                                                 </span>
                                                 <span class="text-xs font-semibold tracking-wide text-primary-600 dark:text-primary-400">
@@ -96,7 +96,7 @@
                                                         />
                                                         <span class="absolute inset-0 rounded border border-line bg-panel transition-colors peer-checked:border-primary-500 peer-checked:bg-primary-500"></span>
                                                         <span class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity peer-checked:opacity-100">
-                                                            <x-ui.icon name="check" class="size-2 text-white" />
+                                                            @svg('lucide-check', 'size-2 text-white')
                                                         </span>
                                                     </span>
                                                     <span class="text-xs font-semibold text-content-muted leading-tight line-clamp-2">{{ $permLabel }}</span>

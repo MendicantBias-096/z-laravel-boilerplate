@@ -65,7 +65,7 @@
             </span>
             <span wire:loading.class.remove="opacity-0 translate-y-2"
                   class="absolute inset-0 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out opacity-0 translate-y-2">
-                <x-ui.icon name="loader-circle" class="w-4 h-4 animate-spin" />
+                @svg('lucide-loader-circle', 'w-4 h-4 animate-spin')
                 {{ __('public.verifying') }}
             </span>
         </button>

@@ -32,7 +32,7 @@
         : 'text-content-muted hover:bg-panel-alt hover:text-content'"
 >
     @if ($icon)
-        <x-ui.icon :name="$icon" class="size-5 flex-none opacity-80 transition-colors" />
+        @svg($icon, 'size-5 flex-none opacity-80 transition-colors')
     @endif
 
     <span class="grow py-2">{{ __($label) }}</span>

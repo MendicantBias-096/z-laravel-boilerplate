@@ -1,3 +1,3 @@
-<x-layouts.app icon="cog-6-tooth" title="Configuración">
+<x-layouts.app icon="lucide-settings" title="Configuración">
     @livewire('app.general.settings.index')
 </x-layouts.app>

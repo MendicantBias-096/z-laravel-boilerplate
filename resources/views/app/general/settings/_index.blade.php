@@ -58,6 +58,29 @@
         </div>
     </div>
 
+    {{-- ── Verificación de email ──────────────────────────────────────────── --}}
+    <div class="md:grid md:grid-cols-3 md:gap-8">
+        <div class="md:col-span-1">
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.email_verification') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.email_verification_desc') }}</p>
+        </div>
+        <div class="mt-4 md:col-span-2 md:mt-0">
+            @livewire('app.general.settings.email-verification-form')
+        </div>
+    </div>
+
+    {{-- ── Autenticación de dos factores ─────────────────────────────────── --}}
+    <div class="md:grid md:grid-cols-3 md:gap-8">
+        <div class="md:col-span-1">
+            <h3 class="text-sm font-semibold text-content">{{ __('settings.two_factor') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('settings.two_factor_desc') }}</p>
+        </div>
+        <div class="mt-4 md:col-span-2 md:mt-0">
+            @livewire('app.general.settings.two-factor-form')
+        </div>
+    </div>
+
+    @can('administrar sistema')
     <div class="border-t border-line"></div>
 
     {{-- ── Mis permisos ──────────────────────────────────────────────────── --}}
@@ -103,7 +126,7 @@
                                                             ])></span>
                                                             @if ($has)
                                                                 <span class="absolute inset-0 flex items-center justify-center">
-                                                                    <x-ui.icon name="check" class="size-2 text-white" />
+                                                                    @svg('lucide-check', 'size-2 text-white')
                                                                 </span>
                                                             @endif
                                                         </span>
@@ -127,12 +150,15 @@
             </x-ts-card>
         </div>
     </div>
+    @endcan
 
     {{-- ── Información del sistema ───────────────────────────────────────── --}}
+    @can('administrar sistema')
     <div class="flex justify-end">
         <p class="text-xs text-content-subtle">
             Laravel {{ $system[1]['value'] }} · PHP {{ $system[2]['value'] }} · {{ $system[0]['value'] }}
         </p>
     </div>
+    @endcan
 
 </div>
