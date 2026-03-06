@@ -20,39 +20,22 @@
     {{-- Aplica la clase dark ANTES del primer render (sin flash) --}}
     <script>
         (function () {
-            var stored = localStorage.getItem('darkMode');
-            var dark = stored !== null
-                ? stored === 'true'
-                : window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (dark) document.documentElement.classList.add('dark');
+            var cookie = document.cookie.match(/darkMode=([^;]+)/);
+            if (cookie) { var isDark = cookie[1] !== 'false'; }
+            else {
+                var stored = localStorage.getItem('darkMode');
+                var isDark = stored !== null ? stored === 'true' : true;
+            }
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.backgroundColor = isDark ? '#080c18' : '#F7F8FA';
+            if (!cookie) {
+                document.cookie = 'darkMode=' + isDark + ';path=/;max-age=31536000;SameSite=Lax';
+            }
         })();
     </script>
 </head>
 <body class="antialiased overflow-x-hidden">
     {{ $slot }}
     @livewireScripts
-    <script>
-        // Re-aplica el tema tras cada wire:navigate (Livewire reemplaza el DOM)
-        document.addEventListener('livewire:navigated', function () {
-            var stored = localStorage.getItem('darkMode');
-            var dark = stored !== null
-                ? stored === 'true'
-                : window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.classList.toggle('dark', dark);
-        });
-
-        // Sigue la preferencia del sistema si no hay override manual
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-            if (localStorage.getItem('darkMode') === null) {
-                document.documentElement.classList.toggle('dark', e.matches);
-            }
-        });
-
-        // Función global usada por los botones toggle
-        window.toggleTheme = function () {
-            var dark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('darkMode', dark);
-        };
-    </script>
 </body>
 </html>

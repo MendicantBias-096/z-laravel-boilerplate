@@ -1,6 +1,5 @@
-@php $isDark = request()->cookie('darkMode') === 'true'; @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="{{ $isDark ? 'dark' : '' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,15 +16,19 @@
         html.dark .theme-icon-sun  { display: block; }
         html.dark .theme-icon-moon { display: none;  }
     </style>
-    {{-- Fallback para primera visita sin cookie --}}
     <script>
         (function () {
-            if (document.documentElement.classList.contains('dark')) return;
-            var stored = localStorage.getItem('darkMode');
-            var dark = stored !== null
-                ? stored === 'true'
-                : window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (dark) document.documentElement.classList.add('dark');
+            var cookie = document.cookie.match(/darkMode=([^;]+)/);
+            if (cookie) { var isDark = cookie[1] !== 'false'; }
+            else {
+                var stored = localStorage.getItem('darkMode');
+                var isDark = stored !== null ? stored === 'true' : true;
+            }
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.backgroundColor = isDark ? '#080c18' : '#F7F8FA';
+            if (!cookie) {
+                document.cookie = 'darkMode=' + isDark + ';path=/;max-age=31536000;SameSite=Lax';
+            }
         })();
     </script>
 </head>
@@ -131,26 +134,6 @@
 @livewireScripts
 
 <script>
-document.addEventListener('livewire:navigated', function () {
-    var stored = localStorage.getItem('darkMode');
-    var dark = stored !== null
-        ? stored === 'true'
-        : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.classList.toggle('dark', dark);
-});
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-    if (localStorage.getItem('darkMode') === null) {
-        document.documentElement.classList.toggle('dark', e.matches);
-    }
-});
-
-window.toggleTheme = function () {
-    var dark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('darkMode', dark);
-    document.cookie = 'darkMode=' + dark + '; path=/; max-age=31536000; SameSite=Lax';
-};
-
 (function () {
     const canvas = document.getElementById('auth-wave-canvas');
     if (!canvas) return;
