@@ -32,14 +32,14 @@ class Table extends Component
         $role = Role::findOrFail($id);
 
         if ($role->users()->count() > 0) {
-            $this->toast()->error('No se puede eliminar', "El rol \"{$role->display_name}\" tiene usuarios asignados.")->send();
+            $this->toast()->error(__('app.role_delete_error'), __('app.role_delete_has_users', ['name' => $role->display_name]))->send();
             return;
         }
 
         $this->dialog()
-            ->question('¿Eliminar rol?', "Se eliminará el rol \"{$role->display_name}\" de forma permanente.")
-            ->confirm('Eliminar', 'delete', $id)
-            ->cancel('Cancelar')
+            ->question(__('app.role_delete_title'), __('app.role_delete_desc', ['name' => $role->display_name]))
+            ->confirm(__('app.role_delete_confirm'), 'delete', $id)
+            ->cancel(__('app.role_delete_cancel'))
             ->send();
     }
 
@@ -55,17 +55,17 @@ class Table extends Component
 
         $role->delete();
 
-        $this->toast()->success('Rol eliminado', 'El rol fue eliminado correctamente.')->send();
+        $this->toast()->success(__('app.role_deleted'), __('app.role_deleted_desc'))->send();
     }
 
     public function render()
     {
         $headers = [
-            ['index' => 'display_name', 'label' => 'Nombre'],
-            ['index' => 'name',         'label' => 'Identificador', 'sortable' => false],
-            ['index' => 'permissions',  'label' => 'Permisos',      'sortable' => false],
-            ['index' => 'users',        'label' => 'Usuarios',      'sortable' => false],
-            ['index' => 'action',       'label' => 'Acciones',      'sortable' => false],
+            ['index' => 'display_name', 'label' => __('table.roles.headers.name')],
+            ['index' => 'name',         'label' => __('table.roles.headers.identifier'),  'sortable' => false],
+            ['index' => 'permissions',  'label' => __('table.roles.headers.permissions'), 'sortable' => false],
+            ['index' => 'users',        'label' => __('table.roles.headers.users'),       'sortable' => false],
+            ['index' => 'action',       'label' => __('table.roles.headers.actions'),     'sortable' => false],
         ];
 
         $roles = Role::withCount(['permissions', 'users'])

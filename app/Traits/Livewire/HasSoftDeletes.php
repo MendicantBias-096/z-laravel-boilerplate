@@ -37,7 +37,7 @@ trait HasSoftDeletes
 
         ($this->modelClass)::find($id)?->delete();
 
-        $this->toast()->success('Éxito', "{$this->modelLabel} eliminado correctamente.")->send();
+        $this->toast()->success(__('app.success'), __('app.soft_deleted', ['model' => $this->modelLabel]))->send();
     }
 
     public function confirmRestore(int $id): void
@@ -62,6 +62,6 @@ trait HasSoftDeletes
 
         ($this->modelClass)::withTrashed()->find($id)?->restore();
 
-        $this->toast()->success('Éxito', "{$this->modelLabel} restaurado correctamente.")->send();
+        $this->toast()->success(__('app.success'), __('app.restored', ['model' => $this->modelLabel]))->send();
     }
 }

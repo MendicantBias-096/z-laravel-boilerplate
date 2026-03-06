@@ -48,14 +48,14 @@ class Table extends Component
     public function render()
     {
         $headers = [
-            ['index' => 'photo',       'label' => '',          'sortable' => false],
-            ['index' => 'username',    'label' => 'Usuario'],
-            ['index' => 'name',        'label' => 'Nombre',    'sortable' => false],
-            ['index' => 'email',       'label' => 'Correo'],
-            ['index' => 'role',        'label' => 'Rol',        'sortable' => false],
-            ['index' => 'permissions', 'label' => 'Permisos',  'sortable' => false],
-            ['index' => 'status',      'label' => 'Estado',    'sortable' => false],
-            ['index' => 'action',      'label' => 'Acciones',  'sortable' => false],
+            ['index' => 'photo',       'label' => '',                                        'sortable' => false],
+            ['index' => 'username',    'label' => __('table.users.headers.username')],
+            ['index' => 'name',        'label' => __('table.users.headers.name'),            'sortable' => false],
+            ['index' => 'email',       'label' => __('table.users.headers.email')],
+            ['index' => 'role',        'label' => __('table.users.headers.role'),             'sortable' => false],
+            ['index' => 'permissions', 'label' => __('table.users.headers.permissions'),     'sortable' => false],
+            ['index' => 'status',      'label' => __('table.users.headers.status'),          'sortable' => false],
+            ['index' => 'action',      'label' => __('table.users.headers.actions'),         'sortable' => false],
         ];
 
         $users = User::withTrashed()
@@ -76,7 +76,7 @@ class Table extends Component
 
         $users->getCollection()->transform(function (User $user) {
             $user->role   = $user->roles->first()?->display_name ?? $user->roles->first()?->name ?? '—';
-            $user->status = $user->trashed() ? 'Eliminado' : 'Activo';
+            $user->status = $user->trashed() ? __('table.users.status_deleted') : __('table.users.status_active');
 
             return $user;
         });

@@ -9,7 +9,7 @@
             <input
                 wire:model.live.debounce.400ms="search"
                 type="search"
-                placeholder="Buscar..."
+                placeholder="{{ __('table.search') }}"
                 class="w-full rounded-lg border border-line bg-panel py-2 pl-9 pr-4 text-sm text-content placeholder-content-subtle focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-panel"
             />
         </div>
@@ -24,7 +24,7 @@
             class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition-colors"
         >
             @svg('lucide-sliders-horizontal', 'size-4')
-            Filtros
+            {{ __('table.filters') }}
             @if ($filterEmail)
                 <span class="flex size-2 rounded-full bg-primary-500"></span>
             @endif
@@ -39,7 +39,7 @@
                class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
                style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
                 @svg('lucide-plus', 'size-4')
-                Nuevo usuario
+                {{ __('table.new', ['model' => __('table.users.headers.username')]) }}
             </a>
         @endcan
     </div>
@@ -60,12 +60,12 @@
         <div class="flex items-center justify-between border-b border-line bg-panel-alt px-4 py-2.5">
             <div class="flex items-center gap-2 text-sm font-medium text-content-muted">
                 @svg('lucide-sliders-horizontal', 'size-3.5')
-                Filtros
+                {{ __('table.filters') }}
             </div>
             @php $activeCount = (int) (bool) $filterEmail; @endphp
             @if ($activeCount)
                 <span class="inline-flex items-center rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-primary-950 dark:text-primary-300">
-                    {{ $activeCount }} {{ Str::plural('activo', $activeCount) }}
+                    {{ $activeCount }} {{ trans_choice('table.active', $activeCount) }}
                 </span>
             @endif
         </div>
@@ -73,10 +73,10 @@
         {{-- Campos --}}
         <div class="flex flex-wrap items-end gap-3 p-4">
             <x-ui.ts-table.filter-input
-                label="Correo"
+                label="{{ __('table.users.filter_email') }}"
                 icon="lucide-search"
                 wire:model.live.debounce.400ms="filterEmail"
-                placeholder="Filtrar por correo..."
+                placeholder="{{ __('table.users.filter_email_placeholder') }}"
             />
 
             @if ($filterEmail)
@@ -89,7 +89,7 @@
                         @svg('lucide-rotate-ccw', 'size-3.5')
                     </button>
                     <div class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:bg-dark-600">
-                        Limpiar filtros
+                        {{ __('table.clear') }}
                     </div>
                 </div>
             @endif
@@ -123,14 +123,14 @@
         @endinteract
 
         @interact('column_permissions', $row)
-            <x-ts-badge :text="$row->permissions_count . ' ' . Str::plural('permiso', $row->permissions_count)" color="blue" />
+            <x-ts-badge :text="$row->permissions_count . ' ' . trans_choice('table.permission', $row->permissions_count)" color="blue" />
         @endinteract
 
         @interact('column_status', $row)
             @if ($row->trashed())
-                <x-ts-badge text="Eliminado" color="red" />
+                <x-ts-badge text="{{ __('table.users.status_deleted') }}" color="red" />
             @else
-                <x-ts-badge text="Activo" color="green" />
+                <x-ts-badge text="{{ __('table.users.status_active') }}" color="green" />
             @endif
         @endinteract
 
@@ -152,7 +152,7 @@
 
             {{-- Selector de cantidad --}}
             <div class="flex items-center gap-1.5 text-sm text-content-muted">
-                Mostrando
+                {{ __('table.showing') }}
                 <select
                     wire:model.live="quantity"
                     class="rounded-md border border-line bg-panel px-2 py-1 text-sm text-content focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
@@ -162,7 +162,7 @@
                     <option value="50">50</option>
                     <option value="100">100</option>
                 </select>
-                resultados de {{ $users->total() }}
+                {{ __('table.results') }} {{ $users->total() }}
             </div>
 
             {{-- Paginador --}}
