@@ -18,8 +18,12 @@ return [
     // Register
     'register_title'      => 'Crear cuenta',
     'register_subtitle'   => 'Completa los datos para registrarte',
-    'full_name'           => 'Nombre completo',
-    'full_name_hint'      => 'Tu nombre',
+    'first_name'          => 'Nombre',
+    'first_name_hint'     => 'Tu nombre',
+    'last_name'           => 'Apellido',
+    'last_name_hint'      => 'Tu apellido',
+    'username'            => 'Nombre de usuario',
+    'username_hint'       => 'Tu nombre de usuario',
     'confirm_password'    => 'Confirmar contraseña',
     'password_hint'       => 'Mínimo 8 caracteres',
     'confirm_hint'        => 'Repite tu contraseña',
@@ -45,6 +49,10 @@ return [
     'use_recovery_code'            => 'Usar código de recuperación',
     'use_auth_code'                => 'Usar código de autenticación',
     'verify'                       => 'Verificar',
+
+    // Email verified
+    'email_verified_title'   => 'Correo verificado',
+    'email_verified_message' => 'Tu dirección de correo ha sido verificada exitosamente.',
 
     // Branding panel
     'platform_desc'       => 'Plataforma de gestión moderna.<br>Segura, rápida y lista para escalar.',

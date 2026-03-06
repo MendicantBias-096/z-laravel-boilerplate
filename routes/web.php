@@ -18,6 +18,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', fn () => view('auth.register'))->name('register');
 });
 
+// Required by Fortify when views => false + emailVerification is active.
+// Redirects unverified users to the verify-email page.
+Route::middleware('auth')->get('/email/verify', fn () => view('auth.verify-email'))
+    ->name('verification.notice');
+
 // Required by Fortify when views => false + resetPasswords is active.
 // In headless mode, the frontend handles the UI; this route just satisfies
 // the named route requirement used in password reset notification emails.

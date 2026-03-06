@@ -15,6 +15,12 @@ class RegisterResponse implements RegisterResponseContract
             ], 201);
         }
 
+        $user = $request->user();
+
+        if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
         return redirect('/dashboard');
     }
 }

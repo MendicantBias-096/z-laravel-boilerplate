@@ -7,11 +7,27 @@
 
     <form wire:submit="register" class="flex flex-col gap-4" novalidate>
 
+        {{-- Nombre --}}
+        <x-ui.auth-input
+            wire:model="first_name"
+            label="{{ __('public.first_name') }}"
+            placeholder="{{ __('public.first_name_hint') }}"
+            autocomplete="given-name"
+        />
+
+        {{-- Apellido --}}
+        <x-ui.auth-input
+            wire:model="last_name"
+            label="{{ __('public.last_name') }}"
+            placeholder="{{ __('public.last_name_hint') }}"
+            autocomplete="family-name"
+        />
+
         {{-- Nombre de usuario --}}
         <x-ui.auth-input
             wire:model="username"
-            label="{{ __('public.full_name') }}"
-            placeholder="{{ __('public.full_name_hint') }}"
+            label="{{ __('public.username') }}"
+            placeholder="{{ __('public.username_hint') }}"
             autocomplete="username"
         />
 
