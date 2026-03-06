@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/dashboard', fn () => view('app.general.dashboard.index'))
+    ->middleware('verified')
     ->name('dashboard');
 
 Route::get('/settings', fn () => view('app.general.settings.index'))

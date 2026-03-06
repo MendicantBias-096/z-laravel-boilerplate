@@ -12,10 +12,7 @@ enum Language: string
      */
     public function label(): string
     {
-        return match($this) {
-            self::Spanish => '🇲🇽 Español',
-            self::English => '🇺🇸 English',
-        };
+        return __("enums.language.{$this->value}");
     }
 
     /**

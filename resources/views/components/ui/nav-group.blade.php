@@ -49,16 +49,12 @@
             : 'text-content-muted hover:bg-panel-alt hover:text-content'"
     >
         @if ($icon)
-            <x-ui.icon :name="$icon" class="size-5 flex-none opacity-80 transition-colors" />
+            @svg($icon, 'size-5 flex-none opacity-80 transition-colors')
         @endif
 
         <span class="grow py-2 text-left">{{ __($label) }}</span>
 
-        <x-ui.icon
-            name="chevron-down"
-            class="size-4 transition-all duration-200"
-            x-bind:class="{ 'rotate-180': open }"
-        />
+        @svg('lucide-chevron-down', 'size-4 transition-all duration-200', ['x-bind:class' => "{ 'rotate-180': open }"])
     </button>
 
     <div

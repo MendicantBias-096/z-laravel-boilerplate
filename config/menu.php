@@ -24,14 +24,14 @@ return [
     'menu' => [
         [
             'label' => 'menu.dashboard',
-            'icon'  => 'home',
+            'icon'  => 'lucide-home',
             'route' => 'dashboard',
         ],
 
         // ── Personal ──────────────────────────────────────────────────────
         [
             'label'        => 'menu.personal',
-            'icon'         => 'users',
+            'icon'         => 'lucide-users',
             'active_route' => 'personal.*',
             'items'        => [
                 [

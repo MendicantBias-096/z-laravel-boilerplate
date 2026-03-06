@@ -15,7 +15,7 @@ health: '/up',
             Route::middleware(['web', 'auth'])
                 ->group(base_path('routes/general.php'));
 
-            Route::middleware(['web', 'auth'])
+            Route::middleware(['web', 'auth', 'verified'])
                 ->group(base_path('routes/personal.php'));
         },
     )

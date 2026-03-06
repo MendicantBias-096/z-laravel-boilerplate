@@ -16,7 +16,7 @@
                 @click="$store.sidebar.mobileOpen = true"
                 class="inline-flex cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:hidden"
             >
-                <x-ui.icon name="bars-3" class="size-5" />
+                @svg('lucide-menu', 'size-5')
             </button>
 
             <button
@@ -24,7 +24,7 @@
                 @click="$store.sidebar.desktopOpen = !$store.sidebar.desktopOpen"
                 class="hidden cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-2 text-content-subtle hover:bg-panel-alt hover:text-content focus:outline-none lg:inline-flex"
             >
-                <x-ui.icon name="bars-3" class="size-5" />
+                @svg('lucide-menu', 'size-5')
             </button>
         </div>
 
@@ -33,7 +33,7 @@
             <div class="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
                  style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);
                         box-shadow: 0 0 10px rgba(245,48,3,0.4);">
-                <x-ui.icon name="bolt" class="size-4 text-white" />
+                @svg('lucide-zap', 'size-4 text-white')
             </div>
             <span class="text-sm">{{ config('app.name') }}</span>
         </a>
@@ -67,7 +67,7 @@
                     @endif
                 </div>
 
-                <x-ui.icon name="chevron-down" class="hidden size-4 text-content-subtle sm:block" />
+                @svg('lucide-chevron-down', 'hidden size-4 text-content-subtle sm:block')
             </button>
 
             {{-- Dropdown --}}
@@ -97,7 +97,7 @@
                 {{-- Acciones --}}
                 <div class="p-1">
                     <a href="{{ route('settings') }}" wire:navigate class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-content-muted hover:bg-panel-alt hover:text-content">
-                        <x-ui.icon name="cog-6-tooth" class="size-4 text-content-subtle" />
+                        @svg('lucide-settings', 'size-4 text-content-subtle')
                         {{ __('settings.nav_settings') }}
                     </a>
                 </div>
@@ -106,7 +106,7 @@
                     <form method="POST" action="/logout">
                         @csrf
                         <button type="submit" class="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-danger hover:bg-danger/10">
-                            <x-ui.icon name="arrow-right-on-rectangle" class="size-4" />
+                            @svg('lucide-log-out', 'size-4')
                             {{ __('settings.nav_logout') }}
                         </button>
                     </form>

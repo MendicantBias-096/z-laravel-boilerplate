@@ -11,8 +11,8 @@ return [
      |
      */
     'roles' => [
-        'admin',
-        'user',
+        'admin' => 'Administrador',
+        'user'  => 'Usuario',
     ],
 
     /*

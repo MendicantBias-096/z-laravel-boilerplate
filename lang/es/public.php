@@ -28,6 +28,24 @@ return [
     'have_account'        => '¿Ya tienes cuenta?',
     'login_link'          => 'Iniciar sesión',
 
+    // Verify email
+    'verify_email_title'    => 'Verifica tu correo',
+    'verify_email_subtitle' => 'Te enviamos un enlace de verificación a tu correo. Revisa tu bandeja de entrada.',
+    'verify_email_sent'     => 'Email de verificación reenviado. Revisa tu bandeja de entrada.',
+    'resend_verification'   => 'Reenviar email de verificación',
+    'sending'               => 'Enviando...',
+    'logout'                => 'Cerrar sesión',
+
+    // Two-factor challenge
+    'two_factor_title'             => 'Verificación en dos pasos',
+    'two_factor_subtitle'          => 'Ingresa el código de 6 dígitos de tu app de autenticación.',
+    'two_factor_recovery_subtitle' => 'Ingresa uno de tus códigos de recuperación.',
+    'two_factor_code'              => 'Código de autenticación',
+    'two_factor_recovery_code'     => 'Código de recuperación',
+    'use_recovery_code'            => 'Usar código de recuperación',
+    'use_auth_code'                => 'Usar código de autenticación',
+    'verify'                       => 'Verificar',
+
     // Branding panel
     'platform_desc'       => 'Plataforma de gestión moderna.<br>Segura, rápida y lista para escalar.',
 

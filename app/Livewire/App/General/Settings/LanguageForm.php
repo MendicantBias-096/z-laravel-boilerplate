@@ -28,6 +28,8 @@ class LanguageForm extends Component
             ['locale'  => $this->locale]
         );
 
+        session(['locale' => $this->locale]);
+
         $this->toast()
             ->success(__('settings.language_updated'), __('settings.language_saved'))
             ->flash()

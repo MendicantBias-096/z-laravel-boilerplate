@@ -50,9 +50,7 @@
         :class="value ? 'border-primary-400' : ''"
     >
         <span :class="value ? 'text-content' : 'text-content-subtle'" x-text="selectedLabel()"></span>
-        <x-ui.icon name="chevron-down"
-            class="size-3.5 shrink-0 text-content-subtle transition-transform duration-150"
-            ::class="{ 'rotate-180': open }" />
+        @svg('lucide-chevron-down', 'size-3.5 shrink-0 text-content-subtle transition-transform duration-150', ['::class' => "{ 'rotate-180': open }"])
     </button>
 
     {{-- Panel teletransportado --}}
@@ -73,8 +71,7 @@
             {{-- Búsqueda --}}
             <div class="border-b border-line p-2">
                 <div class="relative">
-                    <x-ui.icon name="search"
-                        class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-content-subtle" />
+                    @svg('lucide-search', 'pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-content-subtle')
                     <input
                         x-ref="search"
                         x-model="search"
@@ -105,8 +102,7 @@
                         :class="value === val ? 'text-primary-600 dark:text-primary-400 font-medium' : 'text-content'"
                     >
                         <span x-text="text.charAt(0).toUpperCase() + text.slice(1)"></span>
-                        <x-ui.icon name="check" class="size-3.5 shrink-0"
-                            x-show="value === val" />
+                        @svg('lucide-check', 'size-3.5 shrink-0', ['x-show' => 'value === val'])
                     </button>
                 </template>
 

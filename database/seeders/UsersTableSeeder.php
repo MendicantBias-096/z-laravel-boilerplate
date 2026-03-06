@@ -13,16 +13,21 @@ class UsersTableSeeder extends Seeder
         $admin = User::updateOrCreate(
             ['email' => 'admin@example.com'],
             [
-                'name'     => 'Admin',
-                'password' => Hash::make('password'),
+                'username'          => 'admin',
+                'password'          => Hash::make('password'),
+                'email_verified_at' => now(),
             ]
         );
+        $admin->syncRoles('admin');
 
-        // Asignar todos los permisos del sistema al admin
-        $allPermissions = collect(config('roles.permissions'))
-            ->flatten()
-            ->all();
-
-        $admin->syncPermissions($allPermissions);
+        $user = User::updateOrCreate(
+            ['email' => 'user@example.com'],
+            [
+                'username'          => 'usuario',
+                'password'          => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $user->syncRoles('user');
     }
 }

@@ -28,7 +28,7 @@
         @click="toggle($el)"
         class="cursor-pointer rounded-full p-1.5 text-gray-500 hover:bg-gray-200 dark:text-dark-300 dark:hover:bg-dark-500"
     >
-        <x-ui.icon name="ellipsis-vertical" class="size-4" />
+        @svg('lucide-ellipsis-vertical', 'size-4')
     </button>
 
     <template x-teleport="#app-root">
@@ -53,7 +53,7 @@
                         @click="close()"
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-dark-300 dark:hover:bg-dark-600"
                     >
-                        <x-ui.icon name="pencil" class="size-4 shrink-0 text-gray-400" />
+                        @svg('lucide-pencil', 'size-4 shrink-0 text-gray-400')
                         {{ __('table.actions.edit') }}
                     </a>
                 @endcan
@@ -68,7 +68,7 @@
                         @click="close()"
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950"
                     >
-                        <x-ui.icon name="rotate-ccw" class="size-4 shrink-0" />
+                        @svg('lucide-rotate-ccw', 'size-4 shrink-0')
                         {{ __('table.actions.restore') }}
                     </button>
                 @endcan
@@ -82,7 +82,7 @@
                         @click="close()"
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
                     >
-                        <x-ui.icon name="trash-2" class="size-4 shrink-0" />
+                        @svg('lucide-trash-2', 'size-4 shrink-0')
                         {{ __('table.actions.delete') }}
                     </button>
                 @endcan
