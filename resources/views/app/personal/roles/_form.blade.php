@@ -5,15 +5,15 @@
             {{-- ── Datos del rol ─────────────────────────────────────────────── --}}
             <x-ts-card>
                 <x-ts-input
-                    label="Nombre del rol"
+                    label="{{ __('app.role_name') }}"
                     wire:model.live="display_name"
-                    placeholder="Ej. Administrador de CEDIS"
-                    hint="Escribe el nombre como se mostrará en la interfaz."
+                    placeholder="{{ __('app.role_name_ph') }}"
+                    hint="{{ __('app.role_name_hint') }}"
                 />
 
                 @if ($name)
                     <div class="mt-2 flex items-center gap-2 text-xs text-content-subtle">
-                        <span>Identificador:</span>
+                        <span>{{ __('app.role_identifier') }}:</span>
                         <code class="rounded bg-panel-alt px-2 py-0.5 font-mono text-content-muted">{{ $name }}</code>
                     </div>
                 @endif
@@ -24,8 +24,8 @@
             <x-ts-card>
                 <x-slot:header>
                     <div class="py-3" style="padding-left: 14px;">
-                        <h3 class="text-sm font-semibold text-content">Permisos del rol</h3>
-                        <p class="text-xs text-content-muted">Selecciona los accesos que tendrá este rol.</p>
+                        <h3 class="text-sm font-semibold text-content">{{ __('app.role_permissions') }}</h3>
+                        <p class="text-xs text-content-muted">{{ __('app.role_permissions_desc') }}</p>
                     </div>
                 </x-slot:header>
 
@@ -128,10 +128,10 @@
                     <div class="flex items-center justify-end gap-3">
                         <a href="{{ route('personal.roles.index') }}" wire:navigate
                            class="text-sm text-content-muted hover:text-content">
-                            Cancelar
+                            {{ __('app.cancel') }}
                         </a>
                         <x-ts-button type="submit" wire:loading.attr="disabled" sm>
-                            Guardar
+                            {{ __('app.role_btn_save') }}
                         </x-ts-button>
                     </div>
                 </x-slot:footer>

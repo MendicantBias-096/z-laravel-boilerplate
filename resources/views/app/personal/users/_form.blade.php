@@ -11,13 +11,13 @@
                         @if ($photo)
                             <img
                                 src="{{ $photo->temporaryUrl() }}"
-                                alt="Vista previa"
+                                alt="{{ __('app.user_photo_preview') }}"
                                 class="h-20 w-20 rounded-full object-cover ring-2 ring-line"
                             >
                         @elseif ($record?->profile?->photo_url)
                             <img
                                 src="{{ $record->profile->photo_url }}"
-                                alt="Foto de perfil"
+                                alt="{{ __('app.user_photo') }}"
                                 class="h-20 w-20 rounded-full object-cover ring-2 ring-line"
                             >
                         @else
@@ -31,7 +31,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-content mb-1">Foto de perfil</label>
+                        <label class="block text-sm font-medium text-content mb-1">{{ __('app.user_photo') }}</label>
                         <input
                             type="file"
                             wire:model="photo"
@@ -46,48 +46,48 @@
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <x-ts-input
-                        label="Nombre"
+                        label="{{ __('app.user_first_name') }}"
                         wire:model="form.first_name"
-                        placeholder="Ej. Juan"
+                        placeholder="{{ __('app.user_first_name_ph') }}"
                     />
                     <x-ts-input
-                        label="Apellido"
+                        label="{{ __('app.user_last_name') }}"
                         wire:model="form.last_name"
-                        placeholder="Ej. García"
+                        placeholder="{{ __('app.user_last_name_ph') }}"
                     />
                     <x-ts-input
-                        label="Usuario"
+                        label="{{ __('app.user_username') }}"
                         wire:model="form.username"
-                        placeholder="Ej. juan_garcia"
+                        placeholder="{{ __('app.user_username_ph') }}"
                         prefix="@"
                     />
                     <x-ts-input
-                        label="Correo electrónico"
+                        label="{{ __('app.user_email') }}"
                         type="email"
                         wire:model="form.email"
-                        placeholder="correo@ejemplo.com"
+                        placeholder="{{ __('app.user_email_ph') }}"
                     />
                     <x-ts-input
-                        label="{{ $record ? 'Nueva contraseña' : 'Contraseña' }}"
+                        label="{{ $record ? __('app.user_new_password') : __('app.user_password') }}"
                         type="password"
                         wire:model="form.password"
-                        placeholder="Mínimo 8 caracteres"
-                        hint="{{ $record ? 'Dejar vacío para mantener la actual' : '' }}"
+                        placeholder="{{ __('app.user_password_ph') }}"
+                        hint="{{ $record ? __('app.user_password_hint') : '' }}"
                     />
                     <x-ts-input
-                        label="Confirmar contraseña"
+                        label="{{ __('app.user_confirm') }}"
                         type="password"
                         wire:model="form.password_confirmation"
-                        placeholder="Repite la contraseña"
+                        placeholder="{{ __('app.user_confirm_ph') }}"
                     />
                     <x-ts-select.styled
-                        label="Rol"
+                        label="{{ __('app.user_role') }}"
                         wire:model.live="form.role"
                         :options="$roles"
                         option-label="label"
                         option-value="value"
-                        placeholder="Sin rol asignado"
-                        :hint="$record ? 'Cambiar el rol reemplazará los permisos actuales.' : 'Seleccionar un rol carga sus permisos automáticamente.'"
+                        placeholder="{{ __('app.user_role_ph') }}"
+                        :hint="$record ? __('app.user_role_hint_edit') : __('app.user_role_hint_new')"
                     />
                 </div>
 
@@ -99,8 +99,8 @@
                 <x-slot:header>
                     <div class="flex items-center justify-between py-3" style="padding-left: 14px; padding-right: 12px;">
                         <div>
-                            <h3 class="text-sm font-semibold text-content">Permisos del usuario</h3>
-                            <p class="text-xs text-content-muted">Personaliza los accesos de este usuario.</p>
+                            <h3 class="text-sm font-semibold text-content">{{ __('app.user_permissions') }}</h3>
+                            <p class="text-xs text-content-muted">{{ __('app.user_permissions_desc') }}</p>
                         </div>
                         @if ($record && $permissionList !== $originalPermissions)
                             <div class="group relative" x-data>
@@ -112,7 +112,7 @@
                                     @svg('lucide-rotate-ccw', 'size-3.5')
                                 </button>
                                 <div class="pointer-events-none absolute right-0 top-full mt-2 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:bg-dark-600 z-10">
-                                    Restaurar permisos originales
+                                    {{ __('app.user_restore_perms') }}
                                 </div>
                             </div>
                         @endif
@@ -219,10 +219,10 @@
                     <div class="flex items-center justify-end gap-3">
                         <a href="{{ route('personal.usuarios.index') }}" wire:navigate
                            class="text-sm text-content-muted hover:text-content">
-                            Cancelar
+                            {{ __('app.cancel') }}
                         </a>
                         <x-ts-button type="submit" wire:loading.attr="disabled" sm>
-                            {{ $record ? 'Actualizar' : 'Crear usuario' }}
+                            {{ $record ? __('app.user_btn_update') : __('app.user_btn_create') }}
                         </x-ts-button>
                     </div>
                 </x-slot:footer>

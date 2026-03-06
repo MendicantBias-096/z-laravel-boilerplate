@@ -1,8 +1,8 @@
 <div>
     <div class="mb-6">
-        <h1 class="text-2xl font-bold text-content">Dashboard</h1>
+        <h1 class="text-2xl font-bold text-content">{{ __('app.dashboard') }}</h1>
         <p class="mt-1 text-sm text-content-muted">
-            Bienvenido, <strong>{{ auth()->user()->email }}</strong>
+            {!! __('app.welcome', ['name' => '<strong>' . e(auth()->user()->email) . '</strong>']) !!}
         </p>
     </div>
 
@@ -13,7 +13,7 @@
                     @svg('lucide-users', 'size-6 text-primary-600 dark:text-primary-400')
                 </div>
                 <div>
-                    <p class="text-sm text-content-muted">Rol</p>
+                    <p class="text-sm text-content-muted">{{ __('app.card_role') }}</p>
                     <p class="text-lg font-semibold text-content">
                         {{ auth()->user()->roles->first()?->display_name ?? '—' }}
                     </p>
@@ -27,7 +27,7 @@
                     @svg('lucide-shield-check', 'size-6 text-success')
                 </div>
                 <div>
-                    <p class="text-sm text-content-muted">Permisos</p>
+                    <p class="text-sm text-content-muted">{{ __('app.card_permissions') }}</p>
                     <p class="text-lg font-semibold text-content">
                         {{ auth()->user()->getAllPermissions()->count() }}
                     </p>
@@ -41,7 +41,7 @@
                     @svg('lucide-bell', 'size-6 text-warning')
                 </div>
                 <div>
-                    <p class="text-sm text-content-muted">Entorno</p>
+                    <p class="text-sm text-content-muted">{{ __('app.card_environment') }}</p>
                     <p class="text-lg font-semibold text-content">
                         {{ ucfirst(app()->environment()) }}
                     </p>

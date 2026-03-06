@@ -107,7 +107,7 @@ class Form extends Component
         $this->permissionList   = $this->originalPermissions;
         $this->selectedTemplate = '';
 
-        $this->toast()->info('Permisos restaurados', 'Se restauraron los permisos originales del usuario.')->send();
+        $this->toast()->info(__('app.user_perms_restored'), __('app.user_perms_restored_desc'))->send();
     }
 
     /**
@@ -124,7 +124,7 @@ class Form extends Component
         $this->permissionList = $role->permissions->pluck('name')->toArray();
 
         $templateName = $role->display_name ?? ucfirst($role->name);
-        $this->toast()->info('Permisos cargados', "Se cargaron los permisos de \"{$templateName}\".")->send();
+        $this->toast()->info(__('app.user_perms_loaded'), __('app.user_perms_loaded_desc', ['name' => $templateName]))->send();
     }
 
     public function save(): void
@@ -151,9 +151,9 @@ class Form extends Component
         $user->syncPermissions($this->permissionList);
 
         $this->toast()
-            ->success('Éxito', $isEdit
-                ? 'Usuario actualizado correctamente.'
-                : 'Usuario creado correctamente.'
+            ->success(__('app.user_saved'), $isEdit
+                ? __('app.user_updated_desc')
+                : __('app.user_created_desc')
             )
             ->flash()
             ->send();
