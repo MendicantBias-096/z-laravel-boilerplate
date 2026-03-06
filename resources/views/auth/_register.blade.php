@@ -7,38 +7,38 @@
 
     <form wire:submit="register" class="flex flex-col gap-4" novalidate>
 
-        {{-- Nombre --}}
-        <x-ui.auth-input
-            wire:model="first_name"
-            label="{{ __('public.first_name') }}"
-            placeholder="{{ __('public.first_name_hint') }}"
-            autocomplete="given-name"
-        />
+        {{-- Nombre y Apellido --}}
+        <div class="grid grid-cols-2 gap-3">
+            <x-ui.auth-input
+                wire:model="first_name"
+                label="{{ __('public.first_name') }}"
+                placeholder="{{ __('public.first_name_hint') }}"
+                autocomplete="given-name"
+            />
+            <x-ui.auth-input
+                wire:model="last_name"
+                label="{{ __('public.last_name') }}"
+                placeholder="{{ __('public.last_name_hint') }}"
+                autocomplete="family-name"
+            />
+        </div>
 
-        {{-- Apellido --}}
-        <x-ui.auth-input
-            wire:model="last_name"
-            label="{{ __('public.last_name') }}"
-            placeholder="{{ __('public.last_name_hint') }}"
-            autocomplete="family-name"
-        />
-
-        {{-- Nombre de usuario --}}
-        <x-ui.auth-input
-            wire:model="username"
-            label="{{ __('public.username') }}"
-            placeholder="{{ __('public.username_hint') }}"
-            autocomplete="username"
-        />
-
-        {{-- Email --}}
-        <x-ui.auth-input
-            wire:model="email"
-            type="email"
-            label="{{ __('public.email') }}"
-            placeholder="tu@email.com"
-            autocomplete="email"
-        />
+        {{-- Usuario y Email --}}
+        <div class="grid grid-cols-2 gap-3">
+            <x-ui.auth-input
+                wire:model="username"
+                label="{{ __('public.username') }}"
+                placeholder="{{ __('public.username_hint') }}"
+                autocomplete="username"
+            />
+            <x-ui.auth-input
+                wire:model="email"
+                type="email"
+                label="{{ __('public.email') }}"
+                placeholder="tu@email.com"
+                autocomplete="email"
+            />
+        </div>
 
         {{-- Password --}}
         <x-ui.auth-password
