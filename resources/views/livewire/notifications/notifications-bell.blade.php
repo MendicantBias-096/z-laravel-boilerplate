@@ -1,4 +1,16 @@
-<div x-data="{ open: false }" @click.outside="open = false" class="relative">
+<div
+    x-data="{ open: false }"
+    x-init="
+        if (window.Echo) {
+            window.Echo.private('App.Models.User.{{ auth()->id() }}')
+                .listen('.new-notification', () => {
+                    $wire.refreshCount();
+                });
+        }
+    "
+    @click.outside="open = false"
+    class="relative"
+>
 
     {{-- Trigger --}}
     <button

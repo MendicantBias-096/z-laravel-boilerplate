@@ -3,6 +3,8 @@
 namespace App\Livewire\App\Personal\User;
 
 use App\Models\User;
+use App\Notifications\UserDeletedNotification;
+use App\Services\NotificationsService;
 use App\Traits\Livewire\HasSoftDeletes;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -16,6 +18,19 @@ class Table extends Component
     protected string $deletePermission = 'eliminar usuarios';
     protected string $restorePermission = 'restaurar usuarios';
     protected string $modelLabel       = 'Usuario';
+
+    public function softDelete(int $id): void
+    {
+        $this->authorize($this->deletePermission);
+
+        $user = User::find($id);
+        if ($user) {
+            $userName = $user->name;
+            $user->delete();
+            NotificationsService::fire('user_deleted', new UserDeletedNotification($userName));
+            $this->toast()->success(__('app.success'), __('app.soft_deleted', ['model' => $this->modelLabel]))->send();
+        }
+    }
 
     public string $search      = '';
     public string $filterEmail = '';
