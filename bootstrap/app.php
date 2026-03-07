@@ -20,7 +20,7 @@ health: '/up',
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->encryptCookies(except: ['darkMode']);
+        $middleware->encryptCookies(except: ['darkMode', 'locale']);
         $middleware->redirectGuestsTo('/login');
         $middleware->statefulApi();
 

@@ -24,7 +24,7 @@
             autocomplete="current-password"
         >
             <x-slot:hint>
-                <a href="#" class="text-xs transition-colors duration-200"
+                <a href="{{ route('password.request') }}" wire:navigate class="text-xs transition-colors duration-200"
                    style="color:rgba(245,48,3,0.8);"
                    onmouseover="this.style.color='#f53003';"
                    onmouseout="this.style.color='rgba(245,48,3,0.8)';">

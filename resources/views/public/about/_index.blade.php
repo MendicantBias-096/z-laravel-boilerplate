@@ -12,21 +12,20 @@
              style="background: var(--auth-link-bg); border: 1px solid var(--auth-link-border);
                     backdrop-filter: blur(8px); color: var(--ui-content-muted);">
             <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-            Conócenos
+            {{ __('public.about_badge') }}
         </div>
 
         <h1 class="text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight mb-5 max-w-3xl"
             style="color: var(--ui-content);">
-            Sobre
+            {{ __('public.about_title_1') }}
             <span style="background:linear-gradient(90deg,#ff6b47 0%,#f53003 50%,#c0392b 100%);
                          -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-                Nosotros
+                {{ __('public.about_title_2') }}
             </span>
         </h1>
 
         <p class="text-base leading-relaxed max-w-md" style="color: var(--ui-content-muted);">
-            Somos un equipo apasionado por construir herramientas que simplifican el desarrollo moderno,
-            combinando rendimiento, seguridad y una experiencia de desarrollador excepcional.
+            {{ __('public.about_intro') }}
         </p>
 
     </section>
@@ -48,11 +47,9 @@
                                   d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-xl mb-3" style="color: var(--ui-content);">Nuestra Misión</h3>
+                    <h3 class="font-bold text-xl mb-3" style="color: var(--ui-content);">{{ __('public.about_mission_title') }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--ui-content-muted);">
-                        Proporcionar una base sólida y moderna para el desarrollo de aplicaciones Laravel,
-                        reduciendo el tiempo de configuración inicial y permitiendo a los equipos enfocarse
-                        en lo que realmente importa: crear valor para sus usuarios.
+                        {{ __('public.about_mission_desc') }}
                     </p>
                 </div>
 
@@ -66,11 +63,9 @@
                                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-xl mb-3" style="color: var(--ui-content);">Nuestra Visión</h3>
+                    <h3 class="font-bold text-xl mb-3" style="color: var(--ui-content);">{{ __('public.about_vision_title') }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--ui-content-muted);">
-                        Ser el boilerplate de referencia para equipos que desarrollan aplicaciones Laravel
-                        empresariales, ofreciendo las mejores prácticas, patrones modernos y una arquitectura
-                        modular que escala con el crecimiento de cada proyecto.
+                        {{ __('public.about_vision_desc') }}
                     </p>
                 </div>
 
@@ -78,16 +73,16 @@
 
             {{-- Valores --}}
             <div class="text-center mb-12">
-                <p class="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style="color:#f53003;">Principios</p>
-                <h2 class="text-3xl font-bold" style="color: var(--ui-content);">Nuestros valores</h2>
+                <p class="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style="color:#f53003;">{{ __('public.about_values_label') }}</p>
+                <h2 class="text-3xl font-bold" style="color: var(--ui-content);">{{ __('public.about_values_title') }}</h2>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach([
-                    ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',    'label' => 'Calidad',      'color' => '#f97055', 'bg' => 'rgba(245,48,3,0.1)',     'bd' => 'rgba(245,48,3,0.2)'],
-                    ['icon' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', 'label' => 'Seguridad', 'color' => '#64dcff', 'bg' => 'rgba(100,220,255,0.08)', 'bd' => 'rgba(100,220,255,0.18)'],
-                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z',                         'label' => 'Rendimiento', 'color' => '#a78bfa', 'bg' => 'rgba(167,139,250,0.08)', 'bd' => 'rgba(167,139,250,0.18)'],
-                    ['icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', 'label' => 'Comunidad', 'color' => '#34d399', 'bg' => 'rgba(52,211,153,0.08)', 'bd' => 'rgba(52,211,153,0.18)'],
+                    ['icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',    'label' => __('public.about_val_quality'),   'color' => '#f97055', 'bg' => 'rgba(245,48,3,0.1)',     'bd' => 'rgba(245,48,3,0.2)'],
+                    ['icon' => 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', 'label' => __('public.about_val_security'), 'color' => '#64dcff', 'bg' => 'rgba(100,220,255,0.08)', 'bd' => 'rgba(100,220,255,0.18)'],
+                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z',                         'label' => __('public.about_val_perf'),     'color' => '#a78bfa', 'bg' => 'rgba(167,139,250,0.08)', 'bd' => 'rgba(167,139,250,0.18)'],
+                    ['icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', 'label' => __('public.about_val_community'), 'color' => '#34d399', 'bg' => 'rgba(52,211,153,0.08)', 'bd' => 'rgba(52,211,153,0.18)'],
                 ] as $v)
                 <div class="p-6 rounded-2xl text-center"
                      style="background: var(--pub-card-bg); border: 1px solid var(--pub-card-border);
@@ -112,9 +107,9 @@
     <section class="relative z-10 py-20 px-8 text-center"
              style="background: var(--pub-base-bg);">
         <div class="max-w-xl mx-auto">
-            <h2 class="text-2xl lg:text-3xl font-bold mb-4" style="color: var(--ui-content);">¿Listo para empezar?</h2>
+            <h2 class="text-2xl lg:text-3xl font-bold mb-4" style="color: var(--ui-content);">{{ __('public.about_cta_title') }}</h2>
             <p class="text-sm leading-relaxed mb-8" style="color: var(--ui-content-muted);">
-                Únete a la plataforma y descubre por qué equipos de todo el mundo confían en nosotros.
+                {{ __('public.about_cta_desc') }}
             </p>
             <div class="flex items-center justify-center gap-3">
                 <a href="{{ route('register') }}"
@@ -123,7 +118,7 @@
                           box-shadow:0 4px 24px rgba(245,48,3,0.35);transition:all 0.25s ease;"
                    onmouseover="this.style.boxShadow='0 8px 32px rgba(245,48,3,0.55)';this.style.transform='translateY(-2px)';"
                    onmouseout="this.style.boxShadow='0 4px 24px rgba(245,48,3,0.35)';this.style.transform='translateY(0)';">
-                    Crear cuenta gratis
+                    {{ __('public.about_cta_register') }}
                 </a>
                 <a href="{{ route('login') }}"
                    class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-medium
@@ -132,7 +127,7 @@
                           color: var(--ui-content-muted);"
                    onmouseover="this.style.background='var(--auth-link-bg-hover)';this.style.borderColor='var(--auth-link-border-hover)';this.style.color='var(--ui-content)';"
                    onmouseout="this.style.background='var(--auth-link-bg)';this.style.borderColor='var(--auth-link-border)';this.style.color='var(--ui-content-muted)';">
-                    Iniciar sesión
+                    {{ __('public.about_cta_login') }}
                 </a>
             </div>
         </div>
@@ -143,14 +138,14 @@
             style="background: var(--pub-base-bg); border-top: 1px solid var(--auth-divider);">
         <div class="max-w-5xl mx-auto flex items-center justify-between text-xs"
              style="color: var(--ui-content-subtle);">
-            <span>&copy; {{ date('Y') }} {{ config('app.name') }}. Todos los derechos reservados.</span>
+            <span>&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('public.footer_rights') }}</span>
             <div class="flex items-center gap-5">
                 <a href="#" class="transition-colors"
                    onmouseover="this.style.color='var(--ui-content-muted)';"
-                   onmouseout="this.style.color='var(--ui-content-subtle)';">Privacidad</a>
+                   onmouseout="this.style.color='var(--ui-content-subtle)';">{{ __('public.footer_privacy') }}</a>
                 <a href="#" class="transition-colors"
                    onmouseover="this.style.color='var(--ui-content-muted)';"
-                   onmouseout="this.style.color='var(--ui-content-subtle)';">Términos</a>
+                   onmouseout="this.style.color='var(--ui-content-subtle)';">{{ __('public.footer_terms') }}</a>
             </div>
         </div>
     </footer>
