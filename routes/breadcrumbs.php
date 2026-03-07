@@ -4,6 +4,12 @@ use App\Models\User;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
+// ── General › Notificaciones ──────────────────────────────────────────────
+
+Breadcrumbs::for('general.notifications.index', function (BreadcrumbTrail $trail) {
+    $trail->push(__('notifications.title'), route('general.notifications.index'));
+});
+
 // ── Personal ──────────────────────────────────────────────────────────────
 
 Breadcrumbs::for('personal', function (BreadcrumbTrail $trail) {

@@ -38,7 +38,11 @@
             <span class="text-sm">{{ config('app.name') }}</span>
         </a>
 
-        {{-- Derecha: usuario --}}
+        {{-- Derecha: notificaciones + usuario --}}
+        <div class="flex items-center gap-2">
+
+        @livewire('notifications.notifications-bell')
+
         <div class="relative" x-data="{ open: false }">
 
             {{-- Trigger --}}
@@ -112,6 +116,8 @@
                     </form>
                 </div>
             </div>
+        </div>
+
         </div>
     </div>
 </header>

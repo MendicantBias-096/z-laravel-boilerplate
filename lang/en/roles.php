@@ -3,15 +3,18 @@
 return [
 
     'groups' => [
-        'personal'      => 'Personal',
-        'configuracion' => 'Configuration',
-        'other'         => 'Other',
+        'personal'       => 'Personal',
+        'configuracion'  => 'Configuration',
+        'notificaciones' => 'Notifications',
+        'other'          => 'Other',
     ],
 
     'modules' => [
-        'usuarios' => 'Users',
-        'roles'    => 'Roles & permissions',
-        'sistema'  => 'System',
+        'usuarios'       => 'Users',
+        'roles'          => 'Roles & permissions',
+        'sistema'        => 'System',
+        'notif_usuarios' => 'Users',
+        'notif_roles'    => 'Roles',
     ],
 
     'permissions' => [
@@ -27,6 +30,11 @@ return [
         'eliminar roles'      => 'Delete',
 
         'administrar sistema' => 'Manage',
+
+        'notificacion usuario creado'    => 'User created',
+        'notificacion usuario eliminado' => 'User deleted',
+        'notificacion rol creado'        => 'Role created',
+        'notificacion rol actualizado'   => 'Role updated',
     ],
 
     'descriptions' => [
@@ -42,6 +50,11 @@ return [
         'eliminar roles'      => 'Allows deleting roles with no assigned users.',
 
         'administrar sistema' => 'Allows changing the application name, logo and favicon.',
+
+        'notificacion usuario creado'    => 'Receive a notification when a new user is created.',
+        'notificacion usuario eliminado' => 'Receive a notification when a user is deleted.',
+        'notificacion rol creado'        => 'Receive a notification when a new role is created.',
+        'notificacion rol actualizado'   => 'Receive a notification when a role\'s permissions are modified.',
     ],
 
 ];

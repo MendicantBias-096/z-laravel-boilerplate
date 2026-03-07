@@ -8,9 +8,10 @@ return [
     |--------------------------------------------------------------------------
     */
     'groups' => [
-        'personal'      => 'Personal',
-        'configuracion' => 'Configuración',
-        'other'         => 'Otros',
+        'personal'       => 'Personal',
+        'configuracion'  => 'Configuración',
+        'notificaciones' => 'Notificaciones',
+        'other'          => 'Otros',
     ],
 
     /*
@@ -19,9 +20,11 @@ return [
     |--------------------------------------------------------------------------
     */
     'modules' => [
-        'usuarios' => 'Usuarios',
-        'roles'    => 'Roles y permisos',
-        'sistema'  => 'Sistema',
+        'usuarios'       => 'Usuarios',
+        'roles'          => 'Roles y permisos',
+        'sistema'        => 'Sistema',
+        'notif_usuarios' => 'Usuarios',
+        'notif_roles'    => 'Roles',
     ],
 
     /*
@@ -43,6 +46,11 @@ return [
         'eliminar roles'      => 'Eliminar',
 
         'administrar sistema' => 'Administrar',
+
+        'notificacion usuario creado'    => 'Usuario creado',
+        'notificacion usuario eliminado' => 'Usuario eliminado',
+        'notificacion rol creado'        => 'Rol creado',
+        'notificacion rol actualizado'   => 'Rol actualizado',
     ],
 
     /*
@@ -63,6 +71,11 @@ return [
         'eliminar roles'      => 'Permite eliminar roles que no tengan usuarios asignados.',
 
         'administrar sistema' => 'Permite cambiar el nombre, logo y favicon de la aplicación.',
+
+        'notificacion usuario creado'    => 'Recibe una notificación cuando se crea un nuevo usuario en el sistema.',
+        'notificacion usuario eliminado' => 'Recibe una notificación cuando se elimina un usuario del sistema.',
+        'notificacion rol creado'        => 'Recibe una notificación cuando se crea un nuevo rol.',
+        'notificacion rol actualizado'   => 'Recibe una notificación cuando se modifican los permisos de un rol.',
     ],
 
 ];

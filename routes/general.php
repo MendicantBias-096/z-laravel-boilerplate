@@ -19,3 +19,6 @@ Route::get('/dashboard', fn () => view('app.general.dashboard.index'))
 Route::get('/settings', fn () => view('app.general.settings.index'))
     ->name('settings');
 
+Route::get('/notifications', fn () => view('app.general.notifications.index'))
+    ->name('general.notifications.index');
+
