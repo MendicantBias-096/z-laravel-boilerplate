@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
@@ -46,6 +47,11 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Accessor para compatibilidad con partes del sistema que usan $user->name.
      */
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(DatabaseNotification::class, 'notifiable')->latest();
+    }
+
     public function getNameAttribute(): string
     {
         return trim(($this->profile?->first_name ?? '') . ' ' . ($this->profile?->last_name ?? ''))

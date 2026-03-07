@@ -29,6 +29,8 @@ return [
             'usuarios',
             'roles',
             'sistema',
+            'notif_usuarios',
+            'notif_roles',
         ],
         'user' => [],
     ],
@@ -61,6 +63,16 @@ return [
         'sistema' => [
             'administrar sistema',
         ],
+
+        'notif_usuarios' => [
+            'notificacion usuario creado',
+            'notificacion usuario eliminado',
+        ],
+
+        'notif_roles' => [
+            'notificacion rol creado',
+            'notificacion rol actualizado',
+        ],
     ],
 
     /*
@@ -73,8 +85,9 @@ return [
      |
      */
     'module_groups' => [
-        'personal'      => ['usuarios', 'roles'],
-        'configuracion' => ['sistema'],
+        'personal'       => ['usuarios', 'roles'],
+        'configuracion'  => ['sistema'],
+        'notificaciones' => ['notif_usuarios', 'notif_roles'],
     ],
 
 
