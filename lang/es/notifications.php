@@ -19,4 +19,20 @@ return [
     'group_yesterday'    => 'Ayer',
     'group_older'        => 'Anteriores',
 
+    // Eventos
+    'events' => [
+        'user_created_title'   => 'Nuevo usuario registrado',
+        'user_created_message' => 'El usuario :name ha sido creado en el sistema.',
+        'user_updated_title'   => 'Usuario editado',
+        'user_updated_message' => 'El usuario :name ha sido modificado.',
+        'user_deleted_title'   => 'Usuario eliminado',
+        'user_deleted_message' => 'El usuario :name ha sido desactivado del sistema.',
+        'role_created_title'   => 'Nuevo rol creado',
+        'role_created_message' => 'El rol :name ha sido creado en el sistema.',
+        'role_updated_title'   => 'Rol actualizado',
+        'role_updated_message' => 'El rol :name ha sido modificado.',
+        'role_deleted_title'   => 'Rol eliminado',
+        'role_deleted_message' => 'El rol :name ha sido eliminado del sistema.',
+    ],
+
 ];

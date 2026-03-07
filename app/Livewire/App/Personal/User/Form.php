@@ -4,6 +4,9 @@ namespace App\Livewire\App\Personal\User;
 
 use App\Livewire\Forms\UserForm;
 use App\Models\User;
+use App\Notifications\UserCreatedNotification;
+use App\Notifications\UserUpdatedNotification;
+use App\Services\NotificationsService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -149,6 +152,12 @@ class Form extends Component
         }
 
         $user->syncPermissions($this->permissionList);
+
+        if ($isEdit) {
+            NotificationsService::fire('user_updated', new UserUpdatedNotification($user));
+        } else {
+            NotificationsService::fire('user_created', new UserCreatedNotification($user));
+        }
 
         $this->toast()
             ->success(__('app.user_saved'), $isEdit

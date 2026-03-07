@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\NewNotification;
 use App\Models\User;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
@@ -33,6 +34,20 @@ class NotificationsService
         }
 
         NotificationFacade::send($users, $notification);
+
+        // Broadcast en tiempo real a cada usuario
+        foreach ($users as $user) {
+            $latest = $user->notifications()->latest()->first();
+            if ($latest) {
+                broadcast(new NewNotification($user->id, [
+                    'id'         => $latest->id,
+                    'title'      => $latest->data['title'] ?? '',
+                    'message'    => $latest->data['message'] ?? '',
+                    'url'        => $latest->data['url'] ?? null,
+                    'created_at' => $latest->created_at->diffForHumans(),
+                ]));
+            }
+        }
     }
 
     /**

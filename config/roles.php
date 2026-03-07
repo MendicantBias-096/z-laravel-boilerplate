@@ -66,12 +66,14 @@ return [
 
         'notif_usuarios' => [
             'notificacion usuario creado',
+            'notificacion usuario editado',
             'notificacion usuario eliminado',
         ],
 
         'notif_roles' => [
             'notificacion rol creado',
             'notificacion rol actualizado',
+            'notificacion rol eliminado',
         ],
     ],
 

@@ -2,6 +2,9 @@
 
 namespace App\Livewire\App\Personal\Roles;
 
+use App\Notifications\RoleCreatedNotification;
+use App\Notifications\RoleUpdatedNotification;
+use App\Services\NotificationsService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
@@ -109,6 +112,13 @@ class Form extends Component
         );
 
         $role->syncPermissions($this->permissionList);
+
+        $roleName = $role->display_name ?? $role->name;
+        if ($isEdit) {
+            NotificationsService::fire('role_updated', new RoleUpdatedNotification($roleName));
+        } else {
+            NotificationsService::fire('role_created', new RoleCreatedNotification($roleName));
+        }
 
         $this->toast()
             ->success('Éxito', $isEdit ? 'Rol actualizado correctamente.' : 'Rol creado correctamente.')

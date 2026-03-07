@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\Personal\Roles;
 
+use App\Notifications\RoleDeletedNotification;
+use App\Services\NotificationsService;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
@@ -53,7 +55,10 @@ class Table extends Component
             return;
         }
 
+        $roleName = $role->display_name ?? $role->name;
         $role->delete();
+
+        NotificationsService::fire('role_deleted', new RoleDeletedNotification($roleName));
 
         $this->toast()->success(__('app.role_deleted'), __('app.role_deleted_desc'))->send();
     }

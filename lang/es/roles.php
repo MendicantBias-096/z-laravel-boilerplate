@@ -48,9 +48,11 @@ return [
         'administrar sistema' => 'Administrar',
 
         'notificacion usuario creado'    => 'Usuario creado',
+        'notificacion usuario editado'   => 'Usuario editado',
         'notificacion usuario eliminado' => 'Usuario eliminado',
         'notificacion rol creado'        => 'Rol creado',
         'notificacion rol actualizado'   => 'Rol actualizado',
+        'notificacion rol eliminado'     => 'Rol eliminado',
     ],
 
     /*
@@ -73,9 +75,11 @@ return [
         'administrar sistema' => 'Permite cambiar el nombre, logo y favicon de la aplicación.',
 
         'notificacion usuario creado'    => 'Recibe una notificación cuando se crea un nuevo usuario en el sistema.',
+        'notificacion usuario editado'   => 'Recibe una notificación cuando se edita un usuario del sistema.',
         'notificacion usuario eliminado' => 'Recibe una notificación cuando se elimina un usuario del sistema.',
         'notificacion rol creado'        => 'Recibe una notificación cuando se crea un nuevo rol.',
         'notificacion rol actualizado'   => 'Recibe una notificación cuando se modifican los permisos de un rol.',
+        'notificacion rol eliminado'     => 'Recibe una notificación cuando se elimina un rol del sistema.',
     ],
 
 ];
