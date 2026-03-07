@@ -12,24 +12,22 @@
              style="background: var(--auth-link-bg); border: 1px solid var(--auth-link-border);
                     backdrop-filter: blur(8px); color: var(--ui-content-muted);">
             <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-            Plataforma en producción
+            {{ __('public.hero_badge') }}
         </div>
 
-        <h1 class="text-5xl lg:text-7xl font-bold leading-[1.08] tracking-tight mb-5 max-w-4xl"
+        <h1 class="text-5xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 max-w-4xl"
             style="color: var(--ui-content);">
-            Landing Page
-            <span class="block mt-2"
+            {{ __('public.hero_title_1') }}
+            <span class="block mt-4"
                   style="background: linear-gradient(90deg, #ff6b47 0%, #f53003 50%, #c0392b 100%);
                          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                Abstract Background
+                {{ __('public.hero_title_2') }}
             </span>
         </h1>
 
         <p class="text-base lg:text-lg leading-relaxed mb-10 max-w-lg"
            style="color: var(--ui-content-muted);">
-            It is a long established fact that a reader will be distracted by the readable content
-            of a page when looking at its layout. The point of using Lorem Ipsum is that it has
-            a more-or-less normal distribution of letters, as opposed to using 'Content here'.
+            {{ __('public.hero_description') }}
         </p>
 
         <div class="flex items-center justify-center gap-3 flex-wrap">
@@ -39,7 +37,7 @@
                       box-shadow: 0 4px 24px rgba(245,48,3,0.35); transition: all 0.25s ease;"
                onmouseover="this.style.boxShadow='0 8px 32px rgba(245,48,3,0.55)';this.style.transform='translateY(-2px)';"
                onmouseout="this.style.boxShadow='0 4px 24px rgba(245,48,3,0.35)';this.style.transform='translateY(0)';">
-                Comenzar ahora
+                {{ __('public.hero_cta') }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
@@ -51,7 +49,7 @@
                       background: var(--auth-link-bg); color: var(--ui-content-muted);"
                onmouseover="this.style.background='var(--auth-link-bg-hover)';this.style.borderColor='var(--auth-link-border-hover)';this.style.color='var(--ui-content)';"
                onmouseout="this.style.background='var(--auth-link-bg)';this.style.borderColor='var(--auth-link-border)';this.style.color='var(--ui-content-muted)';">
-                Saber más
+                {{ __('public.hero_secondary') }}
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
@@ -71,18 +69,18 @@
         <div class="max-w-5xl mx-auto">
 
             <div class="text-center mb-14">
-                <p class="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style="color:#f53003;">Plataforma</p>
-                <h2 class="text-3xl lg:text-4xl font-bold mb-4" style="color: var(--ui-content);">Funcionalidades</h2>
+                <p class="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style="color:#f53003;">{{ __('public.features_label') }}</p>
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4" style="color: var(--ui-content);">{{ __('public.features_title') }}</h2>
                 <p class="max-w-md mx-auto text-sm leading-relaxed" style="color: var(--ui-content-muted);">
-                    Todo lo que necesitas en una sola plataforma, construida para escalar con tu negocio.
+                    {{ __('public.features_subtitle') }}
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 @foreach([
-                    ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Seguro por defecto', 'desc' => 'Autenticación robusta con Fortify, roles y permisos granulares integrados desde el primer día.'],
-                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Ultra rápido', 'desc' => 'Construido sobre Laravel 12, Livewire 3 y Vite para una experiencia de usuario verdaderamente fluida.'],
-                    ['icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z', 'title' => 'Modular', 'desc' => 'Arquitectura limpia con módulos públicos, privados y de administración completamente separados.'],
+                    ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => __('public.feat_secure'), 'desc' => __('public.feat_secure_desc')],
+                    ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => __('public.feat_fast'), 'desc' => __('public.feat_fast_desc')],
+                    ['icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z', 'title' => __('public.feat_modular'), 'desc' => __('public.feat_modular_desc')],
                 ] as $f)
                 <div class="p-6 rounded-2xl"
                      style="background: var(--pub-card-bg); border: 1px solid var(--pub-card-border);
@@ -109,14 +107,14 @@
             style="background: var(--pub-base-bg); border-top: 1px solid var(--auth-divider);">
         <div class="max-w-5xl mx-auto flex items-center justify-between text-xs"
              style="color: var(--ui-content-subtle);">
-            <span>&copy; {{ date('Y') }} {{ config('app.name') }}. Todos los derechos reservados.</span>
+            <span>&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('public.footer_rights') }}</span>
             <div class="flex items-center gap-5">
                 <a href="#" class="transition-colors"
                    onmouseover="this.style.color='var(--ui-content-muted)';"
-                   onmouseout="this.style.color='var(--ui-content-subtle)';">Privacidad</a>
+                   onmouseout="this.style.color='var(--ui-content-subtle)';">{{ __('public.footer_privacy') }}</a>
                 <a href="#" class="transition-colors"
                    onmouseover="this.style.color='var(--ui-content-muted)';"
-                   onmouseout="this.style.color='var(--ui-content-subtle)';">Términos</a>
+                   onmouseout="this.style.color='var(--ui-content-subtle)';">{{ __('public.footer_terms') }}</a>
             </div>
         </div>
     </footer>
