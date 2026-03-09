@@ -2,6 +2,11 @@
 
 return [
 
+    // Tabs
+    'tab_profile'          => 'Perfil',
+    'tab_system'           => 'Sistema',
+    'tab_permissions'      => 'Roles y permisos',
+
     // Secciones
     'system'               => 'Sistema',
     'system_desc'          => 'Nombre e identidad visual de la aplicación.',
@@ -13,8 +18,16 @@ return [
     'security_desc'        => 'Actualiza tu contraseña para mantener tu cuenta segura.',
     'language'             => 'Idioma',
     'language_desc'        => 'Idioma preferido para la interfaz del sistema.',
+    'system_identity'      => 'Identidad',
+    'system_identity_desc' => 'Nombre e identidad visual de la aplicación.',
+    'system_language'      => 'Idioma',
+    'system_language_desc' => 'Idioma preferido para la interfaz del sistema.',
+    'system_info'          => 'Información del sistema',
+    'system_info_desc'     => 'Versiones de las tecnologías utilizadas.',
     'permissions'          => 'Mis permisos',
     'permissions_desc'     => 'Accesos que tienes asignados en el sistema.',
+    'my_role'              => 'Mi rol',
+    'my_role_desc'         => 'Rol asignado actualmente en el sistema.',
 
     // Formulario de perfil
     'profile_photo'        => 'Foto de perfil',

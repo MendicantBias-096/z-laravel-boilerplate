@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ \App\Models\Setting::get('app_name', config('app.name', 'Laravel')) }}</title>
+    <title>{{ \App\Models\Setting::get('app_name', config('app.name', 'Laravel')) }}{{ $title ? ' | ' . $title : '' }}</title>
     @php $faviconPath = \App\Models\Setting::get('favicon_path') ?? \App\Models\Setting::get('logo_path'); @endphp
     @if($faviconPath)
         <link rel="icon" href="{{ Storage::disk('public')->url($faviconPath) }}">
@@ -56,7 +56,7 @@
         @if ($icon || $title)
             <div
                 id="page-subheader"
-                class="fixed start-0 end-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-canvas px-4 transition-all duration-300 ease-out lg:px-8" style="top: calc(4rem + 1px);"
+                class="fixed start-0 end-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-canvas px-4 transition-all duration-300 ease-out lg:px-8" style="top: 4rem;"
             >
                 @if ($icon)
                     <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 dark:bg-primary-950" style="margin-left: 2rem;">
@@ -77,7 +77,7 @@
         <main
             id="page-content"
             class="flex max-w-full flex-auto flex-col"
-            style="padding-top: {{ ($icon || $title) ? 'calc(8rem + 1px)' : '4rem' }}; padding-bottom: 3.5rem;"
+            style="padding-top: {{ ($icon || $title) ? '8rem' : '4rem' }}; padding-bottom: 3.5rem;"
         >
             <div class="w-full p-4 lg:p-8">
                 {{ $slot }}

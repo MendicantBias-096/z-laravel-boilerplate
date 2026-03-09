@@ -2,6 +2,11 @@
 
 return [
 
+    // Tabs
+    'tab_profile'          => 'Profile',
+    'tab_system'           => 'System',
+    'tab_permissions'      => 'Roles & permissions',
+
     // Sections
     'system'               => 'System',
     'system_desc'          => 'Application name and visual identity.',
@@ -13,8 +18,16 @@ return [
     'security_desc'        => 'Update your password to keep your account secure.',
     'language'             => 'Language',
     'language_desc'        => 'Preferred language for the system interface.',
+    'system_identity'      => 'Identity',
+    'system_identity_desc' => 'Application name and visual identity.',
+    'system_language'      => 'Language',
+    'system_language_desc' => 'Preferred language for the system interface.',
+    'system_info'          => 'System information',
+    'system_info_desc'     => 'Versions of the technologies being used.',
     'permissions'          => 'My Permissions',
     'permissions_desc'     => 'Access rights assigned to you in the system.',
+    'my_role'              => 'My role',
+    'my_role_desc'         => 'Currently assigned role in the system.',
 
     // Profile form
     'profile_photo'        => 'Profile photo',
