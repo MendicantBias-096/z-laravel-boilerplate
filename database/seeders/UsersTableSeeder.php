@@ -14,8 +14,9 @@ class UsersTableSeeder extends Seeder
             ['email' => 'admin@example.com'],
             [
                 'username'          => 'admin',
-                'password'          => Hash::make('password'),
+                'password'          => Hash::make('zygma-online-boilerplate-2026-1.0.0'),
                 'email_verified_at' => now(),
+                'is_protected'      => true,
             ]
         );
         $admin->syncRoles('admin');
