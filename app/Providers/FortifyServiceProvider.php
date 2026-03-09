@@ -8,8 +8,10 @@ use App\Auth\Responses\LoginResponse;
 use App\Auth\Responses\LogoutResponse;
 use App\Auth\Responses\RegisterResponse;
 use App\Auth\Responses\VerifyEmailResponse;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -39,6 +41,30 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = User::withTrashed()
+                ->where('email', $request->email)
+                ->first();
+
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                return null;
+            }
+
+            if ($user->trashed()) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    Fortify::username() => [__('auth.account_deleted')],
+                ]);
+            }
+
+            if (! $user->is_active) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    Fortify::username() => [__('auth.account_deactivated')],
+                ]);
+            }
+
+            return $user;
+        });
 
         Fortify::verifyEmailView(fn () => view('auth.verify-email'));
         Fortify::twoFactorChallengeView(fn () => view('auth.two-factor-challenge'));

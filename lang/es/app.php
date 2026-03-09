@@ -59,6 +59,11 @@ return [
     'success'               => 'Éxito',
     'soft_deleted'          => ':model eliminado correctamente.',
     'restored'              => ':model restaurado correctamente.',
+    'user_deactivated'      => 'Usuario desactivado correctamente.',
+    'user_activated'        => 'Usuario activado correctamente.',
+    'user_status'           => 'Estado de la cuenta',
+    'user_status_active'    => 'Activo',
+    'user_status_hint'      => 'Un usuario desactivado no podrá iniciar sesión.',
 
     // Diálogos roles
     'role_delete_title'     => '¿Eliminar rol?',

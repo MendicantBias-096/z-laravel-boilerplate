@@ -13,8 +13,10 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'password' => 'The provided password is incorrect.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'failed'               => 'These credentials do not match our records.',
+    'password'             => 'The provided password is incorrect.',
+    'throttle'             => 'Too many login attempts. Please try again in :seconds seconds.',
+    'account_deactivated'  => 'Your account has been deactivated. Contact the administrator.',
+    'account_deleted'      => 'Your account has been removed from the system.',
 
 ];

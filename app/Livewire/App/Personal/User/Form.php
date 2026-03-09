@@ -10,7 +10,7 @@ use App\Services\NotificationsService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Form extends Component
@@ -39,6 +39,7 @@ class Form extends Component
                 'first_name' => $this->record->profile?->first_name ?? '',
                 'last_name'  => $this->record->profile?->last_name ?? '',
                 'role'       => $this->record->roles->first()?->name,
+                'is_active'  => $this->record->is_active,
             ]);
 
             $this->permissionList       = $this->record->getAllPermissions()->pluck('name')->toArray();
