@@ -96,7 +96,7 @@ return [
     'feat_secure'         => 'Secure by default',
     'feat_secure_desc'    => 'Robust authentication with Fortify, granular roles and permissions built in from day one.',
     'feat_fast'           => 'Ultra fast',
-    'feat_fast_desc'      => 'Built on Laravel 12, Livewire 3 and Vite for a truly smooth user experience.',
+    'feat_fast_desc'      => 'Built on Laravel 12, Livewire 4 and Vite for a truly smooth user experience.',
     'feat_modular'        => 'Modular',
     'feat_modular_desc'   => 'Clean architecture with fully separated public, private and admin modules.',
     'stack_label'         => 'Technologies',
