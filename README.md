@@ -1,10 +1,164 @@
 # Laravel 12 Boilerplate
 
-> **Stack:** Laravel 12 · PHP 8.5 · PostgreSQL 16 · Bun · Alpine.js · Tailwind CSS v4 · Vite HMR · DDEV
+> **TALL Stack:** Laravel 12 · Livewire 4 · TallStackUI v2 · Alpine.js 3 · Tailwind CSS 4
+>
+> **Entorno:** PHP 8.5 · PostgreSQL 16 · Bun · Vite HMR · DDEV
 
-Boilerplate listo para clonar. Al clonarlo, un script interactivo te pregunta el nombre de tu proyecto y configura todo automáticamente — DDEV, `.env`, dependencias, migraciones y apertura del navegador.
+Boilerplate completo para aplicaciones Laravel empresariales. Incluye autenticación con 2FA, roles y permisos, auditoría, gestión de medios, notificaciones en tiempo real, localización multi-idioma y una arquitectura modular por dominios.
 
-> **Alcance de DDEV:** DDEV es exclusivamente una herramienta de **desarrollo local**. Gestiona contenedores Docker en tu máquina para replicar el entorno de producción sin instalar PHP, PostgreSQL ni Nginx directamente en el sistema operativo. Para desplegar en un VPS, consulta la sección [Producción en VPS](#producción-en-vps).
+---
+
+## Características principales
+
+### Autenticación completa (Fortify)
+- Login y registro con validación
+- Verificación de email (compatible con Resend y Mailpit)
+- Recuperación de contraseña
+- Autenticación de dos factores (TOTP + códigos de recuperación)
+- Usuarios protegidos (`is_protected`) inmunes a eliminación y edición
+- Usuarios desactivables (`is_active`) con bloqueo de sesión y login
+
+### Roles y permisos (Spatie)
+- CRUD completo de roles con `display_name`
+- Permisos granulares por módulo: `ver`, `crear`, `editar`, `eliminar`, `restaurar`
+- Asignación de permisos individuales por usuario
+- Plantillas de permisos basadas en rol
+- Protección a nivel de ruta, menú y componente
+
+### Auditoría (owen-it/laravel-auditing)
+- Registro automático de cambios en modelos `User`, `Profile` y `Role`
+- Historial completo de creación, edición y eliminación
+
+### Gestión de medios (Spatie Media Library)
+- Fotos de perfil de usuario
+- Logo y favicon del sistema configurables desde la interfaz
+- Almacenamiento en disco público con URLs generadas
+
+### Notificaciones
+- Sistema basado en eventos con permisos (`config/notifications.php`)
+- Notificaciones de base de datos con soft delete
+- Campana en tiempo real con broadcasting (Reverb)
+- Notificaciones de CRUD de usuarios y roles
+
+### Localización
+- Español e inglés completos (enum `Language`)
+- Selector de idioma en navbar y configuración
+- Middleware `SetLocale` con prioridad: sesión → perfil → config
+- Cookie persistente de preferencia de idioma
+
+### Interfaz de usuario
+- TallStackUI v2 como biblioteca de componentes (inputs, modals, toasts, tabs, badges, etc.)
+- Modo oscuro/claro con persistencia por cookie
+- Sidebar colapsable con menú configurable (`config/menu.php`)
+- Subheader con icono y título por página
+- Footer fijo con nombre del sistema y desarrollador
+
+### Páginas públicas
+- Landing page con hero, features y stack tecnológico
+- Página "Sobre nosotros"
+- Navbar público con selector de idioma
+- Diseño con ondas animadas y soporte dark/light
+
+### Configuración del sistema
+- Página de ajustes con tabs: Perfil, Sistema, Roles y permisos
+- Nombre, logo y favicon editables desde la UI
+- Modelo `Setting` con caché automática
+
+---
+
+## Stack tecnológico
+
+| Paquete | Versión | Propósito |
+|---|---|---|
+| PHP | 8.5 | Runtime |
+| Laravel Framework | 12 | Framework backend |
+| Livewire | 4 | Componentes reactivos |
+| TallStackUI | 2 | Biblioteca de componentes Blade |
+| Tailwind CSS | 4 | Framework CSS utility-first |
+| Alpine.js | 3 | Interactividad frontend |
+| Spatie Permission | 7 | Roles y permisos |
+| Spatie Media Library | 11 | Gestión de archivos y medios |
+| Laravel Auditing | 14 | Auditoría de cambios en modelos |
+| Laravel Fortify | 1 | Autenticación headless con 2FA |
+| Laravel Sanctum | — | Tokens API |
+| Laravel Reverb | — | WebSockets en tiempo real |
+
+---
+
+## Arquitectura
+
+### Organización por dominios
+
+El área autenticada se organiza en **dominios** y cada dominio contiene **módulos**:
+
+| Dominio | Prefijo URL | Archivo de rutas | Módulos |
+|---|---|---|---|
+| General | `/` | `routes/general.php` | Dashboard, Settings, Notifications |
+| Personal | `/personal` | `routes/personal.php` | Usuarios, Roles |
+
+### Patrón de tres capas
+
+Cada página sigue esta convención:
+
+```
+Ruta       →  fn () => view('{wrapper}')          nunca apunta a clase Livewire
+Wrapper    →  {module}/index.blade.php             <x-layouts.app> + @livewire(...)
+Componente →  {module}/_index.blade.php            HTML real, sin layout
+Livewire   →  {Module}/Index.php                   return view('...._index')
+```
+
+### Estructura de archivos
+
+```
+app/
+├── Actions/Fortify/              # Acciones de auth (crear usuario, reset password)
+├── Auth/Responses/               # Respuestas personalizadas de Fortify
+├── Enums/Language.php            # Enum de idiomas soportados
+├── Events/NewNotification.php    # Evento broadcast de notificaciones
+├── Http/Middleware/
+│   ├── EnsureUserIsActive.php    # Expulsa usuarios desactivados/eliminados
+│   └── SetLocale.php             # Establece idioma de la app
+├── Livewire/
+│   ├── App/{Domain}/{Module}/    # Componentes del área autenticada
+│   ├── Auth/                     # Componentes de autenticación
+│   ├── Forms/UserForm.php        # Form Object de usuarios
+│   ├── Layouts/Navbar.php        # Barra de navegación
+│   └── Public/                   # Componentes de páginas públicas
+├── Models/
+│   ├── User.php                  # Usuario con soft delete y protección
+│   ├── Profile.php               # Perfil (nombre, foto, locale)
+│   ├── Role.php                  # Rol (extiende Spatie con auditoría)
+│   ├── Setting.php               # Configuración key-value con caché
+│   └── DatabaseNotification.php  # Notificación con soft delete
+├── Notifications/                # Clases de notificación por evento
+└── Services/
+    └── NotificationsService.php  # Dispatcher de notificaciones por permiso
+
+config/
+├── menu.php                      # Estructura del sidebar
+├── notifications.php             # Mapeo evento → permiso → canales
+├── roles.php                     # Módulos y permisos por grupo
+└── permission.php                # Config de Spatie Permission
+
+lang/
+├── es/                           # Traducciones en español
+└── en/                           # Traducciones en inglés
+
+resources/views/
+├── app/{domain}/{module}/        # Vistas del área autenticada
+├── auth/                         # Vistas de autenticación
+├── components/
+│   ├── layouts/                  # Layouts (app, public, sidebar, navbar)
+│   └── app/settings/             # Componentes de tabs de configuración
+└── public/                       # Vistas de páginas públicas
+
+routes/
+├── web.php                       # Rutas públicas y auth
+├── general.php                   # Dominio General (dashboard, settings)
+├── personal.php                  # Dominio Personal (usuarios, roles)
+├── channels.php                  # Canales de broadcast
+└── breadcrumbs.php               # Breadcrumbs
+```
 
 ---
 
@@ -19,7 +173,7 @@ cd mi-proyecto
 bash setup.sh
 ```
 
-El script te pedirá el nombre del proyecto y hará todo lo demás:
+El script te pedirá el nombre del proyecto y configurará todo: DDEV, `.env`, dependencias, migraciones, seeders y apertura del navegador.
 
 ```
   Laravel 12 Boilerplate — Project Setup
@@ -45,48 +199,33 @@ Una vez completado, abre una segunda terminal para Vite:
 ddev bun run dev
 ```
 
+### Usuarios por defecto
+
+| Rol | Email | Contraseña | Notas |
+|---|---|---|---|
+| Admin | `admin@example.com` | `zygma-online-boilerplate-2026-1.0.0` | Protegido, no eliminable |
+| User | `user@example.com` | `password` | Usuario estándar |
+
+> **Alcance de DDEV:** DDEV es exclusivamente una herramienta de **desarrollo local**. Gestiona contenedores Docker en tu máquina para replicar el entorno de producción. Para desplegar en un VPS, consulta la sección [Producción en VPS](#producción-en-vps).
+
 ---
 
 ## Tabla de contenido
 
-1. [Quick Start](#quick-start)
-2. [Árbol de archivos](#árbol-de-archivos)
-3. [Requisitos](#requisitos)
-4. [Instalación del entorno](#instalación-del-entorno)
-   - [Mac](#mac)
-   - [Windows (WSL2)](#windows-wsl2)
-5. [Setup manual (sin script)](#setup-manual-sin-script)
-6. [Configurar la base de datos](#configurar-la-base-de-datos)
-7. [Vite + HMR en DDEV](#vite--hmr-en-ddev)
-8. [Flujo de trabajo diario](#flujo-de-trabajo-diario)
-9. [Comandos disponibles](#comandos-disponibles)
-10. [HMR Troubleshooting](#hmr-troubleshooting)
-11. [Compatibilidad Herd / Laragon / Valet](#compatibilidad-herd--laragon--valet)
-12. [Producción en VPS](#producción-en-vps)
-
----
-
-## Árbol de archivos
-
-```
-laravel12-boilerplate/
-├── .ddev/
-│   ├── config.yaml                  # Configuración DDEV (versionada)
-│   ├── commands/web/bun             # Habilita: ddev bun <cmd>
-│   └── web-build/Dockerfile         # Instala Bun en el contenedor
-├── resources/
-│   ├── css/app.css                  # Tailwind CSS v4
-│   └── js/app.js                    # Alpine.js entry point
-├── .env.example                     # Template .env neutral (Herd/Laragon)
-├── .env.ddev.example                # Template .env para DDEV
-├── .gitignore
-├── Makefile                         # Atajos: make dev, make migrate…
-├── README.md
-├── setup.sh                         # Script de primer setup interactivo
-├── package.json                     # Scripts Bun + Alpine.js + Tailwind
-├── vite.config.js                   # Config Vite inteligente (detecta DDEV)
-└── [archivos Laravel estándar]      # app/, config/, routes/, etc.
-```
+1. [Características principales](#características-principales)
+2. [Stack tecnológico](#stack-tecnológico)
+3. [Arquitectura](#arquitectura)
+4. [Quick Start](#quick-start)
+5. [Requisitos](#requisitos)
+6. [Instalación del entorno](#instalación-del-entorno)
+7. [Setup manual (sin script)](#setup-manual-sin-script)
+8. [Configurar la base de datos](#configurar-la-base-de-datos)
+9. [Vite + HMR en DDEV](#vite--hmr-en-ddev)
+10. [Flujo de trabajo diario](#flujo-de-trabajo-diario)
+11. [Comandos disponibles](#comandos-disponibles)
+12. [HMR Troubleshooting](#hmr-troubleshooting)
+13. [Compatibilidad Herd / Laragon / Valet](#compatibilidad-herd--laragon--valet)
+14. [Producción en VPS](#producción-en-vps)
 
 ---
 
@@ -110,7 +249,7 @@ DDEV necesita un **motor Docker** corriendo. No requiere Docker Desktop específ
 | [Colima](https://github.com/abiosoft/colima) | Gratis / open source | Línea de comandos, sin GUI |
 | [Rancher Desktop](https://rancherdesktop.io) | Gratis / open source | Con GUI |
 
-> En Mac, Docker Engine no corre de forma nativa (necesita una VM Linux). Cualquiera de las opciones anteriores provee esa VM. No existe una opción "solo engine" como en Linux.
+> En Mac, Docker Engine no corre de forma nativa (necesita una VM Linux). Cualquiera de las opciones anteriores provee esa VM.
 
 ### Windows
 
@@ -226,7 +365,7 @@ ddev start
 ddev composer install
 ddev artisan key:generate
 ddev bun install
-ddev artisan migrate
+ddev artisan migrate --seed
 ddev launch
 ```
 
@@ -263,7 +402,7 @@ database:
 ddev restart
 ```
 
-> ⚠️ Los datos existentes se pierden al cambiar el tipo de base de datos.
+> Los datos existentes se pierden al cambiar el tipo de base de datos.
 
 **3. Actualizar `.env`:**
 
@@ -279,7 +418,7 @@ DB_PASSWORD=db
 **4. Migrar:**
 
 ```bash
-ddev artisan migrate
+ddev artisan migrate --seed
 ```
 
 ---
@@ -404,9 +543,9 @@ ddev exec bun --version
 
 ---
 
-## Entornos locales alternativos (Herd, Laragon, XAMPP)
+## Compatibilidad Herd / Laragon / Valet
 
-DDEV es la vía principal de este boilerplate porque gestiona PHP, PostgreSQL, Nginx y el proxy de Vite en contenedores aislados, sin tocar el sistema operativo. Sin embargo, puedes usar otras herramientas con pasos adicionales.
+DDEV es la vía principal de este boilerplate. Sin embargo, puedes usar otras herramientas con pasos adicionales.
 
 ### Compatibilidad de `vite.config.js`
 
@@ -414,218 +553,115 @@ El boilerplate **ya tiene soporte incorporado** para entornos sin DDEV:
 
 ```js
 const isDdev = !!process.env.DDEV_HOSTNAME
-// DDEV_HOSTNAME solo existe dentro del contenedor DDEV.
-// Fuera de él, Vite usa sus propios defaults sin interferencia.
+// Fuera de DDEV, Vite usa sus propios defaults sin interferencia.
 ```
-
-Esto significa que con Herd, Laragon o Valet, Vite HMR **funciona sin ningún cambio** en `vite.config.js`. Simplemente ejecutas `bun run dev` en tu terminal.
 
 ### Qué necesitas configurar manualmente
 
 | | Herd Free | Herd Pro | Laragon | XAMPP |
 |---|---|---|---|---|
 | **PHP 8.5** | ✅ | ✅ | ✅ | ❌ |
-| **PostgreSQL** | Manual¹ | ✅ incluido | ✅ Quick Add² | ❌ muy complejo |
+| **PostgreSQL** | Manual¹ | ✅ incluido | ✅ Quick Add² | ❌ |
 | **Bun** | `brew install bun` | `brew install bun` | instalador manual | instalador manual |
 | **Vite HMR** | ✅ sin cambios | ✅ sin cambios | ✅ sin cambios | ⚠️ problemático |
 | **Plataformas** | Mac / Win | Mac / Win | Solo Windows | Mac / Win / Linux |
-| **Coste** | Gratis | $99/año | Gratis | Gratis |
 
-¹ Herd Free: instalar PostgreSQL por separado (DBngin o instalador oficial) y apuntar `DB_HOST=127.0.0.1`.
+¹ Herd Free: instalar PostgreSQL por separado (DBngin o instalador oficial).
 ² Laragon: Menu → Quick Add → PostgreSQL.
 
-> **XAMPP no está recomendado** para este stack: no soporta PHP 8.5, PostgreSQL requiere configuración muy manual y Vite HMR genera problemas frecuentes con WebSockets.
-
 ### Setup con Herd o Laragon
-
-En lugar de `bash setup.sh` (que configura DDEV), haz los pasos manualmente:
 
 ```bash
 # 1. Clonar
 git clone https://github.com/MendicantBias-096/z-laravel-boilerplate mi-proyecto
 cd mi-proyecto
 
-# 2. Instalar Bun en tu máquina (si no lo tienes)
-# Mac:
-brew install bun
-# Windows: https://bun.sh
-
-# 3. Configurar .env desde la plantilla neutral
+# 2. Configurar .env
 cp .env.example .env
-# Editar .env:
-#   APP_URL=http://mi-proyecto.test
-#   DB_CONNECTION=pgsql (o mysql si usas MySQL)
-#   DB_HOST=127.0.0.1
-#   DB_DATABASE=mi_proyecto
-#   DB_USERNAME=...
-#   DB_PASSWORD=...
+# Editar: APP_URL, DB_CONNECTION, DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
 
-# 4. Instalar dependencias
+# 3. Instalar dependencias
 composer install
 php artisan key:generate
 bun install
 
-# 5. Migraciones
-php artisan migrate
+# 4. Migraciones y seeders
+php artisan migrate --seed
 
-# 6. Vite en modo desarrollo (terminal separada)
+# 5. Vite (terminal separada)
 bun run dev
-```
-
-El `Makefile` también funciona si tienes `make` disponible, pero apuntando a tu PHP local:
-
-```bash
-# Ajusta la variable PHP al inicio del Makefile si usas Herd/Laragon
-PHP = php          # o php8.5 si tienes múltiples versiones
-COMPOSER = composer
-```
-
----
-
-## Cambiar el nombre de proyecto después del setup
-
-Si ya corriste `setup.sh` y quieres renombrar el proyecto:
-
-```bash
-# 1. Detener DDEV
-ddev stop
-
-# 2. Editar .ddev/config.yaml
-#    Cambiar: name: nuevo-nombre
-
-# 3. Editar .env
-#    Cambiar: APP_URL y VITE_DEV_SERVER_URL con el nuevo nombre
-
-# 4. Reiniciar
-ddev start
-ddev artisan optimize:clear
 ```
 
 ---
 
 ## Producción en VPS
 
-> DDEV **no se usa en producción**. En el VPS sirves la app directamente con Nginx + PHP-FPM instalados en el sistema.
+> DDEV **no se usa en producción**. En el VPS sirves la app directamente con Nginx + PHP-FPM.
 
-### El problema: múltiples versiones de PHP en el mismo VPS
+### Aliases globales + Makefile por proyecto
 
-Cuando tienes varios proyectos con distintas versiones de PHP, el punto de dolor es el **CLI**: el comando `php` apunta a una sola versión global, pero Composer y Artisan necesitan la versión correcta de cada proyecto.
-
-```bash
-# Nginx sirve con la versión correcta ✅ (configurado por socket FPM)
-fastcgi_pass unix:/run/php/php8.3-fpm.sock;
-
-# Pero en terminal, composer usa el PHP global ❌
-composer update   # puede estar usando PHP 8.5 en un proyecto que requiere 8.3
-```
-
-### Solución: aliases globales + Makefile por proyecto
-
-**1. Añadir aliases en el servidor** (`~/.bashrc` o `~/.zshrc`):
+**1. Aliases en el servidor** (`~/.bashrc`):
 
 ```bash
-# ~/.bashrc — aliases de PHP por versión
-alias php83='php8.3'
-alias php84='php8.4'
 alias php85='php8.5'
-
-alias composer83='php8.3 /usr/local/bin/composer'
-alias composer84='php8.4 /usr/local/bin/composer'
 alias composer85='php8.5 /usr/local/bin/composer'
 ```
 
-```bash
-source ~/.bashrc
-```
-
-**2. Makefile en cada proyecto** con la versión de PHP explícita:
-
-Cada proyecto define su propio `PHP` y `COMPOSER` en el `Makefile`, de forma que cualquier operación usa la versión correcta sin importar cuál sea el `php` global del servidor.
+**2. Makefile por proyecto** con la versión de PHP explícita:
 
 ```makefile
-# Makefile — variables de entorno del proyecto
 PHP      = php8.5
 COMPOSER = php8.5 /usr/local/bin/composer
 
-# ── Dependencias ──────────────────────────────────────────────
-install: ## Instalar dependencias PHP (producción, sin dev)
+install:
 	$(COMPOSER) install --no-dev --optimize-autoloader
 
-update: ## Actualizar dependencias
-	$(COMPOSER) update
-
-# ── Assets ────────────────────────────────────────────────────
-build: ## Compilar assets con Bun
+build:
 	bun install --frozen-lockfile
 	bun run build
 
-# ── Laravel ───────────────────────────────────────────────────
-migrate: ## Ejecutar migraciones pendientes
+migrate:
 	$(PHP) artisan migrate --force
 
-cache: ## Cachear config, rutas y vistas para producción
+cache:
 	$(PHP) artisan optimize
 
-cache-clear: ## Limpiar todos los cachés
-	$(PHP) artisan optimize:clear
-
-queue-restart: ## Reiniciar workers de cola
-	$(PHP) artisan queue:restart
-
-# ── Despliegue completo ───────────────────────────────────────
-deploy: install build migrate cache ## Despliegue completo (install + build + migrate + cache)
+deploy: install build migrate cache
 ```
 
-**Uso en el servidor:**
+**Uso:**
 
 ```bash
 cd /var/www/mi-proyecto
-make deploy        # despliegue completo
-make migrate       # solo migraciones
-make cache-clear   # limpiar caché tras cambios de config
+make deploy
 ```
 
-### Nginx + PHP-FPM por versión
-
-Cada virtual host apunta al socket FPM de su versión:
+### Nginx + PHP-FPM
 
 ```nginx
-# /etc/nginx/sites-available/mi-proyecto
 server {
     listen 443 ssl;
     server_name mi-proyecto.com;
     root /var/www/mi-proyecto/public;
 
     location ~ \.php$ {
-        fastcgi_pass unix:/run/php/php8.5-fpm.sock;  # ← versión del proyecto
+        fastcgi_pass unix:/run/php/php8.5-fpm.sock;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
     }
 }
 ```
 
-### Instalar múltiples versiones de PHP (Ubuntu/Debian)
+### Instalar PHP en Ubuntu/Debian
 
 ```bash
-# Añadir PPA de Ondřej Surý (todas las versiones de PHP)
 sudo add-apt-repository ppa:ondrej/php
 sudo apt update
-
-# Instalar las versiones que necesites
-sudo apt install php8.3-fpm php8.3-cli php8.3-pgsql php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip
 sudo apt install php8.5-fpm php8.5-cli php8.5-pgsql php8.5-mbstring php8.5-xml php8.5-curl php8.5-zip
-
-# Verificar que ambas FPM están activas
-sudo systemctl status php8.3-fpm
-sudo systemctl status php8.5-fpm
-
-# Confirmar binarios disponibles
-php8.3 --version
-php8.5 --version
 ```
 
 ---
 
 ## Créditos
 
-[DDEV](https://ddev.com) · [Laravel](https://laravel.com) · [Bun](https://bun.sh) · [Alpine.js](https://alpinejs.dev) · [Tailwind CSS](https://tailwindcss.com)
+[Laravel](https://laravel.com) · [Livewire](https://livewire.laravel.com) · [TallStackUI](https://tallstackui.com) · [Alpine.js](https://alpinejs.dev) · [Tailwind CSS](https://tailwindcss.com) · [Spatie](https://spatie.be) · [DDEV](https://ddev.com) · [Bun](https://bun.sh)
