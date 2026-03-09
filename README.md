@@ -231,43 +231,15 @@ ddev bun run dev
 
 ## Requisitos
 
-DDEV necesita un **motor Docker** corriendo. No requiere Docker Desktop específicamente — es solo una de varias formas de obtener ese motor.
+DDEV necesita un **motor Docker** corriendo.
 
-### Mac
-
-| Herramienta | Notas |
-|---|---|
-| Motor Docker | Elige una opción abajo |
-| DDEV 1.25+ | Instalado con Homebrew |
-
-**Opciones de motor Docker en Mac** (elige una):
-
-| Opción | Coste | Notas |
+| Plataforma | Motor Docker | Herramientas |
 |---|---|---|
-| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Gratis (uso personal) | La más conocida |
-| [OrbStack](https://orbstack.dev) | Gratis (uso personal) | Más ligero y rápido, recomendado |
-| [Colima](https://github.com/abiosoft/colima) | Gratis / open source | Línea de comandos, sin GUI |
-| [Rancher Desktop](https://rancherdesktop.io) | Gratis / open source | Con GUI |
+| **Mac** | [Docker Desktop](https://www.docker.com/products/docker-desktop/) (gratis, uso personal) | Homebrew, DDEV 1.25+ |
+| **Windows** | Docker Engine en WSL2 | WSL2 + Ubuntu 22.04+, DDEV 1.25+ |
+| **Linux** | Docker Engine | DDEV 1.25+ |
 
-> En Mac, Docker Engine no corre de forma nativa (necesita una VM Linux). Cualquiera de las opciones anteriores provee esa VM.
-
-### Windows
-
-| Herramienta | Notas |
-|---|---|
-| WSL2 + Ubuntu 22.04+ | Requerido para DDEV |
-| Motor Docker | Elige una opción abajo |
-| DDEV 1.25+ | Instalado **dentro de WSL2** |
-
-**Opciones de motor Docker en Windows** (elige una):
-
-| Opción | Coste | Notas |
-|---|---|---|
-| Docker Engine en WSL2 | Gratis / open source | Sin GUI, instala directo en Ubuntu. **Recomendado** |
-| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | Gratis (uso personal) | Con GUI, configura WSL2 automáticamente |
-| [Rancher Desktop](https://rancherdesktop.io) | Gratis / open source | Alternativa con GUI |
-
-> **Docker Desktop no es obligatorio en Windows.** Puedes instalar Docker Engine directamente en Ubuntu (WSL2) y DDEV lo detecta sin problemas.
+> Existen alternativas como OrbStack, Colima o Rancher Desktop, pero Docker Desktop (Mac) y Docker Engine (Windows/Linux) son las opciones recomendadas por defecto.
 
 ---
 
@@ -279,9 +251,8 @@ DDEV necesita un **motor Docker** corriendo. No requiere Docker Desktop específ
 # 1. Homebrew (si no lo tienes)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# 2. Docker Desktop  —  O alternativamente OrbStack (más ligero):
+# 2. Docker Desktop
 brew install --cask docker
-# brew install --cask orbstack
 
 # 3. DDEV
 brew install ddev/ddev/ddev
@@ -300,27 +271,34 @@ wsl --install
 wsl --set-default-version 2
 ```
 
-**2. Motor Docker — elige una opción:**
-
-**Opción A: Docker Engine directo en WSL2 (sin Docker Desktop)**
+**2. Docker Engine — dentro de Ubuntu (WSL2):**
 
 ```bash
-# Dentro de Ubuntu (WSL2)
 curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER
 # Cerrar y reabrir la terminal para aplicar el grupo
 docker run hello-world   # verificar
 ```
 
-**Opción B: Docker Desktop**
-- Instalar [Docker Desktop para Windows](https://www.docker.com/products/docker-desktop/)
-- Settings → General → activar **"Use the WSL 2 based engine"**
-- Settings → Resources → WSL Integration → activar Ubuntu
-
-**3. DDEV — dentro de Ubuntu (WSL2):**
+**3. DDEV:**
 
 ```bash
 sudo apt update && sudo apt upgrade -y
+curl -fsSL https://ddev.com/install.sh | bash
+ddev version
+```
+
+> Todos los comandos del proyecto (`bash setup.sh`, `ddev start`, etc.) se ejecutan desde la terminal de Ubuntu en WSL2.
+
+### Linux
+
+```bash
+# 1. Docker Engine
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+# Cerrar y reabrir la terminal
+
+# 2. DDEV
 curl -fsSL https://ddev.com/install.sh | bash
 ddev version
 ```

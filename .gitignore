@@ -7,8 +7,9 @@ Thumbs.db
 
 # ── Variables de entorno ──────────────────────────────────────────────────────
 .env
-.env.backup
-.env.production
+.env.*
+!.env.example
+!.env.ddev.example
 /auth.json
 
 # ── IDEs y editores ───────────────────────────────────────────────────────────
