@@ -7,7 +7,7 @@ use App\Notifications\RoleUpdatedNotification;
 use App\Services\NotificationsService;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Form extends Component
