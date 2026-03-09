@@ -89,6 +89,17 @@
                         placeholder="{{ __('app.user_role_ph') }}"
                         :hint="$record ? __('app.user_role_hint_edit') : __('app.user_role_hint_new')"
                     />
+
+                    @if ($record)
+                        <div class="flex flex-col justify-center">
+                            <x-ts-toggle
+                                wire:model="form.is_active"
+                                label="{{ __('app.user_status_active') }}"
+                                color="green"
+                            />
+                            <p class="mt-1 text-xs text-content-muted">{{ __('app.user_status_hint') }}</p>
+                        </div>
+                    @endif
                 </div>
 
 

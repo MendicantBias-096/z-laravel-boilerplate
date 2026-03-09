@@ -59,6 +59,11 @@ return [
     'success'               => 'Success',
     'soft_deleted'          => ':model deleted successfully.',
     'restored'              => ':model restored successfully.',
+    'user_deactivated'      => 'User deactivated successfully.',
+    'user_activated'        => 'User activated successfully.',
+    'user_status'           => 'Account status',
+    'user_status_active'    => 'Active',
+    'user_status_hint'      => 'A deactivated user will not be able to log in.',
 
     // Role dialogs
     'role_delete_title'     => 'Delete role?',

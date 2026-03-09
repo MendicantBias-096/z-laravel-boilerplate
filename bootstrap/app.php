@@ -27,6 +27,7 @@ health: '/up',
 
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
+            \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
 
         $middleware->alias([

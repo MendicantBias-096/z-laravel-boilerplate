@@ -129,6 +129,8 @@
         @interact('column_status', $row)
             @if ($row->trashed())
                 <x-ts-badge text="{{ __('table.users.status_deleted') }}" color="red" />
+            @elseif (! $row->is_active)
+                <x-ts-badge text="{{ __('table.users.status_inactive') }}" color="yellow" />
             @else
                 <x-ts-badge text="{{ __('table.users.status_active') }}" color="green" />
             @endif

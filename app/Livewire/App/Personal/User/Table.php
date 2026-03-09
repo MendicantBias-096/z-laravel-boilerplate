@@ -73,8 +73,13 @@ class Table extends Component
             ['index' => 'action',      'label' => __('table.users.headers.actions'),         'sortable' => false],
         ];
 
-        $users = User::withTrashed()
-            ->where('id', '!=', auth()->id())
+        $canRestore = auth()->user()->can('restaurar usuarios');
+
+        $query = $canRestore
+            ? User::withTrashed()->where('id', '!=', auth()->id())
+            : User::where('id', '!=', auth()->id());
+
+        $users = $query
             ->with(['roles', 'profile.media'])
             ->withCount('permissions')
             ->when($this->search, fn ($q) => $q->where(function ($q) {
@@ -90,8 +95,15 @@ class Table extends Component
             ->paginate($this->quantity);
 
         $users->getCollection()->transform(function (User $user) {
-            $user->role   = $user->roles->first()?->display_name ?? $user->roles->first()?->name ?? '—';
-            $user->status = $user->trashed() ? __('table.users.status_deleted') : __('table.users.status_active');
+            $user->role = $user->roles->first()?->display_name ?? $user->roles->first()?->name ?? '—';
+
+            if ($user->trashed()) {
+                $user->status = __('table.users.status_deleted');
+            } elseif (! $user->is_active) {
+                $user->status = __('table.users.status_inactive');
+            } else {
+                $user->status = __('table.users.status_active');
+            }
 
             return $user;
         });

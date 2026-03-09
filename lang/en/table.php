@@ -50,8 +50,9 @@ return [
         ],
         'filter_email' => 'Email',
         'filter_email_placeholder' => 'Filter by email...',
-        'status_active'  => 'Active',
-        'status_deleted' => 'Deleted',
+        'status_active'      => 'Active',
+        'status_inactive'    => 'Deactivated',
+        'status_deleted'     => 'Deleted',
     ],
 
     // Roles

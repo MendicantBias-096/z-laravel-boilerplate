@@ -23,6 +23,8 @@ class UserForm extends Form
 
     public ?string $role = null;
 
+    public bool $is_active = true;
+
     public function rules(): array
     {
         return [
@@ -33,14 +35,16 @@ class UserForm extends Form
             'password'              => $this->id ? ['nullable', 'string', 'min:8', 'confirmed'] : ['required', 'string', 'min:8', 'confirmed'],
             'password_confirmation' => ['nullable', 'string'],
             'role'                  => ['nullable', 'string', 'exists:roles,name'],
+            'is_active'             => ['boolean'],
         ];
     }
 
     public function store(): User
     {
         $data = [
-            'username' => $this->username,
-            'email'    => $this->email,
+            'username'  => $this->username,
+            'email'     => $this->email,
+            'is_active' => $this->is_active,
         ];
 
         if ($this->password) {
