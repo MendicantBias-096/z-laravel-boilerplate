@@ -45,6 +45,7 @@ Route::prefix('personal')->name('personal.')->group(function () {
         Route::middleware('permission:editar usuarios')
             ->get('/{user}/edit', function (User $user) {
                 abort_if($user->id === auth()->id(), 403);
+                abort_if($user->is_protected, 404);
 
                 return view('app.personal.users.edit', ['user' => $user]);
             })

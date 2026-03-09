@@ -24,7 +24,7 @@ class Table extends Component
         $this->authorize($this->deletePermission);
 
         $user = User::find($id);
-        if ($user) {
+        if ($user && !$user->is_protected) {
             $userName = $user->name;
             $user->delete();
             NotificationsService::fire('user_deleted', new UserDeletedNotification($userName));
@@ -76,8 +76,8 @@ class Table extends Component
         $canRestore = auth()->user()->can('restaurar usuarios');
 
         $query = $canRestore
-            ? User::withTrashed()->where('id', '!=', auth()->id())
-            : User::where('id', '!=', auth()->id());
+            ? User::withTrashed()->where('id', '!=', auth()->id())->where('is_protected', false)
+            : User::where('id', '!=', auth()->id())->where('is_protected', false);
 
         $users = $query
             ->with(['roles', 'profile.media'])

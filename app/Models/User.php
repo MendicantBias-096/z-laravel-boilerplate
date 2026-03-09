@@ -25,6 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail, AuditableContract
         'email',
         'password',
         'is_active',
+        'is_protected',
     ];
 
     protected $hidden = [
@@ -40,7 +41,20 @@ class User extends Authenticatable implements MustVerifyEmail, AuditableContract
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
             'is_active'         => 'boolean',
+            'is_protected'      => 'boolean',
         ];
+    }
+
+    /**
+     * Impide eliminar (soft delete) a usuarios protegidos.
+     */
+    public function delete(): ?bool
+    {
+        if ($this->is_protected) {
+            return false;
+        }
+
+        return parent::delete();
     }
 
     public function profile(): HasOne
