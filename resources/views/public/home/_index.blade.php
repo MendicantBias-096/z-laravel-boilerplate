@@ -102,6 +102,40 @@
         </div>
     </section>
 
+    {{-- STACK --}}
+    <section class="relative z-10 py-28 px-8 lg:px-16" style="background: var(--pub-base-bg);">
+        <div class="max-w-5xl mx-auto">
+
+            <div class="text-center mb-14">
+                <p class="text-xs font-semibold tracking-[0.2em] uppercase mb-3" style="color:#f53003;">{{ __('public.stack_label') }}</p>
+                <h2 class="text-3xl lg:text-4xl font-bold mb-4" style="color: var(--ui-content);">{{ __('public.stack_title') }}</h2>
+                <p class="max-w-md mx-auto text-sm leading-relaxed" style="color: var(--ui-content-muted);">
+                    {{ __('public.stack_subtitle') }}
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                @foreach ($stack as $tech)
+                <div class="p-5 rounded-2xl text-center"
+                     style="background: var(--pub-card-bg); border: 1px solid var(--pub-card-border);
+                            backdrop-filter:blur(8px); transition:all 0.3s ease;"
+                     onmouseover="this.style.background='rgba(245,48,3,0.05)';this.style.borderColor='rgba(245,48,3,0.18)';this.style.transform='translateY(-4px)';"
+                     onmouseout="this.style.background='var(--pub-card-bg)';this.style.borderColor='var(--pub-card-border)';this.style.transform='translateY(0)';">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3"
+                         style="background:rgba(245,48,3,0.12);border:1px solid rgba(245,48,3,0.25);">
+                        <svg class="w-5 h-5" style="color:#f97055;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $tech['icon'] }}"/>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-semibold" style="color: var(--ui-content);">{{ $tech['name'] }}</p>
+                    <p class="text-xs mt-1" style="color: var(--ui-content-muted);">{{ $tech['version'] }}</p>
+                </div>
+                @endforeach
+            </div>
+
+        </div>
+    </section>
+
     {{-- Footer --}}
     <footer class="relative z-10 py-8 px-8 lg:px-16"
             style="background: var(--pub-base-bg); border-top: 1px solid var(--auth-divider);">
