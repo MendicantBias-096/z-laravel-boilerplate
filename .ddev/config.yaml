@@ -18,7 +18,7 @@ web_environment:
   - DB_DATABASE=db
   - DB_USERNAME=db
   - DB_PASSWORD=db
-  - VITE_DEV_SERVER_URL=https://laravel12-boilerplate.ddev.site:5173
+  - VITE_DEV_SERVER_URL=${VITE_DEV_SERVER_URL:-https://laravel12-boilerplate.ddev.site:5173}
   - MAIL_HOST=localhost
   - MAIL_PORT=1025
   - REVERB_HOST=laravel12-boilerplate.ddev.site
@@ -29,16 +29,9 @@ web_environment:
   - VITE_REVERB_PORT=8085
   - VITE_REVERB_SCHEME=https
 
-# ── Vite HMR port ──────────────────────────────────────────────────────────
-web_extra_exposed_ports:
-  - name: vite
-    container_port: 5173
-    http_port: 5172
-    https_port: 5173
-  - name: reverb
-    container_port: 8080
-    http_port: 8084
-    https_port: 8085
+# ── Puertos extra (Vite HMR, Reverb) ──────────────────────────────────────────
+# Definidos en config.local.yaml para permitir override por máquina.
+# Ver config.local.yaml.example como referencia.
 
 use_dns_when_possible: true
 composer_version: "2"
