@@ -12,6 +12,7 @@ database:
 # El .env queda como config de Herd; DDEV no lo toca.
 web_environment:
   - APP_URL=https://laravel12-boilerplate.ddev.site
+  - DB_CONNECTION=pgsql
   - DB_HOST=db
   - DB_PORT=5432
   - DB_DATABASE=db
