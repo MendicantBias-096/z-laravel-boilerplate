@@ -151,9 +151,10 @@ routes/{domain}.php
 
 ## Registered Domains
 
-| Domain | URL prefix | Route file |
-|---|---|---|
-| General | `/` | `routes/general.php` |
+| Domain | URL prefix | Route file | Modules |
+|---|---|---|---|
+| General | `/` | `routes/general.php` | Dashboard |
+| Personal | `/personal` | `routes/personal.php` | Roles, Usuarios |
 
 Use the `create-module` skill for full instructions on creating new domains and modules.
 

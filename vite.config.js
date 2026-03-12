@@ -21,7 +21,7 @@ export default defineConfig({
     server: isDdev
         ? {
               host: '0.0.0.0',     // listen on all interfaces inside the container
-              port: 5173,
+              port: parseInt(process.env.VITE_PORT) || 5173,
               strictPort: true,
               watch: {
                   usePolling: true, // required for file-watching inside Docker
@@ -35,7 +35,7 @@ export default defineConfig({
               hmr: {
                   host: ddevHost,  // e.g. laravel12-boilerplate.ddev.site
                   protocol: 'wss',
-                  clientPort: 5173,
+                  clientPort: parseInt(process.env.VITE_PORT) || 5173,
               },
           }
         : {
