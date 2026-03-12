@@ -91,7 +91,8 @@ echo ""
 echo -e "  ┌──────────────────────────────────────────────────────┐"
 echo -e "  │  ${BOLD}Project:${RESET}   ${PROJECT_NAME}"
 echo -e "  │  ${BOLD}App URL:${RESET}   https://${PROJECT_NAME}.ddev.site"
-echo -e "  │  ${BOLD}Vite HMR:${RESET}  https://${PROJECT_NAME}.ddev.site:5173"
+VITE_PORT=$(grep -oP '(?<=https_port: )\d+' .ddev/config.local.yaml 2>/dev/null | head -1 || echo "5173")
+echo -e "  │  ${BOLD}Vite HMR:${RESET}  https://${PROJECT_NAME}.ddev.site:${VITE_PORT}"
 echo -e "  └──────────────────────────────────────────────────────┘"
 echo ""
 read -r -p "  Proceed with this configuration? [Y/n] " CONFIRM
@@ -99,10 +100,20 @@ CONFIRM="${CONFIRM:-Y}"
 [[ "$CONFIRM" =~ ^[Yy]$ ]] || { echo "Aborted."; exit 0; }
 echo ""
 
-# ── 1. Update .ddev/config.yaml ───────────────────────────────────────────────
-step "Updating .ddev/config.yaml (name: ${PROJECT_NAME})"
+# ── 1. Crear config.local.yaml si no existe ───────────────────────────────────
+if [[ ! -f ".ddev/config.local.yaml" ]]; then
+    step "Creating .ddev/config.local.yaml from example"
+    cp .ddev/config.local.yaml.example .ddev/config.local.yaml
+    ok "config.local.yaml created — edit it if you need to change ports"
+else
+    ok "config.local.yaml already exists — skipping"
+fi
+
+# ── 2. Update .ddev/config.yaml ───────────────────────────────────────────────
+step "Updating .ddev/config.yaml and config.local.yaml (name: ${PROJECT_NAME})"
 sed_inplace "s/^name:.*/name: ${PROJECT_NAME}/" .ddev/config.yaml
-ok "config.yaml updated"
+sed_inplace "s|https://[a-z0-9-]*\.ddev\.site|https://${PROJECT_NAME}.ddev.site|g" .ddev/config.local.yaml
+ok "config.yaml y config.local.yaml actualizados"
 
 # ── 2. Create .env ────────────────────────────────────────────────────────────
 step "Creating .env from .env.ddev.example"
@@ -152,4 +163,10 @@ echo -e "    ${DIM}ddev artisan migrate # run pending migrations${RESET}"
 echo -e "    ${DIM}ddev stop            # stop environment${RESET}"
 echo ""
 
-ddev launch
+# Open browser — WSL2 requires manual open, macOS/Linux can auto-launch
+if grep -qi "microsoft" /proc/version 2>/dev/null; then
+    echo -e "  ${CYAN}→${RESET} WSL detected — open manually in your browser:"
+    echo -e "    ${BOLD}https://${PROJECT_NAME}.ddev.site${RESET}"
+else
+    ddev launch
+fi
