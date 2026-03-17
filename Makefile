@@ -1,4 +1,4 @@
-.PHONY: help setup start stop restart install dev build migrate fresh logs shell
+.PHONY: help setup start stop restart install update dev build migrate fresh logs shell
 
 # ── Colors ──────────────────────────────────────────────────────────────────
 BOLD  := \033[1m
@@ -37,6 +37,15 @@ restart: ## Restart DDEV
 install: ## Install PHP and JS dependencies
 	ddev composer install
 	ddev bun install
+
+update: ## Pull latest changes and refresh the DDEV instance (deps, migrations, cache)
+	git pull --ff-only
+	ddev composer install
+	ddev bun install
+	ddev bun run build
+	ddev artisan migrate --force
+	ddev artisan optimize:clear
+	ddev artisan optimize
 
 # ── Frontend ─────────────────────────────────────────────────────────────────
 
