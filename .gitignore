@@ -53,8 +53,7 @@ Thumbs.db
 Homestead.json
 Homestead.yaml
 
-# ── Laravel AI / MCP — solo pertenece a la rama feature/ia ───────────────────
-/routes/ai.php
+# ── Laravel AI / MCP ──────────────────────────────────────────────────────────
 /resources/views/mcp
 
 
