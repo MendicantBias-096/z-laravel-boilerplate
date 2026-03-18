@@ -256,9 +256,12 @@ Read `.agents/skills/powergrid-tables/SKILL.md` for detailed examples.
 - Route-level protection uses `->middleware('permission:ver {model_es}')`.
 - Standard CRUD permissions per module: `ver`, `crear`, `editar`, `eliminar`, `restaurar`.
 
-=== laravel/ai rules ===
+=== laravel/ai rules (install first: ddev composer require laravel/ai) ===
 
 # Laravel AI SDK
+
+> **Not installed by default.** Install with `ddev composer require laravel/ai` before using any AI feature.
+> This boilerplate's IA branch (`feature/ia`) includes this package pre-installed.
 
 Use `laravel/ai` when the user needs AI features: agents, embeddings, image generation, audio, or RAG.
 
@@ -334,6 +337,10 @@ ddev exec php artisan vendor:publish --tag=ai-routes   # creates routes/ai.php
 
 `laravel/boost` (dev dependency) provides the MCP server that gives the AI agent real introspection tools.
 
+## Priority Rule
+
+**Always use Laravel Boost MCP tools first** for any database, schema, route, config, or app introspection task. Never use manual `ddev exec php artisan tinker` commands when a Boost tool can do the job — Boost avoids shell escaping issues and returns structured data.
+
 ## MCP server tools available
 
 - **Application Info** — PHP/Laravel versions, installed packages, Eloquent models
@@ -357,5 +364,24 @@ Claude Code picks this up automatically at session start.
 ```bash
 ddev exec php artisan boost:update
 ```
+
+=== boilerplate mcp ===
+
+# Boilerplate MCP Server
+
+The project includes its own MCP server (`boilerplate`) for architecture introspection. Use these tools to inspect the project structure before creating or modifying modules.
+
+## Available Tools
+
+- **ListDomains** — Lists all registered domains with route files, URL prefixes, middleware, and modules.
+- **GetModuleStructure** — Returns the complete file structure of a module (model, views, components, routes, permissions, menu).
+- **ListPermissions** — Lists all roles, permissions, and assignments from `config/roles.php`.
+- **GetMenuStructure** — Returns the sidebar menu structure from `config/menu.php`.
+
+## When to use
+
+- Before creating a new module or CRUD — check existing domains and permissions.
+- Before adding menu entries — inspect the current menu structure.
+- When debugging module structure — verify which files exist vs which are missing.
 
 </boilerplate-guidelines>

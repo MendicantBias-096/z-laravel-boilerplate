@@ -9,6 +9,16 @@
                 "boost:mcp"
             ]
         },
+        "boilerplate": {
+            "command": "ddev",
+            "args": [
+                "exec",
+                "php",
+                "artisan",
+                "mcp:start",
+                "boilerplate"
+            ]
+        },
         "tallstackui": {
             "type": "http",
             "url": "https://tallstackui.com/mcp/tallstackui"
