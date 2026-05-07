@@ -3209,16 +3209,16 @@
         },
         {
             "name": "mallardduck/blade-lucide-icons",
-            "version": "1.26.8",
+            "version": "1.26.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mallardduck/blade-lucide-icons.git",
-                "reference": "ebd42a72068328846cd3977ffc18b83d0ca47721"
+                "reference": "a98110f1538f7cf8a00e57079b370a6d74cbc496"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mallardduck/blade-lucide-icons/zipball/ebd42a72068328846cd3977ffc18b83d0ca47721",
-                "reference": "ebd42a72068328846cd3977ffc18b83d0ca47721",
+                "url": "https://api.github.com/repos/mallardduck/blade-lucide-icons/zipball/a98110f1538f7cf8a00e57079b370a6d74cbc496",
+                "reference": "a98110f1538f7cf8a00e57079b370a6d74cbc496",
                 "shasum": ""
             },
             "require": {
@@ -3263,9 +3263,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mallardduck/blade-lucide-icons/issues",
-                "source": "https://github.com/mallardduck/blade-lucide-icons/tree/1.26.8"
+                "source": "https://github.com/mallardduck/blade-lucide-icons/tree/1.26.10"
             },
-            "time": "2026-03-05T00:22:54+00:00"
+            "time": "2026-03-25T00:24:05+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -9559,25 +9559,25 @@
         },
         {
             "name": "laravel/boost",
-            "version": "v2.2.1",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/boost.git",
-                "reference": "e27f1616177377fef95296620530c44a7dda4df9"
+                "reference": "f6241df9fd81a86d79a051851177d4ffe3e28506"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/boost/zipball/e27f1616177377fef95296620530c44a7dda4df9",
-                "reference": "e27f1616177377fef95296620530c44a7dda4df9",
+                "url": "https://api.github.com/repos/laravel/boost/zipball/f6241df9fd81a86d79a051851177d4ffe3e28506",
+                "reference": "f6241df9fd81a86d79a051851177d4ffe3e28506",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.9",
-                "illuminate/console": "^11.45.3|^12.41.1",
-                "illuminate/contracts": "^11.45.3|^12.41.1",
-                "illuminate/routing": "^11.45.3|^12.41.1",
-                "illuminate/support": "^11.45.3|^12.41.1",
-                "laravel/mcp": "^0.5.1",
+                "illuminate/console": "^11.45.3|^12.41.1|^13.0",
+                "illuminate/contracts": "^11.45.3|^12.41.1|^13.0",
+                "illuminate/routing": "^11.45.3|^12.41.1|^13.0",
+                "illuminate/support": "^11.45.3|^12.41.1|^13.0",
+                "laravel/mcp": "^0.5.1|^0.6.0",
                 "laravel/prompts": "^0.3.10",
                 "laravel/roster": "^0.5.0",
                 "php": "^8.2"
@@ -9585,7 +9585,7 @@
             "require-dev": {
                 "laravel/pint": "^1.27.0",
                 "mockery/mockery": "^1.6.12",
-                "orchestra/testbench": "^9.15.0|^10.6",
+                "orchestra/testbench": "^9.15.0|^10.6|^11.0",
                 "pestphp/pest": "^2.36.0|^3.8.4|^4.1.5",
                 "phpstan/phpstan": "^2.1.27",
                 "rector/rector": "^2.1"
@@ -9621,7 +9621,7 @@
                 "issues": "https://github.com/laravel/boost/issues",
                 "source": "https://github.com/laravel/boost"
             },
-            "time": "2026-02-25T16:07:36+00:00"
+            "time": "2026-03-25T16:37:40+00:00"
         },
         {
             "name": "laravel/mcp",
