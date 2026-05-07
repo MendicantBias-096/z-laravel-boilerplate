@@ -1,10 +1,8 @@
 {
     "mcpServers": {
         "laravel-boost": {
-            "command": "ddev",
+            "command": "php",
             "args": [
-                "exec",
-                "php",
                 "artisan",
                 "boost:mcp"
             ]
@@ -22,6 +20,24 @@
         "tallstackui": {
             "type": "http",
             "url": "https://tallstackui.com/mcp/tallstackui"
+        },
+        "context7": {
+            "command": "npx",
+            "args": ["-y", "@upstash/context7-mcp@latest"]
+        },
+        "github": {
+            "command": "npx",
+            "args": ["-y", "@anthropic-ai/github-mcp-server@latest"],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+            }
+        },
+        "sentry": {
+            "command": "npx",
+            "args": ["-y", "@sentry/mcp-server@latest"],
+            "env": {
+                "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}"
+            }
         }
     }
 }
