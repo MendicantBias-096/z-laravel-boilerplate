@@ -1,0 +1,7 @@
+#ddev-silent-no-warn
+services:
+  db:
+    environment:
+      - POSTGRES_DB=laravel_boilerplate_db
+      - POSTGRES_USER=laravel_boilerplate_user
+      - POSTGRES_PASSWORD=laravel_boilerplate
