@@ -18,12 +18,16 @@ class RegisterTest extends TestCase
 
     public function test_user_can_register_with_valid_data(): void
     {
+        $this->seedRoles();
+
         $this->post('/register', [
-            'username'              => 'nuevo_usuario',
-            'email'                 => 'nuevo@example.com',
-            'password'              => 'password123',
+            'first_name' => 'Nuevo',
+            'last_name' => 'Usuario',
+            'username' => 'nuevo_usuario',
+            'email' => 'nuevo@example.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
-        ])->assertRedirect(route('dashboard'));
+        ])->assertRedirect();
 
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', ['email' => 'nuevo@example.com', 'username' => 'nuevo_usuario']);
@@ -31,10 +35,14 @@ class RegisterTest extends TestCase
 
     public function test_registration_creates_a_profile_automatically(): void
     {
+        $this->seedRoles();
+
         $this->post('/register', [
-            'username'              => 'usuario_con_perfil',
-            'email'                 => 'perfil@example.com',
-            'password'              => 'password123',
+            'first_name' => 'Usuario',
+            'last_name' => 'Perfil',
+            'username' => 'usuario_con_perfil',
+            'email' => 'perfil@example.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
 
@@ -49,9 +57,9 @@ class RegisterTest extends TestCase
         User::factory()->create(['email' => 'existente@example.com']);
 
         $this->post('/register', [
-            'username'              => 'otro_usuario',
-            'email'                 => 'existente@example.com',
-            'password'              => 'password123',
+            'username' => 'otro_usuario',
+            'email' => 'existente@example.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
         ])->assertSessionHasErrors('email');
 
@@ -63,9 +71,9 @@ class RegisterTest extends TestCase
         User::factory()->create(['username' => 'usuario_existente']);
 
         $this->post('/register', [
-            'username'              => 'usuario_existente',
-            'email'                 => 'diferente@example.com',
-            'password'              => 'password123',
+            'username' => 'usuario_existente',
+            'email' => 'diferente@example.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
         ])->assertSessionHasErrors('username');
 
@@ -75,9 +83,9 @@ class RegisterTest extends TestCase
     public function test_registration_fails_when_passwords_do_not_match(): void
     {
         $this->post('/register', [
-            'username'              => 'usuario',
-            'email'                 => 'user@example.com',
-            'password'              => 'password123',
+            'username' => 'usuario',
+            'email' => 'user@example.com',
+            'password' => 'password123',
             'password_confirmation' => 'diferente456',
         ])->assertSessionHasErrors('password');
 

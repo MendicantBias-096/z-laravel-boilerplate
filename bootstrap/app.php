@@ -1,9 +1,16 @@
 <?php
 
+use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Middleware\CheckAbilities;
+use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,13 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
-health: '/up',
+        health: '/up',
         then: function () {
             Route::middleware(['web', 'auth'])
                 ->group(base_path('routes/general.php'));
 
             Route::middleware(['web', 'auth', 'verified'])
                 ->group(base_path('routes/personal.php'));
+
+            require_once base_path('routes/breadcrumbs.php');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -26,16 +35,16 @@ health: '/up',
         $middleware->statefulApi();
 
         $middleware->web(append: [
-            \App\Http\Middleware\SetLocale::class,
-            \App\Http\Middleware\EnsureUserIsActive::class,
+            SetLocale::class,
+            EnsureUserIsActive::class,
         ]);
 
         $middleware->alias([
-            'abilities'          => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
-            'ability'            => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
-            'role'               => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission'         => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'abilities' => CheckAbilities::class,
+            'ability' => CheckForAnyAbility::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

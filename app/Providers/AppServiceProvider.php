@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Enums\Roles;
-use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -36,11 +35,11 @@ class AppServiceProvider extends ServiceProvider
             $this->validateMenuRoutes();
         }
 
-        TallStackUi::personalize()
+        TallStackUi::customize()
             ->form('input')
             ->block('input.base', 'dark:placeholder-dark-400 w-full rounded-md border-0 bg-transparent px-3 py-1.5 ring-0 placeholder:text-gray-400 focus:outline-hidden focus:ring-transparent sm:text-sm sm:leading-6');
 
-        TallStackUi::personalize()
+        TallStackUi::customize()
             ->card()
             ->block('footer.wrapper', 'text-secondary-700 dark:text-dark-300 dark:border-t-dark-600 rounded-lg rounded-t-none border-t border-t-secondary-200 bg-primary-50 dark:bg-primary-950/60 px-4 py-2');
 
