@@ -3,14 +3,17 @@
 namespace App\Livewire\App\Personal\User;
 
 use App\Livewire\Forms\UserForm;
+use App\Models\Role;
 use App\Models\User;
 use App\Notifications\UserCreatedNotification;
 use App\Notifications\UserUpdatedNotification;
 use App\Services\NotificationsService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
-use App\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Form extends Component
@@ -21,29 +24,30 @@ class Form extends Component
 
     public UserForm $form;
 
-    /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null */
-    public $photo = null;
+    /** @var TemporaryUploadedFile|null */
+    public $photo;
 
-    public array $permissionList       = [];
+    public array $permissionList = [];
+
     public array $originalPermissions = [];
 
     public function mount(): void
     {
-        if ($this->record) {
+        if ($this->record instanceof User) {
             $this->record->load('roles');
 
             $this->form->fill([
-                'id'         => $this->record->id,
-                'username'   => $this->record->username,
-                'email'      => $this->record->email,
+                'id' => $this->record->id,
+                'username' => $this->record->username,
+                'email' => $this->record->email,
                 'first_name' => $this->record->profile?->first_name ?? '',
-                'last_name'  => $this->record->profile?->last_name ?? '',
-                'role'       => $this->record->roles->first()?->name,
-                'is_active'  => $this->record->is_active,
+                'last_name' => $this->record->profile?->last_name ?? '',
+                'role' => $this->record->roles->first()?->name,
+                'is_active' => $this->record->is_active,
             ]);
 
-            $this->permissionList       = $this->record->getAllPermissions()->pluck('name')->toArray();
-            $this->originalPermissions  = $this->permissionList;
+            $this->permissionList = $this->record->getAllPermissions()->pluck('name')->toArray();
+            $this->originalPermissions = $this->permissionList;
         }
     }
 
@@ -55,9 +59,9 @@ class Form extends Component
     #[Computed]
     public function permissionsByGroup(): array
     {
-        $groups     = config('roles.module_groups', []);
+        $groups = config('roles.module_groups', []);
         $allModules = config('roles.permissions', []);
-        $result     = [];
+        $result = [];
 
         foreach ($groups as $group => $modules) {
             foreach ($modules as $module) {
@@ -83,9 +87,9 @@ class Form extends Component
     public function toggleModule(string $module): void
     {
         $permissions = config("roles.permissions.{$module}", []);
-        $missing     = array_diff($permissions, $this->permissionList);
+        $missing = array_diff($permissions, $this->permissionList);
 
-        if (empty($missing)) {
+        if ($missing === []) {
             $this->permissionList = array_values(array_diff($this->permissionList, $permissions));
         } else {
             $this->permissionList = array_values(array_unique(array_merge($this->permissionList, $permissions)));
@@ -100,7 +104,7 @@ class Form extends Component
         $permissions = config("roles.permissions.{$module}", []);
 
         return count($permissions) > 0
-            && empty(array_diff($permissions, $this->permissionList));
+            && array_diff($permissions, $this->permissionList) === [];
     }
 
     /**
@@ -108,7 +112,7 @@ class Form extends Component
      */
     public function restorePermissions(): void
     {
-        $this->permissionList   = $this->originalPermissions;
+        $this->permissionList = $this->originalPermissions;
         $this->selectedTemplate = '';
 
         $this->toast()->info(__('app.user_perms_restored'), __('app.user_perms_restored_desc'))->send();
@@ -124,7 +128,7 @@ class Form extends Component
             return;
         }
 
-        $role                 = Role::findByName($value);
+        $role = Role::findByName($value);
         $this->permissionList = $role->permissions->pluck('name')->toArray();
 
         $templateName = $role->display_name ?? ucfirst($role->name);
@@ -138,7 +142,7 @@ class Form extends Component
         $this->form->validate();
 
         $this->validate([
-            'permissionList'   => ['array'],
+            'permissionList' => ['array'],
             'permissionList.*' => ['string', 'exists:permissions,name'],
         ]);
 
@@ -171,11 +175,11 @@ class Form extends Component
         $this->redirect(route('personal.usuarios.index'), navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('app.personal.users._form', [
-            'roles' => Role::orderBy('display_name')->get()->map(fn ($r) => [
-                'label' => $r->display_name ?? ucfirst($r->name),
+            'roles' => Role::orderBy('display_name')->get()->map(fn ($r): array => [
+                'label' => $r->display_name ?? ucfirst((string) $r->name),
                 'value' => $r->name,
             ])->toArray(),
         ]);

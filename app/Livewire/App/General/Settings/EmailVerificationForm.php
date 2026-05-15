@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\General\Settings;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
 
@@ -25,7 +27,7 @@ class EmailVerificationForm extends Component
         $this->toast()->success(__('settings.verification_sent'), __('settings.verification_sent_desc'))->send();
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('app.general.settings._email-verification-form');
     }

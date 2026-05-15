@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Public\Home;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 class Index extends Component
 {
-    public function render()
+    public function render(): Factory|View
     {
         return view('public.home._index', [
             'stack' => $this->getStackVersions(),
@@ -35,20 +37,20 @@ class Index extends Component
 
         $installed = $this->getInstalledPackages();
 
-        return collect($packages)->map(function (array $item) use ($installed) {
+        return collect($packages)->map(function (array $item) use ($installed): array {
             if ($item['package'] === null && isset($item['static'])) {
                 $version = $item['static'];
             } elseif ($item['package'] === null) {
-                $version = 'v' . PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
+                $version = 'v'.PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
             } else {
                 $pretty = $installed[$item['package']]['pretty_version'] ?? null;
-                $version = $pretty ? 'v' . ltrim($pretty, 'v') : '—';
+                $version = $pretty ? 'v'.ltrim($pretty, 'v') : '—';
             }
 
             return [
-                'name'    => $item['name'],
+                'name' => $item['name'],
                 'version' => $version,
-                'icon'    => $item['icon'],
+                'icon' => $item['icon'],
             ];
         })->toArray();
     }

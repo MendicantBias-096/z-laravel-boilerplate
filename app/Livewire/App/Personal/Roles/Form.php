@@ -2,12 +2,16 @@
 
 namespace App\Livewire\App\Personal\Roles;
 
+use App\Models\Role;
 use App\Notifications\RoleCreatedNotification;
 use App\Notifications\RoleUpdatedNotification;
 use App\Services\NotificationsService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use App\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Form extends Component
@@ -16,22 +20,24 @@ class Form extends Component
 
     public ?Role $record = null;
 
-    public string $display_name   = '';
-    public string $name           = '';   // slug — generado automáticamente
-    public array  $permissionList = [];
+    public string $display_name = '';
+
+    public string $name = '';   // slug — generado automáticamente
+
+    public array $permissionList = [];
 
     public function mount(): void
     {
-        if ($this->record) {
-            $this->display_name   = $this->record->display_name ?? $this->record->name;
-            $this->name           = $this->record->name;
+        if ($this->record instanceof Role) {
+            $this->display_name = $this->record->display_name ?? $this->record->name;
+            $this->name = $this->record->name;
             $this->permissionList = $this->record->permissions->pluck('name')->toArray();
         }
     }
 
     public function updatedDisplayName(string $value): void
     {
-        $this->name = \Illuminate\Support\Str::slug($value);
+        $this->name = Str::slug($value);
     }
 
     /**
@@ -42,9 +48,9 @@ class Form extends Component
     #[Computed]
     public function permissionsByGroup(): array
     {
-        $groups     = config('roles.module_groups', []);
+        $groups = config('roles.module_groups', []);
         $allModules = config('roles.permissions', []);
-        $result     = [];
+        $result = [];
 
         foreach ($groups as $group => $modules) {
             foreach ($modules as $module) {
@@ -71,9 +77,9 @@ class Form extends Component
     public function toggleModule(string $module): void
     {
         $permissions = config("roles.permissions.{$module}", []);
-        $missing     = array_diff($permissions, $this->permissionList);
+        $missing = array_diff($permissions, $this->permissionList);
 
-        if (empty($missing)) {
+        if ($missing === []) {
             $this->permissionList = array_values(array_diff($this->permissionList, $permissions));
         } else {
             $this->permissionList = array_values(array_unique(array_merge($this->permissionList, $permissions)));
@@ -88,21 +94,21 @@ class Form extends Component
         $permissions = config("roles.permissions.{$module}", []);
 
         return count($permissions) > 0
-            && empty(array_diff($permissions, $this->permissionList));
+            && array_diff($permissions, $this->permissionList) === [];
     }
 
     public function save(): void
     {
-        $isEdit = $this->record !== null;
+        $isEdit = $this->record instanceof Role;
 
         $this->validate([
             'display_name' => ['required', 'string', 'max:100'],
-            'name'         => ['required', 'string', 'max:100',
+            'name' => ['required', 'string', 'max:100',
                 $isEdit
-                    ? \Illuminate\Validation\Rule::unique('roles', 'name')->ignore($this->record->id)
-                    : \Illuminate\Validation\Rule::unique('roles', 'name'),
+                    ? Rule::unique('roles', 'name')->ignore($this->record->id)
+                    : Rule::unique('roles', 'name'),
             ],
-            'permissionList'   => ['array'],
+            'permissionList' => ['array'],
             'permissionList.*' => ['string', 'exists:permissions,name'],
         ]);
 
@@ -128,7 +134,7 @@ class Form extends Component
         $this->redirect(route('personal.roles.index'), navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('app.personal.roles._form');
     }

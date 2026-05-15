@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Auth;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -26,7 +28,7 @@ class ForgotPassword extends Component
         }
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('auth._forgot-password');
     }

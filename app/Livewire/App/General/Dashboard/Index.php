@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\General\Dashboard;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
 
@@ -18,7 +20,7 @@ class Index extends Component
         }
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('app.general.dashboard._index');
     }

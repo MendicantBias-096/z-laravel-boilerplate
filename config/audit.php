@@ -1,5 +1,12 @@
 <?php
 
+declare(strict_types=1);
+use OwenIt\Auditing\Models\Audit;
+use OwenIt\Auditing\Resolvers\IpAddressResolver;
+use OwenIt\Auditing\Resolvers\UrlResolver;
+use OwenIt\Auditing\Resolvers\UserAgentResolver;
+use OwenIt\Auditing\Resolvers\UserResolver;
+
 return [
 
     'enabled' => env('AUDITING_ENABLED', true),
@@ -13,7 +20,7 @@ return [
     |
     */
 
-    'implementation' => OwenIt\Auditing\Models\Audit::class,
+    'implementation' => Audit::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -30,7 +37,7 @@ return [
             'web',
             'api',
         ],
-        'resolver' => OwenIt\Auditing\Resolvers\UserResolver::class,
+        'resolver' => UserResolver::class,
     ],
 
     /*
@@ -42,9 +49,9 @@ return [
     |
     */
     'resolvers' => [
-        'ip_address' => OwenIt\Auditing\Resolvers\IpAddressResolver::class,
-        'user_agent' => OwenIt\Auditing\Resolvers\UserAgentResolver::class,
-        'url' => OwenIt\Auditing\Resolvers\UrlResolver::class,
+        'ip_address' => IpAddressResolver::class,
+        'user_agent' => UserAgentResolver::class,
+        'url' => UrlResolver::class,
     ],
 
     /*

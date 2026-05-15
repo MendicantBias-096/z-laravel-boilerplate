@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -12,7 +14,7 @@ return [
      */
     'roles' => [
         'admin' => 'Administrador',
-        'user'  => 'Usuario',
+        'user' => 'Usuario',
     ],
 
     /*
@@ -87,10 +89,9 @@ return [
      |
      */
     'module_groups' => [
-        'personal'       => ['usuarios', 'roles'],
-        'configuracion'  => ['sistema'],
+        'personal' => ['usuarios', 'roles'],
+        'configuracion' => ['sistema'],
         'notificaciones' => ['notif_usuarios', 'notif_roles'],
     ],
-
 
 ];

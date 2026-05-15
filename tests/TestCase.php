@@ -2,23 +2,26 @@
 
 namespace Tests;
 
+use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\PermissionRegistrar;
 
 abstract class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }
 
     /**
      * Crea un usuario con rol 'admin' y todos sus permisos.
      */
-    protected function createAdmin(): \App\Models\User
+    protected function createAdmin(): User
     {
         $this->seedRoles();
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
         $user->assignRole('admin');
 
         return $user;
@@ -27,10 +30,10 @@ abstract class TestCase extends BaseTestCase
     /**
      * Crea un usuario con rol 'user' (sin permisos adicionales).
      */
-    protected function createUser(): \App\Models\User
+    protected function createUser(): User
     {
         $this->seedRoles();
-        $user = \App\Models\User::factory()->create();
+        $user = User::factory()->create();
         $user->assignRole('user');
 
         return $user;
@@ -38,6 +41,6 @@ abstract class TestCase extends BaseTestCase
 
     protected function seedRoles(): void
     {
-        (new \Database\Seeders\RolesAndPermissionsSeeder())->run();
+        new RolesAndPermissionsSeeder()->run();
     }
 }

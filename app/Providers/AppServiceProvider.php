@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    #[\Override]
     public function register(): void
     {
         //
@@ -27,9 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Password::defaults(fn () => Password::min(8));
 
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole(Roles::ADMIN->value) ? true : null;
-        });
+        Gate::before(fn ($user, $ability) => $user->hasRole(Roles::ADMIN->value) ? true : null);
 
         if (config('app.debug')) {
             $this->validateMenuRoutes();

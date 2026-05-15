@@ -33,7 +33,7 @@ class SettingTest extends TestCase
         Setting::set('site_url', 'https://example.com');
 
         $this->assertDatabaseHas('settings', [
-            'key'   => 'site_url',
+            'key' => 'site_url',
             'value' => 'https://example.com',
         ]);
     }

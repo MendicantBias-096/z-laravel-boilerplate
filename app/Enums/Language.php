@@ -23,7 +23,7 @@ enum Language: string
     public static function options(): array
     {
         return array_map(
-            fn (self $case) => ['label' => $case->label(), 'value' => $case->value],
+            fn (self $case): array => ['label' => $case->label(), 'value' => $case->value],
             self::cases()
         );
     }

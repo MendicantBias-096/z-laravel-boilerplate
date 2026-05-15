@@ -2,20 +2,24 @@
 
 namespace App\Livewire\App\Personal\Roles;
 
+use App\Models\Role;
 use App\Notifications\RoleDeletedNotification;
 use App\Services\NotificationsService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\Role;
 use TallStackUi\Traits\Interactions;
 
 class Table extends Component
 {
     use Interactions, WithPagination;
 
-    public string $search   = '';
-    public int    $quantity = 25;
-    public array  $sort     = ['column' => 'name', 'direction' => 'asc'];
+    public string $search = '';
+
+    public int $quantity = 25;
+
+    public array $sort = ['column' => 'name', 'direction' => 'asc'];
 
     public function updatingSearch(): void
     {
@@ -35,6 +39,7 @@ class Table extends Component
 
         if ($role->users()->count() > 0) {
             $this->toast()->error(__('app.role_delete_error'), __('app.role_delete_has_users', ['name' => $role->display_name]))->send();
+
             return;
         }
 
@@ -63,7 +68,7 @@ class Table extends Component
         $this->toast()->success(__('app.role_deleted'), __('app.role_deleted_desc'))->send();
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         $headers = [
             ['index' => 'display_name', 'label' => __('table.roles.headers.name')],
@@ -81,6 +86,6 @@ class Table extends Component
             ->orderBy($this->sort['column'], $this->sort['direction'])
             ->paginate($this->quantity);
 
-        return view('app.personal.roles._index', compact('headers', 'roles'));
+        return view('app.personal.roles._index', ['headers' => $headers, 'roles' => $roles]);
     }
 }

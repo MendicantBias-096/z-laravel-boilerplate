@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Permission;
-use App\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 class SyncRolesAndPermissions extends Command
@@ -55,7 +55,7 @@ class SyncRolesAndPermissions extends Command
             }
         }
 
-        if (empty($created)) {
+        if ($created === []) {
             $this->line('  Sin permisos nuevos.');
         }
 
@@ -72,7 +72,7 @@ class SyncRolesAndPermissions extends Command
                 $role->update(['display_name' => $displayName]);
             }
 
-            $modules   = config("roles.roles_modules.{$roleName}", []);
+            $modules = config("roles.roles_modules.{$roleName}", []);
             $rolePerms = collect($modules)
                 ->flatMap(fn ($m) => config("roles.permissions.{$m}", []))
                 ->all();
@@ -80,11 +80,11 @@ class SyncRolesAndPermissions extends Command
             $role->syncPermissions($rolePerms);
 
             $status = $role->wasRecentlyCreated ? '<fg=green>creado</>' : 'actualizado';
-            $this->line("  {$status}: {$roleName} ({$displayName}) — " . count($rolePerms) . ' permisos');
+            $this->line("  {$status}: {$roleName} ({$displayName}) — ".count($rolePerms).' permisos');
         }
 
         // ── 3. Asignar permisos nuevos a usuarios con el rol indicado ────────
-        if ($this->option('assign') && ! empty($created)) {
+        if ($this->option('assign') && $created !== []) {
             $roleName = $this->option('role');
 
             $this->info("Asignando permisos nuevos a usuarios con rol '{$roleName}'...");
@@ -92,7 +92,7 @@ class SyncRolesAndPermissions extends Command
             $affected = 0;
 
             User::whereHas('roles', fn ($q) => $q->where('name', $roleName))
-                ->chunk(100, function ($users) use ($created, &$affected) {
+                ->chunk(100, function ($users) use ($created, &$affected): void {
                     foreach ($users as $user) {
                         $user->givePermissionTo($created);
                         $affected++;
@@ -105,7 +105,7 @@ class SyncRolesAndPermissions extends Command
                 : "  Ningún usuario con rol '{$roleName}' encontrado."
             );
 
-        } elseif ($this->option('assign') && empty($created)) {
+        } elseif ($this->option('assign') && $created === []) {
             $this->info('Sin permisos nuevos para asignar a usuarios.');
         }
 

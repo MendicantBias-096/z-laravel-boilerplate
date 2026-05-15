@@ -3,6 +3,8 @@
 namespace App\Livewire\Auth;
 
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -35,14 +37,14 @@ class ResetPassword extends Component
 
         $status = Password::reset(
             [
-                'email'                 => $this->email,
-                'password'              => $this->password,
+                'email' => $this->email,
+                'password' => $this->password,
                 'password_confirmation' => $this->password_confirmation,
-                'token'                 => $this->token,
+                'token' => $this->token,
             ],
             function ($user, string $password): void {
                 $user->forceFill([
-                    'password'       => Hash::make($password),
+                    'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
 
@@ -58,7 +60,7 @@ class ResetPassword extends Component
         }
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('auth._reset-password');
     }

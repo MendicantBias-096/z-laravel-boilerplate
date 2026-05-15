@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
@@ -28,12 +32,14 @@ class Login extends Component
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             $this->addError('email', "Too many login attempts. Please try again in {$seconds} seconds.");
+
             return;
         }
 
         if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($throttleKey);
             $this->addError('email', 'These credentials do not match our records.');
+
             return;
         }
 
@@ -43,7 +49,7 @@ class Login extends Component
         $this->redirectRoute('dashboard', navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('auth._login');
     }

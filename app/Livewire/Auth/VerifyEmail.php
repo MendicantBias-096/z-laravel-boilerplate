@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Auth;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
@@ -18,6 +20,7 @@ class VerifyEmail extends Component
 
         if ($user->hasVerifiedEmail()) {
             $this->redirect(route('dashboard'), navigate: true);
+
             return;
         }
 
@@ -25,7 +28,7 @@ class VerifyEmail extends Component
         $this->sent = true;
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('auth._verify-email');
     }

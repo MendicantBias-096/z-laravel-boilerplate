@@ -2,7 +2,10 @@
 
 namespace App\Livewire\App\General\Settings;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use TallStackUi\Traits\Interactions;
 
@@ -11,25 +14,26 @@ class ProfileForm extends Component
     use Interactions, WithFileUploads;
 
     public string $first_name = '';
-    public string $last_name  = '';
 
-    /** @var \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null */
-    public $photo = null;
+    public string $last_name = '';
+
+    /** @var TemporaryUploadedFile|null */
+    public $photo;
 
     public function mount(): void
     {
         $profile = auth()->user()->profile;
 
         $this->first_name = $profile?->first_name ?? '';
-        $this->last_name  = $profile?->last_name ?? '';
+        $this->last_name = $profile?->last_name ?? '';
     }
 
     public function save(): void
     {
         $this->validate([
             'first_name' => ['required', 'string', 'max:255'],
-            'last_name'  => ['required', 'string', 'max:255'],
-            'photo'      => ['nullable', 'image', 'max:2048'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'photo' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $profile = auth()->user()->profile()->updateOrCreate(
@@ -50,7 +54,7 @@ class ProfileForm extends Component
         $this->toast()->success(__('settings.profile_updated'), __('settings.profile_saved'))->send();
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('app.general.settings._profile-form');
     }

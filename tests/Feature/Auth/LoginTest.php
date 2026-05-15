@@ -29,7 +29,7 @@ class LoginTest extends TestCase
         $user = User::factory()->create();
 
         $this->post('/login', [
-            'email'    => $user->email,
+            'email' => $user->email,
             'password' => 'password',
         ])->assertRedirect(route('dashboard'));
 
@@ -41,7 +41,7 @@ class LoginTest extends TestCase
         $user = User::factory()->create();
 
         $this->post('/login', [
-            'email'    => $user->email,
+            'email' => $user->email,
             'password' => 'wrong-password',
         ])->assertSessionHasErrors();
 
@@ -51,7 +51,7 @@ class LoginTest extends TestCase
     public function test_user_cannot_login_with_nonexistent_email(): void
     {
         $this->post('/login', [
-            'email'    => 'noexiste@example.com',
+            'email' => 'noexiste@example.com',
             'password' => 'password',
         ])->assertSessionHasErrors();
 
