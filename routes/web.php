@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Enums\Language;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 | Módulo público
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn (): Factory|\Illuminate\Contracts\View\View => view('public.home.index'))->name('home');
+Route::view('/', 'public.home.index')->name('home');
 
 Route::post('/locale', function (Request $request) {
     $request->validate(['locale' => ['required', 'string', 'in:'.implode(',', Language::values())]]);
@@ -23,17 +22,16 @@ Route::post('/locale', function (Request $request) {
 })->name('locale.update');
 
 Route::prefix('')->name('public.')->group(function (): void {
-    Route::get('/nosotros', fn (): Factory|\Illuminate\Contracts\View\View => view('public.about.index'))->name('about');
+    Route::view('/nosotros', 'public.about.index')->name('about');
 });
 
 Route::middleware('guest')->group(function (): void {
-    Route::get('/login', fn (): Factory|\Illuminate\Contracts\View\View => view('auth.login'))->name('login');
-    Route::get('/register', fn (): Factory|\Illuminate\Contracts\View\View => view('auth.register'))->name('register');
-    Route::get('/forgot-password', fn (): Factory|\Illuminate\Contracts\View\View => view('auth.forgot-password'))->name('password.request');
-    Route::get('/reset-password/{token}', fn (): Factory|\Illuminate\Contracts\View\View => view('auth.reset-password'))->name('password.reset');
+    Route::view('/login', 'auth.login')->name('login');
+    Route::view('/register', 'auth.register')->name('register');
+    Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
+    Route::view('/reset-password/{token}', 'auth.reset-password')->name('password.reset');
 });
 
-// Required by Fortify when views => false + emailVerification is active.
-// Redirects unverified users to the verify-email page.
-Route::middleware('auth')->get('/email/verify', fn (): Factory|\Illuminate\Contracts\View\View => view('auth.verify-email'))
+Route::view('/email/verify', 'auth.verify-email')
+    ->middleware('auth')
     ->name('verification.notice');
