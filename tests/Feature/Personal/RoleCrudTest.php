@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Personal;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -41,7 +40,7 @@ class RoleCrudTest extends TestCase
     public function test_admin_can_access_edit_role_page(): void
     {
         $admin = $this->createAdmin();
-        $role  = Role::create(['name' => 'test-role']);
+        $role = Role::create(['name' => 'test-role']);
 
         $this->actingAs($admin)
             ->get(route('personal.roles.edit', $role))

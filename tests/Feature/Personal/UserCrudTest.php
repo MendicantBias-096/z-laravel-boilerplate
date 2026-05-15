@@ -30,7 +30,7 @@ class UserCrudTest extends TestCase
 
     public function test_admin_can_access_edit_user_page(): void
     {
-        $admin  = $this->createAdmin();
+        $admin = $this->createAdmin();
         $target = $this->createUser();
 
         $this->actingAs($admin)
@@ -62,7 +62,7 @@ class UserCrudTest extends TestCase
         $user->delete();
 
         $this->post('/login', [
-            'email'    => $user->email,
+            'email' => $user->email,
             'password' => 'password',
         ])->assertSessionHasErrors();
 
@@ -71,14 +71,14 @@ class UserCrudTest extends TestCase
 
     public function test_user_exists_in_database_after_factory_creation(): void
     {
-        $user = User::factory()->create([
+        User::factory()->create([
             'username' => 'testuser',
-            'email'    => 'test@example.com',
+            'email' => 'test@example.com',
         ]);
 
         $this->assertDatabaseHas('users', [
             'username' => 'testuser',
-            'email'    => 'test@example.com',
+            'email' => 'test@example.com',
         ]);
     }
 }

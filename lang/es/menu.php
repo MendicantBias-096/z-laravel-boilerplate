@@ -2,7 +2,7 @@
 
 return [
     'dashboard' => 'Dashboard',
-    'personal'  => 'Personal',
-    'users'     => 'Usuarios',
-    'roles'     => 'Roles y permisos',
+    'personal' => 'Personal',
+    'users' => 'Usuarios',
+    'roles' => 'Roles y permisos',
 ];

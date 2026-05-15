@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\General\Settings;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
 
@@ -10,31 +12,32 @@ class AccountForm extends Component
     use Interactions;
 
     public string $username = '';
-    public string $email    = '';
+
+    public string $email = '';
 
     public function mount(): void
     {
         $user = auth()->user();
 
         $this->username = $user->username;
-        $this->email    = $user->email;
+        $this->email = $user->email;
     }
 
     public function save(): void
     {
         $userId = auth()->id();
-        $user   = auth()->user();
+        $user = auth()->user();
 
         $this->validate([
             'username' => ['required', 'string', 'max:255', 'alpha_dash', "unique:users,username,{$userId}"],
-            'email'    => ['required', 'email', 'max:255', "unique:users,email,{$userId}"],
+            'email' => ['required', 'email', 'max:255', "unique:users,email,{$userId}"],
         ]);
 
         $emailChanged = $user->email !== $this->email;
 
         $user->update([
-            'username'          => $this->username,
-            'email'             => $this->email,
+            'username' => $this->username,
+            'email' => $this->email,
             'email_verified_at' => $emailChanged ? null : $user->email_verified_at,
         ]);
 
@@ -47,7 +50,7 @@ class AccountForm extends Component
         $this->toast()->success(__('settings.account_updated'), __('settings.account_saved'))->send();
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('app.general.settings._account-form');
     }

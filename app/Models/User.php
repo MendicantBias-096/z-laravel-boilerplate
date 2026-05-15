@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
@@ -15,10 +16,10 @@ use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail, AuditableContract
+class User extends Authenticatable implements AuditableContract, MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use Auditable, HasApiTokens, HasRoles, HasFactory, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
+    /** @use HasFactory<UserFactory> */
+    use Auditable, HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
 
     protected $fillable = [
         'username',
@@ -35,19 +36,21 @@ class User extends Authenticatable implements MustVerifyEmail, AuditableContract
         'two_factor_recovery_codes',
     ];
 
+    #[\Override]
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'is_active'         => 'boolean',
-            'is_protected'      => 'boolean',
+            'password' => 'hashed',
+            'is_active' => 'boolean',
+            'is_protected' => 'boolean',
         ];
     }
 
     /**
      * Impide eliminar (soft delete) a usuarios protegidos.
      */
+    #[\Override]
     public function delete(): ?bool
     {
         if ($this->is_protected) {
@@ -72,7 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail, AuditableContract
 
     public function getNameAttribute(): string
     {
-        return trim(($this->profile?->first_name ?? '') . ' ' . ($this->profile?->last_name ?? ''))
+        return trim(($this->profile?->first_name ?? '').' '.($this->profile?->last_name ?? ''))
             ?: $this->username;
     }
 }

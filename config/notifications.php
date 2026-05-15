@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -22,32 +24,32 @@ return [
 
         'user_created' => [
             'permission' => 'notificacion usuario creado',
-            'channels'   => ['database'],
+            'channels' => ['database'],
         ],
 
         'user_updated' => [
             'permission' => 'notificacion usuario editado',
-            'channels'   => ['database'],
+            'channels' => ['database'],
         ],
 
         'user_deleted' => [
             'permission' => 'notificacion usuario eliminado',
-            'channels'   => ['database'],
+            'channels' => ['database'],
         ],
 
         'role_created' => [
             'permission' => 'notificacion rol creado',
-            'channels'   => ['database'],
+            'channels' => ['database'],
         ],
 
         'role_updated' => [
             'permission' => 'notificacion rol actualizado',
-            'channels'   => ['database'],
+            'channels' => ['database'],
         ],
 
         'role_deleted' => [
             'permission' => 'notificacion rol eliminado',
-            'channels'   => ['database'],
+            'channels' => ['database'],
         ],
 
     ],

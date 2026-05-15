@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('profiles', function (Blueprint $table) {
+        Schema::table('profiles', function (Blueprint $table): void {
             $table->string('first_name')->nullable()->change();
             $table->string('last_name')->nullable()->change();
         });
@@ -19,7 +19,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('profiles', function (Blueprint $table) {
+        Schema::table('profiles', function (Blueprint $table): void {
             $table->string('first_name')->nullable(false)->change();
             $table->string('last_name')->nullable(false)->change();
         });

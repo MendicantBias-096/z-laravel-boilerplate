@@ -23,23 +23,23 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             'first_name' => ['required', 'string', 'max:255'],
-            'last_name'  => ['required', 'string', 'max:255'],
-            'username'   => ['required', 'string', 'max:255', Rule::unique(User::class)],
-            'email'      => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
-            'password'   => $this->passwordRules(),
+            'last_name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', Rule::unique(User::class)],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)],
+            'password' => $this->passwordRules(),
         ])->validate();
 
         return DB::transaction(function () use ($input) {
             $user = User::create([
                 'username' => $input['username'],
-                'email'    => $input['email'],
+                'email' => $input['email'],
                 'password' => Hash::make($input['password']),
             ]);
 
             Profile::create([
-                'user_id'    => $user->id,
+                'user_id' => $user->id,
                 'first_name' => $input['first_name'],
-                'last_name'  => $input['last_name'],
+                'last_name' => $input['last_name'],
             ]);
 
             $user->assignRole('user');

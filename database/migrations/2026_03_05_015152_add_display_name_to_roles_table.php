@@ -10,12 +10,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('roles', function (Blueprint $table): void {
             $table->string('display_name')->nullable()->after('name');
         });
 
         // Poblar display_name de los roles existentes
-        DB::table('roles')->get()->each(function ($role) {
+        DB::table('roles')->get()->each(function ($role): void {
             DB::table('roles')
                 ->where('id', $role->id)
                 ->update([
@@ -26,7 +26,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
+        Schema::table('roles', function (Blueprint $table): void {
             $table->dropColumn('display_name');
         });
     }

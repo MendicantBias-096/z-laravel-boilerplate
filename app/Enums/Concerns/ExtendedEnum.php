@@ -11,7 +11,7 @@ trait ExtendedEnum
 
     public static function asOptions(): array
     {
-        return array_map(fn ($case) => [
+        return array_map(fn ($case): array => [
             'value' => $case->value,
             'label' => $case->description(),
         ], self::cases());

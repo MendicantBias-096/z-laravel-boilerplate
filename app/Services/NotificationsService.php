@@ -22,6 +22,7 @@ class NotificationsService
 
         if (! $config) {
             Log::warning("NotificationsService: evento [{$event}] no definido en config/notifications.php");
+
             return;
         }
 
@@ -30,6 +31,7 @@ class NotificationsService
 
         if ($users->isEmpty()) {
             Log::info("NotificationsService: sin usuarios con permiso [{$permission}] para evento [{$event}]");
+
             return;
         }
 
@@ -40,10 +42,10 @@ class NotificationsService
             $latest = $user->notifications()->latest()->first();
             if ($latest) {
                 broadcast(new NewNotification($user->id, [
-                    'id'         => $latest->id,
-                    'title'      => $latest->data['title'] ?? '',
-                    'message'    => $latest->data['message'] ?? '',
-                    'url'        => $latest->data['url'] ?? null,
+                    'id' => $latest->id,
+                    'title' => $latest->data['title'] ?? '',
+                    'message' => $latest->data['message'] ?? '',
+                    'url' => $latest->data['url'] ?? null,
                     'created_at' => $latest->created_at->diffForHumans(),
                 ]));
             }
@@ -67,6 +69,7 @@ class NotificationsService
 
         if ($users->isEmpty()) {
             Log::info("NotificationsService: no users found with permission [{$permission}]");
+
             return;
         }
 
@@ -82,6 +85,7 @@ class NotificationsService
 
         if ($users->isEmpty()) {
             Log::info("NotificationsService: no users found with role [{$role}]");
+
             return;
         }
 

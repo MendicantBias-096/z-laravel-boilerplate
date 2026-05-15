@@ -10,11 +10,13 @@ use App\Auth\Responses\RegisterResponse;
 use App\Auth\Responses\VerifyEmailResponse;
 use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
@@ -26,6 +28,7 @@ class FortifyServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
@@ -52,13 +55,13 @@ class FortifyServiceProvider extends ServiceProvider
             }
 
             if ($user->trashed()) {
-                throw \Illuminate\Validation\ValidationException::withMessages([
+                throw ValidationException::withMessages([
                     Fortify::username() => [__('auth.account_deleted')],
                 ]);
             }
 
             if (! $user->is_active) {
-                throw \Illuminate\Validation\ValidationException::withMessages([
+                throw ValidationException::withMessages([
                     Fortify::username() => [__('auth.account_deactivated')],
                 ]);
             }
@@ -66,8 +69,8 @@ class FortifyServiceProvider extends ServiceProvider
             return $user;
         });
 
-        Fortify::verifyEmailView(fn () => view('auth.verify-email'));
-        Fortify::twoFactorChallengeView(fn () => view('auth.two-factor-challenge'));
+        Fortify::verifyEmailView(fn (): Factory|\Illuminate\Contracts\View\View => view('auth.verify-email'));
+        Fortify::twoFactorChallengeView(fn (): Factory|\Illuminate\Contracts\View\View => view('auth.two-factor-challenge'));
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
@@ -75,8 +78,6 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($throttleKey);
         });
 
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
+        RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by($request->session()->get('login.id')));
     }
 }

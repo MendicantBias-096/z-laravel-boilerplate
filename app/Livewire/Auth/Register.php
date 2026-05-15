@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -33,11 +37,11 @@ class Register extends Component
         $this->validate();
 
         $user = $creator->create([
-            'first_name'            => $this->first_name,
-            'last_name'             => $this->last_name,
-            'username'              => $this->username,
-            'email'                 => $this->email,
-            'password'              => $this->password,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'username' => $this->username,
+            'email' => $this->email,
+            'password' => $this->password,
             'password_confirmation' => $this->password_confirmation,
         ]);
 
@@ -45,14 +49,14 @@ class Register extends Component
 
         Auth::login($user);
 
-        if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $this->redirectRoute('verification.notice', navigate: true);
         } else {
             $this->redirectRoute('dashboard', navigate: true);
         }
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('auth._register');
     }

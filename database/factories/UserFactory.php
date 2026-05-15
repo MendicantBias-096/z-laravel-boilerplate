@@ -38,9 +38,10 @@ class UserFactory extends Factory
     /**
      * Automatically create a Profile after the User is created.
      */
+    #[\Override]
     public function configure(): static
     {
-        return $this->afterCreating(function (User $user) {
+        return $this->afterCreating(function (User $user): void {
             Profile::factory()->for($user)->create();
         });
     }
@@ -50,7 +51,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'email_verified_at' => null,
         ]);
     }

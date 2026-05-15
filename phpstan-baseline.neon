@@ -1,0 +1,445 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Instanceof between App\\Models\\User and Illuminate\\Contracts\\Auth\\MustVerifyEmail will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: app/Actions/Fortify/UpdateUserProfileInformation.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Role\:\:\$display_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Console/Commands/SyncRolesAndPermissions.php
+
+		-
+			message: '#^Unable to resolve the template type TFlatMapKey in call to method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:flatMap\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Console/Commands/SyncRolesAndPermissions.php
+
+		-
+			message: '#^Unable to resolve the template type TFlatMapValue in call to method Illuminate\\Support\\Collection\<\(int\|string\),mixed\>\:\:flatMap\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Console/Commands/SyncRolesAndPermissions.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Console/Commands/SyncRolesAndPermissions.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Console/Commands/SyncRolesAndPermissions.php
+
+		-
+			message: '#^Method App\\Enums\\Roles\:\:asOptions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/Roles.php
+
+		-
+			message: '#^Method App\\Enums\\Roles\:\:values\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Enums/Roles.php
+
+		-
+			message: '#^Method App\\Events\\NewNotification\:\:__construct\(\) has parameter \$notification with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Events/NewNotification.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$locale\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/SetLocale.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>locale" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Middleware/SetLocale.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:markAsRead\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/App/General/Notifications/Index.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$locale\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/General/Settings/LanguageForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>locale" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/App/General/Settings/LanguageForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/General/Settings/ProfileForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/General/Settings/ProfileForm.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:addMedia\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/App/General/Settings/ProfileForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>first_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/App/General/Settings/ProfileForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>last_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/App/General/Settings/ProfileForm.php
+
+		-
+			message: '#^Property App\\Livewire\\App\\Personal\\Roles\\Form\:\:\$permissionList type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/Roles/Form.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Role\:\:\$display_name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Property App\\Livewire\\App\\Personal\\Roles\\Table\:\:\$sort type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Access to an undefined property App\\Livewire\\App\\Personal\\User\\Form\:\:\$selectedTemplate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:addMedia\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Property App\\Livewire\\App\\Personal\\User\\Form\:\:\$originalPermissions type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Property App\\Livewire\\App\\Personal\\User\\Form\:\:\$permissionList type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>first_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>last_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/App/Personal/User/Form.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$display_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Property App\\Livewire\\App\\Personal\\User\\Table\:\:\$sort type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>display_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\Forms\\UserForm\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Forms/UserForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Livewire/Notifications/NotificationsBell.php
+
+		-
+			message: '#^Anonymous function never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/Livewire/Notifications/NotificationsBell.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:markAsRead\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Livewire/Notifications/NotificationsBell.php
+
+		-
+			message: '#^Method App\\Livewire\\Notifications\\NotificationsBell\:\:getGroupedNotifications\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/Notifications/NotificationsBell.php
+
+		-
+			message: '#^Method App\\Livewire\\Public\\Home\\Index\:\:getInstalledPackages\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/Public/Home/Index.php
+
+		-
+			message: '#^Method App\\Mcp\\Tools\\GetMenuStructureTool\:\:countItems\(\) has parameter \$menu with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Mcp/Tools/GetMenuStructureTool.php
+
+		-
+			message: '#^Method App\\Mcp\\Tools\\GetMenuStructureTool\:\:handle\(\) should return Laravel\\Mcp\\Response but returns Laravel\\Mcp\\ResponseFactory\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Mcp/Tools/GetMenuStructureTool.php
+
+		-
+			message: '#^Method App\\Mcp\\Tools\\GetModuleStructureTool\:\:findMenuEntry\(\) has parameter \$menu with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Mcp/Tools/GetModuleStructureTool.php
+
+		-
+			message: '#^Method App\\Mcp\\Tools\\GetModuleStructureTool\:\:handle\(\) should return Laravel\\Mcp\\Response but returns Laravel\\Mcp\\ResponseFactory\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Mcp/Tools/GetModuleStructureTool.php
+
+		-
+			message: '#^Method App\\Mcp\\Tools\\GetModuleStructureTool\:\:schema\(\) should return array\<string, Illuminate\\Contracts\\JsonSchema\\JsonSchema\> but returns array\<string, Illuminate\\JsonSchema\\Types\\StringType\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Mcp/Tools/GetModuleStructureTool.php
+
+		-
+			message: '#^Method App\\Mcp\\Tools\\ListDomainsTool\:\:handle\(\) should return Laravel\\Mcp\\Response but returns Laravel\\Mcp\\ResponseFactory\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Mcp/Tools/ListDomainsTool.php
+
+		-
+			message: '#^Offset 1 on array\{list\<string\>, list\<non\-empty\-string\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Mcp/Tools/ListDomainsTool.php
+
+		-
+			message: '#^Parameter \#1 \$response of static method Laravel\\Mcp\\Response\:\:structured\(\) expects array\<string, mixed\>, list\<array\<string, list\<array\<string, list\<string\>\|string\>\|string\>\|string\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Mcp/Tools/ListDomainsTool.php
+
+		-
+			message: '#^Method App\\Mcp\\Tools\\ListPermissionsTool\:\:handle\(\) should return Laravel\\Mcp\\Response but returns Laravel\\Mcp\\ResponseFactory\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Mcp/Tools/ListPermissionsTool.php
+
+		-
+			message: '#^Call to an undefined method Spatie\\Image\\Drivers\\ImageDriver\:\:performOnCollections\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Profile.php
+
+		-
+			message: '#^Method App\\Models\\Profile\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Profile.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:notifications\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:profile\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasOne does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>first_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>last_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Notifications\\BaseNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/BaseNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\BaseNotification\:\:via\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/BaseNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\RoleCreatedNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/RoleCreatedNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\RoleDeletedNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/RoleDeletedNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\RoleUpdatedNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/RoleUpdatedNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\TestNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/TestNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UserCreatedNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/UserCreatedNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UserDeletedNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/UserDeletedNotification.php
+
+		-
+			message: '#^Method App\\Notifications\\UserUpdatedNotification\:\:toDatabase\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Notifications/UserUpdatedNotification.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/NotificationsService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/NotificationsService.php
+
+		-
+			message: '#^Method App\\Services\\NotificationsService\:\:channelsFor\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/NotificationsService.php
+
+		-
+			message: '#^Method App\\Services\\NotificationsService\:\:sendToUsers\(\) has parameter \$users with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Services/NotificationsService.php

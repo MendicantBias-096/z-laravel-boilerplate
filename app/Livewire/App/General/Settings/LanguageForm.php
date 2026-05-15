@@ -3,6 +3,8 @@
 namespace App\Livewire\App\General\Settings;
 
 use App\Enums\Language;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
 
@@ -20,12 +22,12 @@ class LanguageForm extends Component
     public function save(): void
     {
         $this->validate([
-            'locale' => ['required', 'string', 'in:' . implode(',', Language::values())],
+            'locale' => ['required', 'string', 'in:'.implode(',', Language::values())],
         ]);
 
         auth()->user()->profile()->updateOrCreate(
             ['user_id' => auth()->id()],
-            ['locale'  => $this->locale]
+            ['locale' => $this->locale]
         );
 
         session(['locale' => $this->locale]);
@@ -38,7 +40,7 @@ class LanguageForm extends Component
         $this->redirect(route('settings'), navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('app.general.settings._language-form', [
             'languages' => Language::options(),

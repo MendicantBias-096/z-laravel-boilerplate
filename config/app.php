@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+use App\Enums\Language;
+
 return [
 
     /*
@@ -13,7 +16,7 @@ return [
     |
     */
 
-    'name'      => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Laravel'),
     'developer' => env('APP_DEVELOPER', ''),
 
     /*
@@ -83,7 +86,7 @@ return [
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'es'),
 
-    'supported_locales' => \App\Enums\Language::values(),
+    'supported_locales' => Language::values(),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'es_ES'),
 

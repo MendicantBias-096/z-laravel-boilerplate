@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
 
     /*
@@ -24,27 +26,27 @@ return [
     'menu' => [
         [
             'label' => 'menu.dashboard',
-            'icon'  => 'lucide-home',
+            'icon' => 'lucide-home',
             'route' => 'dashboard',
         ],
 
         // ── Personal ──────────────────────────────────────────────────────
         [
-            'label'        => 'menu.personal',
-            'icon'         => 'lucide-users',
+            'label' => 'menu.personal',
+            'icon' => 'lucide-users',
             'active_route' => 'personal.*',
-            'items'        => [
+            'items' => [
                 [
-                    'label'        => 'menu.users',
-                    'route'        => 'personal.usuarios.index',
+                    'label' => 'menu.users',
+                    'route' => 'personal.usuarios.index',
                     'active_route' => 'personal.usuarios.*',
-                    'permission'   => 'ver usuarios',
+                    'permission' => 'ver usuarios',
                 ],
                 [
-                    'label'        => 'menu.roles',
-                    'route'        => 'personal.roles.index',
+                    'label' => 'menu.roles',
+                    'route' => 'personal.roles.index',
                     'active_route' => 'personal.roles.*',
-                    'permission'   => 'ver roles',
+                    'permission' => 'ver roles',
                 ],
             ],
         ],

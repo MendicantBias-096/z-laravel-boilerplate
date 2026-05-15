@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Auth\Responses;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 
 class RegisterResponse implements RegisterResponseContract
@@ -17,7 +20,7 @@ class RegisterResponse implements RegisterResponseContract
 
         $user = $request->user();
 
-        if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+        if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
             return redirect()->route('verification.notice');
         }
 

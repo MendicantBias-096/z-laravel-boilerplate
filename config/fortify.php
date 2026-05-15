@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Laravel\Fortify\Features;
 
 return [
@@ -150,7 +152,7 @@ return [
         // Features::updateProfileInformation(),
         // Features::updatePasswords(),
         Features::twoFactorAuthentication([
-            'confirm'         => true,
+            'confirm' => true,
             'confirmPassword' => true,
         ]),
     ],

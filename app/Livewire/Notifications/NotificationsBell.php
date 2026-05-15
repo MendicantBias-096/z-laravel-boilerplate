@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Notifications;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -75,18 +77,19 @@ class NotificationsBell extends Component
         $today = now()->startOfDay();
         $yesterday = now()->subDay()->startOfDay();
 
-        return $notifications->groupBy(function ($notification) use ($today, $yesterday) {
+        return $notifications->groupBy(function ($notification) use ($today, $yesterday): string|array|null {
             if ($notification->created_at >= $today) {
                 return __('notifications.group_today');
             }
             if ($notification->created_at >= $yesterday) {
                 return __('notifications.group_yesterday');
             }
+
             return __('notifications.group_older');
         });
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.notifications.notifications-bell', [
             'grouped' => $this->getGroupedNotifications(),

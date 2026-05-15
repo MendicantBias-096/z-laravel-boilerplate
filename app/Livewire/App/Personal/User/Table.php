@@ -6,25 +6,30 @@ use App\Models\User;
 use App\Notifications\UserDeletedNotification;
 use App\Services\NotificationsService;
 use App\Traits\Livewire\HasSoftDeletes;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
 
 class Table extends Component
 {
-    use Interactions, WithPagination, HasSoftDeletes;
+    use HasSoftDeletes, Interactions, WithPagination;
 
-    protected string $modelClass       = User::class;
+    protected string $modelClass = User::class;
+
     protected string $deletePermission = 'eliminar usuarios';
+
     protected string $restorePermission = 'restaurar usuarios';
-    protected string $modelLabel       = 'Usuario';
+
+    protected string $modelLabel = 'Usuario';
 
     public function softDelete(int $id): void
     {
         $this->authorize($this->deletePermission);
 
         $user = User::find($id);
-        if ($user && !$user->is_protected) {
+        if ($user && ! $user->is_protected) {
             $userName = $user->name;
             $user->delete();
             NotificationsService::fire('user_deleted', new UserDeletedNotification($userName));
@@ -32,7 +37,8 @@ class Table extends Component
         }
     }
 
-    public string $search      = '';
+    public string $search = '';
+
     public string $filterEmail = '';
 
     public int $quantity = 25;
@@ -60,7 +66,7 @@ class Table extends Component
         $this->resetPage();
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         $headers = [
             ['index' => 'photo',       'label' => '',                                        'sortable' => false],
@@ -82,19 +88,19 @@ class Table extends Component
         $users = $query
             ->with(['roles', 'profile.media'])
             ->withCount('permissions')
-            ->when($this->search, fn ($q) => $q->where(function ($q) {
+            ->when($this->search, fn ($q) => $q->where(function ($q): void {
                 $q->where('username', 'ilike', "%{$this->search}%")
-                  ->orWhere('email', 'ilike', "%{$this->search}%")
-                  ->orWhereHas('profile', fn ($q) => $q
-                      ->where('first_name', 'ilike', "%{$this->search}%")
-                      ->orWhere('last_name', 'ilike', "%{$this->search}%")
-                  );
+                    ->orWhere('email', 'ilike', "%{$this->search}%")
+                    ->orWhereHas('profile', fn ($q) => $q
+                        ->where('first_name', 'ilike', "%{$this->search}%")
+                        ->orWhere('last_name', 'ilike', "%{$this->search}%")
+                    );
             }))
             ->when($this->filterEmail, fn ($q) => $q->where('email', 'ilike', "%{$this->filterEmail}%"))
             ->orderBy($this->sort['column'], $this->sort['direction'])
             ->paginate($this->quantity);
 
-        $users->getCollection()->transform(function (User $user) {
+        $users->getCollection()->transform(function (User $user): User {
             $user->role = $user->roles->first()?->display_name ?? $user->roles->first()?->name ?? '—';
 
             if ($user->trashed()) {
@@ -108,6 +114,6 @@ class Table extends Component
             return $user;
         });
 
-        return view('app.personal.users._index', compact('headers', 'users'));
+        return view('app.personal.users._index', ['headers' => $headers, 'users' => $users]);
     }
 }

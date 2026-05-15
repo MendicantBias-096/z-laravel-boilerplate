@@ -2,6 +2,8 @@
 
 namespace App\Livewire\App\General\Notifications;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
@@ -68,7 +70,7 @@ class Index extends Component
         $this->redirect($url, navigate: true);
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         $user = auth()->user();
 
@@ -78,6 +80,6 @@ class Index extends Component
 
         $notifications = $query->latest()->paginate($this->quantity);
 
-        return view('app.general.notifications._index', compact('notifications'));
+        return view('app.general.notifications._index', ['notifications' => $notifications]);
     }
 }
