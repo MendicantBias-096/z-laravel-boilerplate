@@ -11,6 +11,7 @@
         "dev": "vite"
     },
     "dependencies": {
+        "@laravel/passkeys": "^0.2.0",
         "alpinejs": "^3.14.0",
         "laravel-echo": "^2.3.0",
         "pusher-js": "^8.4.0"
