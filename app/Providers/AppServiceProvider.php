@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(fn ($user, $ability) => $user->hasRole(Roles::ADMIN->value) ? true : null);
 
         if (config('app.debug')) {
-            $this->validateMenuRoutes();
+            $this->app->booted(fn () => $this->validateMenuRoutes());
         }
 
         TallStackUi::customize()
