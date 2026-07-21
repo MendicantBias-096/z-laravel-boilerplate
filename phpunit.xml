@@ -25,6 +25,10 @@
         <env name="CACHE_STORE" value="array" force="true"/>
         <env name="DB_CONNECTION" value="pgsql" force="true"/>
         <env name="DB_DATABASE" value="laravel_testing" force="true"/>
+        <!-- DDEV exporta DB_* como env reales del contenedor y esas ganan sobre
+             <env>; sin este <server> los tests con RefreshDatabase borran la
+             base de desarrollo. -->
+        <server name="DB_DATABASE" value="laravel_testing" force="true"/>
         <env name="MAIL_MAILER" value="array" force="true"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>
