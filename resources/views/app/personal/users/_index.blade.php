@@ -18,14 +18,14 @@
         <button
             type="button"
             @click="showFilters = !showFilters"
-            :class="showFilters || @js($filterEmail)
+            :class="showFilters || @js($filters['email'])
                 ? 'border-primary-500 bg-primary-50 text-primary-600 dark:bg-primary-950 dark:text-primary-400'
                 : 'border-line bg-panel text-content-muted hover:bg-panel-alt hover:text-content dark:bg-panel'"
             class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-2 text-sm transition-colors"
         >
             @svg('lucide-sliders-horizontal', 'size-4')
             {{ __('table.filters') }}
-            @if ($filterEmail)
+            @if ($filters['email'])
                 <span class="flex size-2 rounded-full bg-primary-500"></span>
             @endif
         </button>
@@ -62,7 +62,7 @@
                 @svg('lucide-sliders-horizontal', 'size-3.5')
                 {{ __('table.filters') }}
             </div>
-            @php $activeCount = (int) (bool) $filterEmail; @endphp
+            @php $activeCount = (int) (bool) $filters['email']; @endphp
             @if ($activeCount)
                 <span class="inline-flex items-center rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-primary-950 dark:text-primary-300">
                     {{ $activeCount }} {{ trans_choice('table.active', $activeCount) }}
@@ -75,11 +75,11 @@
             <x-ui.ts-table.filter-input
                 label="{{ __('table.users.filter_email') }}"
                 icon="lucide-search"
-                wire:model.live.debounce.400ms="filterEmail"
+                wire:model.live.debounce.400ms="filters.email"
                 placeholder="{{ __('table.users.filter_email_placeholder') }}"
             />
 
-            @if ($filterEmail)
+            @if ($filters['email'])
                 <div class="group relative self-end">
                     <button
                         type="button"

@@ -64,4 +64,5 @@ Homestead.yaml
 .claude/
 
 # ── Documentación local (no se versiona) ─────────────────────────────────────
-/docs
+/docs/*
+!/docs/patterns/

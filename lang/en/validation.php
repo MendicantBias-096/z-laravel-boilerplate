@@ -195,6 +195,12 @@ return [
     |
     */
 
+    // Custom rules (App\Rules)
+    'rfc' => 'The RFC does not have a valid format.',
+    'nss' => 'The NSS must be 11 digits with a valid IMSS format.',
+    'currency' => 'The amount must be a valid number with at most two decimals.',
+    'password_strength' => 'The password must be at least 8 characters, with one uppercase letter and one number.',
+
     'attributes' => [],
 
 ];
