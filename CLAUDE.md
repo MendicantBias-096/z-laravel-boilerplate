@@ -70,6 +70,26 @@ If the user doesn't see frontend changes, they may need to run `ddev bun run bui
 
 The project is available at the DDEV-configured URL. Check `.ddev/config.yaml` for the exact domain.
 
+## Instantiating this boilerplate as a new project
+
+Copying the folder is not enough — these values stay pointed at the boilerplate
+and cause silent breakage. Do all of it before the first `ddev start`:
+
+1. **`.ddev/config.yaml`** — `name:` _and_ every value under `web_environment`
+   (`APP_URL`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `REVERB_HOST`,
+   `VITE_*`). DDEV exports these as real container env vars and **they win over
+   `.env`**, so a stale `APP_URL` here silently poisons every generated URL
+   while `.env` looks correct.
+2. **`.ddev/traefik`** — delete it, and reassign the ports in
+   `config.local.yaml`, or `ddev-router` fails against the other projects.
+3. **`hooks.post-stop`** — rewrites `.env` with Herd values on every
+   `ddev stop`. Drop it unless the project actually runs under Herd.
+4. **`.env`** — copy from `.env.example` (not from another project) so keys like
+   `TALLSTACKUI_PREFIX=ts-` are present; without it every `x-ts-*` component
+   throws `Unable to locate a class or view for component`.
+5. **Postgres** — create the renamed database and role, plus `laravel_testing`
+   for the suite.
+
 === laravel/core rules ===
 
 # Laravel Conventions (project-specific)
