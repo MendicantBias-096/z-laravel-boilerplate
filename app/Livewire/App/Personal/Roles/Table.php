@@ -5,30 +5,24 @@ namespace App\Livewire\App\Personal\Roles;
 use App\Models\Role;
 use App\Notifications\RoleDeletedNotification;
 use App\Services\NotificationsService;
+use App\Traits\Livewire\HasTable;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
 
 class Table extends Component
 {
-    use Interactions, WithPagination;
+    use HasTable, Interactions;
 
-    public string $search = '';
-
-    public int $quantity = 25;
-
-    public array $sort = ['column' => 'name', 'direction' => 'asc'];
-
-    public function updatingSearch(): void
+    protected function searchable(): array
     {
-        $this->resetPage();
+        return ['name', 'display_name'];
     }
 
-    public function updatingQuantity(): void
+    protected function defaultSort(): array
     {
-        $this->resetPage();
+        return ['column' => 'name', 'direction' => 'asc'];
     }
 
     public function confirmDelete(int $id): void
@@ -78,12 +72,7 @@ class Table extends Component
             ['index' => 'action',       'label' => __('table.roles.headers.actions'),     'sortable' => false],
         ];
 
-        $roles = Role::withCount(['permissions', 'users'])
-            ->when($this->search, fn ($q) => $q
-                ->where('name', 'ilike', "%{$this->search}%")
-                ->orWhere('display_name', 'ilike', "%{$this->search}%")
-            )
-            ->orderBy($this->sort['column'], $this->sort['direction'])
+        $roles = $this->applyTableQuery(Role::withCount(['permissions', 'users']))
             ->paginate($this->quantity);
 
         return view('app.personal.roles._index', ['headers' => $headers, 'roles' => $roles]);

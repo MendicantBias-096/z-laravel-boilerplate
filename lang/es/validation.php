@@ -149,5 +149,11 @@ return [
     'ulid' => 'El campo :attribute debe ser un ULID válido.',
     'uuid' => 'El campo :attribute debe ser un UUID válido.',
 
+    // Reglas personalizadas (App\Rules)
+    'rfc' => 'El RFC ingresado no tiene un formato válido.',
+    'nss' => 'El NSS debe tener 11 dígitos con un formato válido del IMSS.',
+    'currency' => 'El monto debe ser un número válido con máximo dos decimales.',
+    'password_strength' => 'La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un número.',
+
     'attributes' => [],
 ];

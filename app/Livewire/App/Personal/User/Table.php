@@ -6,15 +6,15 @@ use App\Models\User;
 use App\Notifications\UserDeletedNotification;
 use App\Services\NotificationsService;
 use App\Traits\Livewire\HasSoftDeletes;
+use App\Traits\Livewire\HasTable;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
-use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
 
 class Table extends Component
 {
-    use HasSoftDeletes, Interactions, WithPagination;
+    use HasSoftDeletes, HasTable, Interactions;
 
     protected string $modelClass = User::class;
 
@@ -23,6 +23,17 @@ class Table extends Component
     protected string $restorePermission = 'restaurar usuarios';
 
     protected string $modelLabel = 'Usuario';
+
+    /** Búsqueda manual (incluye la relación profile) en render(); el trait no la generaliza. */
+    protected function filterable(): array
+    {
+        return ['email' => 'ilike'];
+    }
+
+    protected function defaultSort(): array
+    {
+        return ['column' => 'username', 'direction' => 'asc'];
+    }
 
     public function softDelete(int $id): void
     {
@@ -35,35 +46,6 @@ class Table extends Component
             NotificationsService::fire('user_deleted', new UserDeletedNotification($userName));
             $this->toast()->success(__('app.success'), __('app.soft_deleted', ['model' => $this->modelLabel]))->send();
         }
-    }
-
-    public string $search = '';
-
-    public string $filterEmail = '';
-
-    public int $quantity = 25;
-
-    public array $sort = ['column' => 'username', 'direction' => 'asc'];
-
-    public function updatingSearch(): void
-    {
-        $this->resetPage();
-    }
-
-    public function updatingQuantity(): void
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFilterEmail(): void
-    {
-        $this->resetPage();
-    }
-
-    public function clearFilters(): void
-    {
-        $this->reset('filterEmail');
-        $this->resetPage();
     }
 
     public function render(): Factory|View
@@ -85,7 +67,7 @@ class Table extends Component
             ? User::withTrashed()->where('id', '!=', auth()->id())->where('is_protected', false)
             : User::where('id', '!=', auth()->id())->where('is_protected', false);
 
-        $users = $query
+        $query = $query
             ->with(['roles', 'profile.media'])
             ->withCount('permissions')
             ->when($this->search, fn ($q) => $q->where(function ($q): void {
@@ -95,10 +77,10 @@ class Table extends Component
                         ->where('first_name', 'ilike', "%{$this->search}%")
                         ->orWhere('last_name', 'ilike', "%{$this->search}%")
                     );
-            }))
-            ->when($this->filterEmail, fn ($q) => $q->where('email', 'ilike', "%{$this->filterEmail}%"))
-            ->orderBy($this->sort['column'], $this->sort['direction'])
-            ->paginate($this->quantity);
+            }));
+
+        // El trait aplica el filtro de email y el orden.
+        $users = $this->applyTableQuery($query)->paginate($this->quantity);
 
         $users->getCollection()->transform(function (User $user): User {
             $user->role = $user->roles->first()?->display_name ?? $user->roles->first()?->name ?? '—';
