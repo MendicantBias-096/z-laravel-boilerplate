@@ -37,14 +37,7 @@ Activate the relevant skill whenever you work in that domain — don't wait unti
 - Never use `->layout()` in Livewire `render()` methods — layout is set in the wrapper view.
 - Never point routes directly to Livewire classes — always use `fn () => view(...)`.
 - All Livewire component classes live in a subfolder named after the module: `App\Livewire\App\{Domain}\{Module}\Index.php`.
-
-## Documentation Files
-
-- Only create documentation files if explicitly requested.
-
-## Replies
-
-- Be concise. Focus on what matters, not obvious details.
+- Never use `env()` outside of config files — always use `config('key')`.
 
 === ddev rules ===
 
@@ -77,29 +70,15 @@ If the user doesn't see frontend changes, they may need to run `ddev bun run bui
 
 The project is available at the DDEV-configured URL. Check `.ddev/config.yaml` for the exact domain.
 
-=== php rules ===
-
-# PHP
-
-- Always use curly braces for control structures, even for single-line bodies.
-- Use PHP 8 constructor property promotion in `__construct()`.
-- Always use explicit return type declarations for methods and functions.
-- Use appropriate PHP type hints for all method parameters.
-- Prefer PHPDoc blocks over inline comments.
-- Never use `env()` outside of config files — always use `config('key')`.
-
 === laravel/core rules ===
 
-# Laravel Conventions
+# Laravel Conventions (project-specific)
 
-- Use `php artisan make:` commands to create new files.
 - Use Eloquent models and relationships before suggesting raw queries.
 - Avoid `DB::` — prefer `Model::query()`.
 - Prevent N+1 problems with eager loading.
 - Use Form Request classes for validation — never inline validation in controllers.
-- Use named routes and the `route()` function for URL generation.
 - Use queued jobs with `ShouldQueue` for time-consuming operations.
-- When creating models, always create their factory too.
 
 ## Laravel 12 Structure
 
@@ -136,22 +115,22 @@ routes/{domain}.php
 
 ## Naming Conventions
 
-| Element | Convention | Example |
-|---|---|---|
-| Livewire namespace | `App\Livewire\App\{Domain}\{Module}` | `App\Livewire\App\General\Users` |
-| Livewire class | Always `Index` inside its folder | `Users/Index.php` |
-| Wrapper view | `app.{domain}.{module}.index` | `app.general.users.index` |
-| Component view | `app.{domain}.{module}._index` | `app.general.users._index` |
-| Route | `fn () => view('{wrapper}')` | `fn () => view('app.general.users.index')` |
-| Route name | `{domain}.{module}.{action}` | `general.users.index` |
-| Route file | `routes/{domain}.php` | `routes/general.php` |
-| URL prefix | kebab-case | `/users` |
+| Element            | Convention                           | Example                                    |
+| ------------------ | ------------------------------------ | ------------------------------------------ |
+| Livewire namespace | `App\Livewire\App\{Domain}\{Module}` | `App\Livewire\App\General\Users`           |
+| Livewire class     | Always `Index` inside its folder     | `Users/Index.php`                          |
+| Wrapper view       | `app.{domain}.{module}.index`        | `app.general.users.index`                  |
+| Component view     | `app.{domain}.{module}._index`       | `app.general.users._index`                 |
+| Route              | `fn () => view('{wrapper}')`         | `fn () => view('app.general.users.index')` |
+| Route name         | `{domain}.{module}.{action}`         | `general.users.index`                      |
+| Route file         | `routes/{domain}.php`                | `routes/general.php`                       |
+| URL prefix         | kebab-case                           | `/users`                                   |
 
 ## Registered Domains
 
-| Domain | URL prefix | Route file | Modules |
-|---|---|---|---|
-| General | `/` | `routes/general.php` | Dashboard |
+| Domain   | URL prefix  | Route file            | Modules         |
+| -------- | ----------- | --------------------- | --------------- |
+| General  | `/`         | `routes/general.php`  | Dashboard       |
 | Personal | `/personal` | `routes/personal.php` | Roles, Usuarios |
 
 Use the `create-module` skill for full instructions on creating new domains and modules.
@@ -163,6 +142,7 @@ Use the `create-module` skill for full instructions on creating new domains and 
 When the user asks to create a CRUD or a new module with a table, **activate the `create-crud` skill**.
 
 Before generating anything, ask for:
+
 - Model name (PascalCase singular)
 - Domain where it lives
 - Fields (name and type)
@@ -315,35 +295,9 @@ ddev exec php artisan vendor:publish --tag=ai-routes   # creates routes/ai.php
 
 # Laravel Boost
 
-`laravel/boost` (dev dependency) provides the MCP server that gives the AI agent real introspection tools.
-
-## Priority Rule
-
 **Always use Laravel Boost MCP tools first** for any database, schema, route, config, or app introspection task. Never use manual `ddev exec php artisan tinker` commands when a Boost tool can do the job — Boost avoids shell escaping issues and returns structured data.
 
-## MCP server tools available
-
-- **Application Info** — PHP/Laravel versions, installed packages, Eloquent models
-- **Database Schema** — table structure, columns, indexes
-- **Database Query** — run read queries against the DB
-- **List Routes** — all registered routes with middleware
-- **List Artisan Commands** — available commands
-- **Search Docs** — semantic search over Laravel 12 docs
-- **Tinker** — execute PHP inside the app
-- **Get Config** — read config values by dot notation
-- **Read Log Entries** — last N log entries
-- **Browser Logs** — browser console errors
-
-## MCP configuration
-
-The `.mcp.json` in this project points to `php artisan boost:mcp` via DDEV.
-Claude Code picks this up automatically at session start.
-
-## Updating
-
-```bash
-ddev exec php artisan boost:update
-```
+The `.mcp.json` in this project points to `php artisan boost:mcp` via DDEV. Update with `ddev exec php artisan boost:update`.
 
 === boilerplate mcp ===
 
@@ -465,7 +419,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Execute PHP in app context for debugging and testing code. Do not create models without user approval, prefer tests with factories instead. Prefer existing Artisan commands over custom tinker code.
 - Always use single quotes to prevent shell expansion: `php artisan tinker --execute 'Your::code();'`
-  - Double quotes for PHP strings inside: `php artisan tinker --execute 'User::where("active", true)->count();'`
+    - Double quotes for PHP strings inside: `php artisan tinker --execute 'User::where("active", true)->count();'`
 
 === php rules ===
 
