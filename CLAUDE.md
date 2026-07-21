@@ -282,11 +282,12 @@ $path = Image::of('description')->landscape()->generate()->store();
 
 ## Rules
 
-- Always use `#[Provider(Lab::Anthropic)]` and `#[Model('claude-sonnet-4-6')]` attributes unless the user specifies otherwise.
+- Always use `#[Provider(Lab::Anthropic)]` and `#[Model('claude-opus-4-8')]` attributes unless the user specifies otherwise. Never hardcode a model ID from memory — a stale one fails at runtime with a 404, not at boot. Check the current IDs first (the `claude-api` skill lists them).
+- `config/ai.php` ships with `'default' => 'openai'`. Publish it (`vendor:publish --tag=ai-config`) and switch the default to `anthropic`, or every call without an explicit provider hits the wrong lab.
 - Use `RemembersConversations` trait for multi-turn conversation persistence.
 - Use `HasTools` + `tools()` method to give agents access to app data.
 - Use `SimilaritySearch` tool for RAG patterns — don't build custom vector search unless needed.
-- Always test with `MyAgent::fake()` — never call real AI in tests.
+- Always test with `MyAgent::fake()` — never call real AI in tests. `fake()` returns the gateway; the assertions (`assertAgentWasPrompted`, …) live on the `Ai` facade.
 
 === laravel/mcp rules ===
 
