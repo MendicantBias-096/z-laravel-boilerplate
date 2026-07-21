@@ -241,7 +241,9 @@ $this->toast()->error('Error', 'Mensaje')->send();
 # Laravel AI SDK
 
 > **Not installed by default.** Install with `ddev composer require laravel/ai` before using any AI feature.
-> This boilerplate's IA branch (`feature/ia`) includes this package pre-installed.
+> No branch ships it pre-installed — `feature/ia` is stale pre-squash history (66 commits behind
+> `trunk`, never had `laravel/ai` in `composer.json`); do not branch off it.
+> What _is_ here by default: `laravel/mcp` plus the introspection server in `app/Mcp` (see below).
 
 Use `laravel/ai` when the user needs AI features: agents, embeddings, image generation, audio, or RAG.
 

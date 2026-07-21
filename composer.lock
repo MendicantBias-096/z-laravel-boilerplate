@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "52205bc3fe088c10b47790dd4a1a8a29",
+    "content-hash": "080d9f0335bbe68baab61725bf7e3d3b",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -10921,16 +10921,16 @@
         },
         {
             "name": "laravel/mcp",
-            "version": "v0.7.0",
+            "version": "v0.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/mcp.git",
-                "reference": "3513b4feca5f1678be4d2261dcfa8e456436d02a"
+                "reference": "08962a276357f89164f78b38407c08187ab26cfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/mcp/zipball/3513b4feca5f1678be4d2261dcfa8e456436d02a",
-                "reference": "3513b4feca5f1678be4d2261dcfa8e456436d02a",
+                "url": "https://api.github.com/repos/laravel/mcp/zipball/08962a276357f89164f78b38407c08187ab26cfe",
+                "reference": "08962a276357f89164f78b38407c08187ab26cfe",
                 "shasum": ""
             },
             "require": {
@@ -10944,7 +10944,8 @@
                 "illuminate/routing": "^11.45.3|^12.41.1|^13.0",
                 "illuminate/support": "^11.45.3|^12.41.1|^13.0",
                 "illuminate/validation": "^11.45.3|^12.41.1|^13.0",
-                "php": "^8.2"
+                "php": "^8.2",
+                "symfony/process": "^7.4.5|^8.0.5"
             },
             "require-dev": {
                 "laravel/pint": "^1.20",
@@ -10990,7 +10991,7 @@
                 "issues": "https://github.com/laravel/mcp/issues",
                 "source": "https://github.com/laravel/mcp"
             },
-            "time": "2026-04-21T10:23:03+00:00"
+            "time": "2026-05-22T11:45:29+00:00"
         },
         {
             "name": "laravel/pail",
@@ -13421,7 +13422,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.4"
+        "php": "^8.5"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
