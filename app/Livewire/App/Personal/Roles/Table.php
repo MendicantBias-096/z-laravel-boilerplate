@@ -25,7 +25,7 @@ class Table extends Component
         return ['column' => 'name', 'direction' => 'asc'];
     }
 
-    public function confirmDelete(int $id): void
+    public function confirmDelete(string|int $id): void
     {
         $this->authorize('eliminar roles');
 
@@ -44,13 +44,25 @@ class Table extends Component
             ->send();
     }
 
-    public function delete(int $id): void
+    public function delete(string|int $id): void
     {
         $this->authorize('eliminar roles');
 
         $role = Role::find($id);
 
-        if (! $role || $role->users()->count() > 0) {
+        // Dos causas distintas, y el usuario necesita distinguirlas: una la
+        // arregla él quitando usuarios del rol, la otra no. Antes las dos
+        // acababan en el mismo `return` mudo y el diálogo se cerraba como si
+        // hubiera funcionado.
+        if ($role === null) {
+            $this->toast()->error(__('app.error'), __('app.not_found', ['model' => 'Rol']))->send();
+
+            return;
+        }
+
+        if ($role->users()->count() > 0) {
+            $this->toast()->error(__('app.role_delete_error'), __('app.role_delete_has_users', ['name' => $role->display_name]))->send();
+
             return;
         }
 

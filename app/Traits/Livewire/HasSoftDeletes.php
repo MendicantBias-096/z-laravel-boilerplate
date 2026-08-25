@@ -12,10 +12,17 @@ namespace App\Traits\Livewire;
  *   protected string $modelLabel        — e.g. 'Producto' (singular, capitalized)
  *
  * The component must also use TallStackUi\Traits\Interactions.
+ *
+ * El id viaja como `string|int` porque no todos los modelos numeran igual: unos
+ * usan entero autoincremental y otros UUID o ULID. Llega como texto desde el
+ * navegador, así que tipado `int` una clave no numérica o revienta con
+ * `TypeError` (PHP 8.5) o —en versiones anteriores— llegaba convertida a `0`,
+ * `find(0)` no encontraba nada y el toast de éxito salía igual: el botón
+ * parecía funcionar y la fila seguía ahí (DAYA-237, LDT-6).
  */
 trait HasSoftDeletes
 {
-    public function confirmDelete(int $id): void
+    public function confirmDelete(string|int $id): void
     {
         $this->authorize($this->deletePermission);
 
@@ -31,16 +38,28 @@ trait HasSoftDeletes
             ->send();
     }
 
-    public function softDelete(int $id): void
+    public function softDelete(string|int $id): void
     {
         $this->authorize($this->deletePermission);
 
-        ($this->modelClass)::find($id)?->delete();
+        $model = ($this->modelClass)::find($id);
+
+        // Entre que se pinta la fila y se confirma el diálogo pasa tiempo real,
+        // y en ese hueco otro usuario pudo borrarla. Con `find($id)?->delete()`
+        // el toast de éxito salía igual con la fila intacta delante: el peor de
+        // los dos fallos posibles, porque el usuario deja de mirar.
+        if ($model === null) {
+            $this->toast()->error(__('app.error'), __('app.not_found', ['model' => $this->modelLabel]))->send();
+
+            return;
+        }
+
+        $model->delete();
 
         $this->toast()->success(__('app.success'), __('app.soft_deleted', ['model' => $this->modelLabel]))->send();
     }
 
-    public function confirmRestore(int $id): void
+    public function confirmRestore(string|int $id): void
     {
         $this->authorize($this->restorePermission);
 
@@ -56,11 +75,19 @@ trait HasSoftDeletes
             ->send();
     }
 
-    public function restore(int $id): void
+    public function restore(string|int $id): void
     {
         $this->authorize($this->restorePermission);
 
-        ($this->modelClass)::withTrashed()->find($id)?->restore();
+        $model = ($this->modelClass)::withTrashed()->find($id);
+
+        if ($model === null) {
+            $this->toast()->error(__('app.error'), __('app.not_found', ['model' => $this->modelLabel]))->send();
+
+            return;
+        }
+
+        $model->restore();
 
         $this->toast()->success(__('app.success'), __('app.restored', ['model' => $this->modelLabel]))->send();
     }

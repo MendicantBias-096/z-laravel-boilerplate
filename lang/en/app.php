@@ -57,6 +57,9 @@ return [
     // Common actions
     'cancel' => 'Cancel',
     'success' => 'Success',
+    'error' => 'Error',
+    'user_protected' => 'This user is protected and cannot be deleted.',
+    'not_found' => 'The :model was not found. Someone else may have deleted it.',
     'soft_deleted' => ':model deleted successfully.',
     'restored' => ':model restored successfully.',
     'user_deactivated' => 'User deactivated successfully.',

@@ -35,17 +35,31 @@ class Table extends Component
         return ['column' => 'username', 'direction' => 'asc'];
     }
 
-    public function softDelete(int $id): void
+    public function softDelete(string|int $id): void
     {
         $this->authorize($this->deletePermission);
 
         $user = User::find($id);
-        if ($user && ! $user->is_protected) {
-            $userName = $user->name;
-            $user->delete();
-            NotificationsService::fire('user_deleted', new UserDeletedNotification($userName));
-            $this->toast()->success(__('app.success'), __('app.soft_deleted', ['model' => $this->modelLabel]))->send();
+
+        // El `if` sin else escondía dos casos distintos —la fila ya no existe,
+        // o el usuario está protegido— bajo el mismo silencio. Sin cambio ni
+        // aviso, el usuario se va convencido de que borró.
+        if ($user === null) {
+            $this->toast()->error(__('app.error'), __('app.not_found', ['model' => $this->modelLabel]))->send();
+
+            return;
         }
+
+        if ($user->is_protected) {
+            $this->toast()->error(__('app.error'), __('app.user_protected'))->send();
+
+            return;
+        }
+
+        $userName = $user->name;
+        $user->delete();
+        NotificationsService::fire('user_deleted', new UserDeletedNotification($userName));
+        $this->toast()->success(__('app.success'), __('app.soft_deleted', ['model' => $this->modelLabel]))->send();
     }
 
     public function render(): Factory|View

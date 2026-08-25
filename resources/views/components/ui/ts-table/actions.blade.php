@@ -7,6 +7,15 @@
     'model'             => 'registro',
     'softDeletes'       => true,
 ])
+{{--
+    El id de la fila viaja por `Js::from()` y no interpolado a pelo: Livewire
+    evalúa el contenido de `wire:click` como expresión, así que una clave que no
+    sea un número llega como `confirmDelete(01a036c2-ffe7-…)` y muere en un
+    SyntaxError antes de salir del navegador.
+
+    `Js::from()` cita las cadenas y deja los enteros como números, así que sirve
+    igual para un modelo con `$table->id()` que con UUID o ULID (LDT-6).
+--}}
 @php $isTrashed = $softDeletes && method_exists($row, 'trashed') && $row->trashed(); @endphp
 
 <div
@@ -64,7 +73,7 @@
                 @can($restorePermission)
                     <button
                         type="button"
-                        wire:click="confirmRestore({{ $row->id }})"
+                        wire:click="confirmRestore({{ \Illuminate\Support\Js::from($row->id) }})"
                         @click="close()"
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950"
                     >
@@ -78,7 +87,7 @@
                 @can($deletePermission)
                     <button
                         type="button"
-                        wire:click="confirmDelete({{ $row->id }})"
+                        wire:click="confirmDelete({{ \Illuminate\Support\Js::from($row->id) }})"
                         @click="close()"
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
                     >

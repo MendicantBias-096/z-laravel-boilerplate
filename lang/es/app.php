@@ -57,6 +57,9 @@ return [
     // Acciones comunes
     'cancel' => 'Cancelar',
     'success' => 'Éxito',
+    'error' => 'Error',
+    'user_protected' => 'Este usuario está protegido y no se puede eliminar.',
+    'not_found' => 'No se encontró el :model. Puede que otra persona lo haya borrado.',
     'soft_deleted' => ':model eliminado correctamente.',
     'restored' => ':model restaurado correctamente.',
     'user_deactivated' => 'Usuario desactivado correctamente.',
