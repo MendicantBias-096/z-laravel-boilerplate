@@ -100,21 +100,57 @@ and cause silent breakage. Do all of it before the first `ddev start`:
 - Use Form Request classes for validation — never inline validation in controllers.
 - Use queued jobs with `ShouldQueue` for time-consuming operations.
 
-## Model keys: integer, UUID and ULID all work
+## Model keys: UUID for domain models
 
-A model can key on `$table->id()`, `$table->uuid('id')->primary()` with
-`HasUuids`, or `$table->ulid('id')->primary()` with `HasUlids`. **All three are
-supported, and nothing needs configuring** — the row actions in
-`App\Traits\Livewire\HasSoftDeletes` type the id as `string|int`, and
-`<x-ui.ts-table.actions>` sends it to the browser through `Js::from()`.
+**A new domain model keys on UUID.** Three pieces that change together or not
+at all:
 
-That support is deliberate and covered by
-`tests/Feature/Personal/ClaveNoNumericaTest.php`. Reverting either half breaks
-it, which is the point: it used to be possible to break both and keep the suite
-green.
+```php
+$table->uuid('id')->primary();   // migration
+use HasUuids;                    // model
+public ?string $id = null;       // Form object
+```
 
-**Two rules when you write your own row actions**, because integer keys satisfy
-them by accident and you only notice on the first non-numeric table:
+`create-crud` already generates all three. Integer and ULID keys also work —
+see below — but UUID is what a new module gets unless there is a reason.
+
+**What stays on integers**, deliberately: `users`, `roles` and everything from
+Spatie, plus the infrastructure tables (`jobs`, `cache`, `sessions`,
+`personal_access_tokens`). Changing those buys nothing and breaks third-party
+packages that expect an integer key.
+
+### Why UUID and not the integer
+
+The evidence is in the projects, not in taste. In dayacount, **55 of 65 tables
+use UUID** — and the 10 integer ones are exactly the tables inherited from this
+boilerplate. Every table anyone wrote by hand chose UUID.
+
+A default that gets overridden on its first use is not a default, it is a toll.
+So the boilerplate now ships the format its own projects already pick.
+
+What that format buys, concretely:
+
+- **Ids stop being enumerable.** `/facturas/1` and `/facturas/2` leak how many
+  records exist and invite walking the range. A UUID does not.
+- **They can be generated outside the database** — in a job, in a queued import,
+  in a client — without a round trip to get the id back.
+- Laravel's `HasUuids` emits **UUID v7**, which is ordered by time, so it does
+  not fragment the index the way a v4 would.
+
+The costs are real and accepted: 36 characters instead of a handful, uglier in
+logs and URLs, and slightly heavier indexes and joins.
+
+### All three formats are supported
+
+Integer, UUID (`HasUuids`) and ULID (`HasUlids`) all work with no configuration:
+the row actions in `App\Traits\Livewire\HasSoftDeletes` type the id as
+`string|int`, and `<x-ui.ts-table.actions>` sends it to the browser through
+`Js::from()`. Covered by `tests/Feature/Personal/ClaveNoNumericaTest.php` —
+reverting either half turns it red, which is the point: it used to be possible
+to break both and keep the suite green.
+
+**Two rules when you write your own row actions.** Integer keys satisfy both by
+accident, so a mistake only surfaces on the first non-numeric table:
 
 ```php
 // Type ids as string|int, never int. They arrive as text from the browser.
@@ -123,16 +159,13 @@ public function softDelete(string|int $id): void
 
 ```blade
 {{-- Send the id through Js::from(), never interpolated bare. Livewire
-     evaluates wire:click as an expression. --}}
+     evaluates wire:click as an expression, so a bare UUID dies in a
+     SyntaxError before it leaves the browser. --}}
 wire:click="confirmDelete({{ \Illuminate\Support\Js::from($row->id) }})"
 ```
 
-The Form object follows the model: `?int $id` for an integer key, `?string $id`
-for UUID or ULID.
-
-Which format a **new domain module** should default to is still open — see
-ZBLP-10. Today the `create-crud` stub writes `$table->id()`; the auth and
-infrastructure tables (`users`, `jobs`, `cache`) stay on integers regardless.
+Pick ULID over UUID when the id is going to be read aloud, typed by hand or put
+in a URL people copy: same properties, 26 characters, no hyphens.
 
 ## Laravel 12 Structure
 
