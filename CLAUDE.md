@@ -100,6 +100,40 @@ and cause silent breakage. Do all of it before the first `ddev start`:
 - Use Form Request classes for validation — never inline validation in controllers.
 - Use queued jobs with `ShouldQueue` for time-consuming operations.
 
+## Model keys: integer, UUID and ULID all work
+
+A model can key on `$table->id()`, `$table->uuid('id')->primary()` with
+`HasUuids`, or `$table->ulid('id')->primary()` with `HasUlids`. **All three are
+supported, and nothing needs configuring** — the row actions in
+`App\Traits\Livewire\HasSoftDeletes` type the id as `string|int`, and
+`<x-ui.ts-table.actions>` sends it to the browser through `Js::from()`.
+
+That support is deliberate and covered by
+`tests/Feature/Personal/ClaveNoNumericaTest.php`. Reverting either half breaks
+it, which is the point: it used to be possible to break both and keep the suite
+green.
+
+**Two rules when you write your own row actions**, because integer keys satisfy
+them by accident and you only notice on the first non-numeric table:
+
+```php
+// Type ids as string|int, never int. They arrive as text from the browser.
+public function softDelete(string|int $id): void
+```
+
+```blade
+{{-- Send the id through Js::from(), never interpolated bare. Livewire
+     evaluates wire:click as an expression. --}}
+wire:click="confirmDelete({{ \Illuminate\Support\Js::from($row->id) }})"
+```
+
+The Form object follows the model: `?int $id` for an integer key, `?string $id`
+for UUID or ULID.
+
+Which format a **new domain module** should default to is still open — see
+ZBLP-10. Today the `create-crud` stub writes `$table->id()`; the auth and
+infrastructure tables (`users`, `jobs`, `cache`) stay on integers regardless.
+
 ## Laravel 12 Structure
 
 - Middleware is configured in `bootstrap/app.php` via `Application::configure()->withMiddleware()`.

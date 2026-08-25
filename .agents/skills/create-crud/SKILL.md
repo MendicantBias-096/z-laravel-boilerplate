@@ -22,6 +22,7 @@ Trigger phrases: "crear crud", "nuevo módulo con tabla", "generar módulo", "cr
 - The `x-ts-table` is used **without** built-in filter/quantity/paginate props — all handled manually.
 - Every floating panel (dropdowns, selects inside tables) must use `x-teleport="#app-root"` + `position:fixed` to escape overflow clipping.
 - **Card footers** (where save/cancel buttons live) have a subtle primary-brand tint applied globally via `AppServiceProvider`. Never override this background manually — just use `<x-slot:footer>` normally.
+- **Row action ids are typed `string|int`, never `int`**, and reach the browser through `Js::from()`, never interpolated bare. Integer keys satisfy both by accident; a UUID or ULID key breaks on both — see «Model keys» in `CLAUDE.md`. The stubs below already comply.
 
 ---
 
@@ -111,6 +112,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('{models}', function (Blueprint $table) {
+            // La clave: `$table->id()`, o `$table->uuid('id')->primary()` con
+            // `HasUuids`, o `$table->ulid('id')->primary()` con `HasUlids`. Los
+            // tres funcionan. Cuál es el default para módulos nuevos está por
+            // decidir (ZBLP-10); si eliges una de texto, el Form object de más
+            // abajo tipa `?string $id`.
             $table->id();
             $table->string('name');
             $table->timestamps();
@@ -161,6 +167,7 @@ use Livewire\Form;
 
 class {Model}Form extends Form
 {
+    // `?string` si el modelo lleva clave UUID o ULID.
     public ?int $id = null;
 
     public string $name = '';
