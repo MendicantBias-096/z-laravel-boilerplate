@@ -11,7 +11,12 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 trae los tags. Sin ellos `git describe` falla aunque el
+      # tag exista y sea ancestro de HEAD, así que el check de versión (R36)
+      # daría rojo por la configuración del runner, no por el repositorio.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -47,7 +52,12 @@ jobs:
           --health-retries 5
 
     steps:
+      # fetch-depth: 0 trae los tags. Sin ellos `git describe` falla aunque el
+      # tag exista y sea ancestro de HEAD, así que el check de versión (R36)
+      # daría rojo por la configuración del runner, no por el repositorio.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -73,3 +83,19 @@ jobs:
           DB_USERNAME: testing
           DB_PASSWORD: testing
         run: php artisan test --compact
+
+  # Que los assets compilen es una afirmación distinta de que los tests pasen,
+  # así que falla con su propio nombre en la lista de checks del PR (R56).
+  assets:
+    name: Build assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
