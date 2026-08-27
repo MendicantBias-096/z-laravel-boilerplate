@@ -6,3 +6,10 @@ parameters:
     paths:
         - app/
     level: 6
+
+    # Un error dentro de un trait se atribuye al trait o a la clase que lo usa
+    # segun como reparta PHPStan el trabajo entre workers, y esa cuenta cambia
+    # entre DDEV y el runner. Sin esto el build falla por una entrada de
+    # baseline que no encaja, no por un error de codigo: R56. Lo que evita que
+    # la deuda se olvide es la fecha de vencimiento del baseline, no esto.
+    reportUnmatchedIgnoredErrors: false

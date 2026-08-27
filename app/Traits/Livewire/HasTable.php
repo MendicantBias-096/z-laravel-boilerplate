@@ -103,7 +103,7 @@ trait HasTable
         foreach ($this->filterable() as $column => $operator) {
             $value = $this->filters[$column] ?? '';
 
-            if ($value === '' || $value === null) {
+            if ($value === '') {
                 continue;
             }
 
