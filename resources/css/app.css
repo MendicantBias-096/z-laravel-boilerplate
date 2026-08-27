@@ -9,14 +9,15 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@import './theme/_variants.css';
-@import './theme/_scales.css';
-@import './theme/_tokens.css';
+@import "./theme/_variants.css";
+@import "./theme/_scales.css";
+@import "./theme/_tokens.css";
+@import "./theme/_docs.css";
 
 @plugin '@tailwindcss/forms' {
-    strategy: 'class';
+    strategy: "class";
 }
 
 /* ── Fuentes de clases para el scanner de Tailwind ── */

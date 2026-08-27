@@ -66,3 +66,8 @@ Homestead.yaml
 # ── Documentación local (no se versiona) ─────────────────────────────────────
 /docs/*
 !/docs/patterns/
+!/docs/ARCHITECTURE_RULES.md
+!/docs/EMPEZAR_AQUI.md
+
+# Respaldos locales de la base de datos
+.backups/

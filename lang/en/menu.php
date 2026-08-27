@@ -5,4 +5,5 @@ return [
     'personal' => 'Personnel',
     'users' => 'Users',
     'roles' => 'Roles & Permissions',
+    'docs' => 'Documentation',
 ];
