@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
+use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -44,6 +45,33 @@ class Login extends Component
         }
 
         RateLimiter::clear($throttleKey);
+        Session::regenerate();
+
+        $this->redirectRoute('dashboard', navigate: true);
+    }
+
+    /**
+     * Acceso directo sin contraseña para los usuarios sembrados.
+     *
+     * Solo existe en local. En cualquier otro entorno responde 403 aunque
+     * alguien invoque el método desde el cliente, porque la comprobación
+     * vive en el servidor y no en el `@if` de la vista.
+     */
+    public function quickLogin(string $email): void
+    {
+        abort_unless(app()->isLocal(), 403);
+
+        $user = User::where('email', $email)->first();
+
+        // Sin seeders la tabla está vacía y `firstOrFail()` daba un 404 mudo
+        // que no decía qué faltaba. El error nombra el arreglo.
+        if ($user === null) {
+            $this->addError('email', "No user {$email}. Run: php artisan db:seed");
+
+            return;
+        }
+
+        Auth::login($user);
         Session::regenerate();
 
         $this->redirectRoute('dashboard', navigate: true);

@@ -142,9 +142,9 @@ ddev bun install
 ok "JS dependencies installed (Alpine.js · Tailwind v4 · Vite)"
 
 # ── 7. Migrations ─────────────────────────────────────────────────────────────
-step "Running database migrations"
-ddev artisan migrate --no-interaction
-ok "Migrations complete (PostgreSQL)"
+step "Running database migrations and seeders"
+ddev artisan migrate --no-interaction --seed
+ok "Database ready (PostgreSQL) — admin@example.com and user@example.com created"
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
