@@ -72,6 +72,30 @@
 
     </form>
 
+    {{-- Acceso rápido de desarrollo. El servidor revalida en quickLogin(). --}}
+    @if (app()->isLocal())
+        <div class="flex items-center gap-3 my-5">
+            <div class="flex-1 h-px" style="background: var(--auth-divider);"></div>
+            <span class="text-xs font-medium tracking-wide" style="color: var(--ui-content-subtle);">DEV</span>
+            <div class="flex-1 h-px" style="background: var(--auth-divider);"></div>
+        </div>
+
+        <div class="flex gap-2">
+            @foreach ([
+                'admin@example.com' => 'Admin',
+                'user@example.com' => 'Usuario',
+            ] as $devEmail => $devLabel)
+                <button type="button" wire:click="quickLogin('{{ $devEmail }}')"
+                        class="flex-1 py-2.5 rounded-xl text-xs font-medium transition-all duration-200"
+                        style="color: var(--ui-content-muted); background: var(--auth-link-bg); border: 1px solid var(--auth-link-border);"
+                        onmouseover="this.style.background='var(--auth-link-bg-hover)';this.style.borderColor='var(--auth-link-border-hover)';this.style.color='var(--ui-content)';"
+                        onmouseout="this.style.background='var(--auth-link-bg)';this.style.borderColor='var(--auth-link-border)';this.style.color='var(--ui-content-muted)';">
+                    {{ $devLabel }}
+                </button>
+            @endforeach
+        </div>
+    @endif
+
     {{-- Divider --}}
     <div class="flex items-center gap-3 my-6">
         <div class="flex-1 h-px" style="background: var(--auth-divider);"></div>
