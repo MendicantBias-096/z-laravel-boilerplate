@@ -12,6 +12,12 @@ abstract class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Un test afirma comportamiento, no que Vite haya compilado. Sin esto,
+        // `public/build` ausente hace fallar «la página carga» con el nombre
+        // equivocado, y el agente que lo lee va a arreglar código sano (R56).
+        $this->withoutVite();
+
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }
 

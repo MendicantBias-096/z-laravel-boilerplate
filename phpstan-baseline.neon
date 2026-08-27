@@ -1,3 +1,9 @@
+# arch-baseline: vence 2026-11-30 · @arturo
+#
+# Deuda congelada, no deuda olvidada (R55). Al vencer, el build falla:
+# o se corrigen las entradas, o se renueva la fecha con una razón.
+# Casi todo es PHPDoc de arrays sin tipar, que es lo que `level: 8`
+# (R54) va a exigir de todas formas.
 parameters:
 	ignoreErrors:
 		-
@@ -123,7 +129,43 @@ parameters:
 		-
 			message: '#^Access to an undefined property App\\Models\\Role\:\:\$display_name\.$#'
 			identifier: property.notFound
-			count: 2
+			count: 3
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\Roles\\Table\:\:applyTableQuery\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\Roles\\Table\:\:applyTableQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\Roles\\Table\:\:defaultSort\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\Roles\\Table\:\:filterable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\Roles\\Table\:\:searchable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/Roles/Table.php
+
+		-
+			message: '#^Property App\\Livewire\\App\\Personal\\Roles\\Table\:\:\$filters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
 			path: app/Livewire/App/Personal/Roles/Table.php
 
 		-
@@ -211,8 +253,56 @@ parameters:
 			path: app/Livewire/App/Personal/User/Table.php
 
 		-
+			message: '#^Method App\\Livewire\\App\\Personal\\User\\Table\:\:applyTableQuery\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\User\\Table\:\:applyTableQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\User\\Table\:\:defaultSort\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\User\\Table\:\:filterable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Method App\\Livewire\\App\\Personal\\User\\Table\:\:searchable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:transform\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: App\\Models\\User, Closure\(App\\Models\\User\)\: App\\Models\\User given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Property App\\Livewire\\App\\Personal\\User\\Table\:\:\$filters type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
 			message: '#^Property App\\Livewire\\App\\Personal\\User\\Table\:\:\$sort type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
+			count: 1
+			path: app/Livewire/App/Personal/User/Table.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
 			path: app/Livewire/App/Personal/User/Table.php
 
