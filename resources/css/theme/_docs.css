@@ -1,0 +1,456 @@
+/* Superficie de documentación: índice, cuerpo del markdown y rail derecho.
+   Se escribe a mano en vez de instalar @tailwindcss/typography porque el
+   documento tiene dos piezas propias —la etiqueta de regla y la barra de
+   severidad— que ningún plugin de prosa conoce. */
+
+/* ── Índice de documentos ─────────────────────────────────────────────── */
+
+.doc-link {
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    padding: 0.3125rem 0.875rem;
+    text-align: left;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--ui-content-muted);
+    transition:
+        color 150ms ease,
+        background-color 150ms ease;
+}
+
+.doc-link:hover {
+    border-left-color: var(--ui-line-strong);
+    color: var(--ui-content);
+}
+
+.doc-link--active {
+    border-left-color: var(--ui-danger);
+    font-weight: 550;
+    color: var(--ui-content);
+}
+
+/* ── Rail «En esta página» ────────────────────────────────────────────── */
+
+.outline-link {
+    display: flex;
+    gap: 0.4375rem;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--ui-content-subtle);
+    transition:
+        color 150ms ease,
+        background-color 150ms ease;
+}
+
+.outline-link:hover {
+    border-left-color: var(--ui-line-strong);
+    color: var(--ui-content);
+}
+
+.outline-link--section {
+    margin-top: 0.625rem;
+    font-weight: 600;
+    color: var(--ui-content-muted);
+}
+
+.outline-link--current {
+    border-left-color: var(--ui-danger);
+    color: var(--ui-content);
+}
+
+.outline-link__id {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ui-content-muted);
+}
+
+.outline-link--current .outline-link__id {
+    color: var(--ui-danger);
+}
+
+.outline-link__label {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+/* ── Cuerpo del documento ─────────────────────────────────────────────── */
+
+.markdown {
+    color: var(--ui-content);
+    font-size: 1.0625rem;
+    line-height: 1.85;
+}
+
+/* La medida la fija la columna (48rem), no cada bloque: así tablas y
+   código usan todo el ancho, como en laravel.com. */
+.markdown > * + * {
+    margin-top: 1.25rem;
+}
+
+/* Más aire encima de un encabezado que debajo: la separación pertenece a
+   la sección que empieza, no a la que termina. */
+.markdown > h1 {
+    margin-top: 4.5rem;
+    border-top: 1px solid var(--ui-line);
+    padding-top: 3rem;
+    font-size: 1.625rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.markdown > h2 {
+    margin-top: 3rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+.markdown > h3 {
+    margin-top: 2rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+}
+
+.markdown > h1 + *,
+.markdown > h2 + *,
+.markdown > h3 + * {
+    margin-top: 0.75rem;
+}
+
+.markdown > h1:first-child {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+    font-size: 2.25rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+    scroll-margin-top: 9rem;
+    color: var(--ui-content);
+    text-wrap: balance;
+}
+
+/* ── Regla: etiqueta del ID + enunciado ───────────────────────────────── */
+
+.markdown h2.rule {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+}
+
+.rule__id {
+    flex: none;
+    border: 1px solid var(--ui-line-strong);
+    border-radius: 0.3125rem;
+    padding: 0.0625rem 0.4375rem;
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ui-content-muted);
+    text-decoration: none;
+    transition:
+        color 150ms ease,
+        border-color 150ms ease;
+}
+
+.rule__id:hover {
+    border-color: var(--ui-danger);
+    color: var(--ui-danger);
+}
+
+.rule__statement {
+    min-width: 0;
+}
+
+/* ── Barra de metadatos de la regla ───────────────────────────────────── */
+
+.markdown .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: center;
+    margin-top: 0.625rem;
+    font-size: 0.75rem;
+    color: var(--ui-content-subtle);
+}
+
+.meta__sev {
+    border-radius: 0.25rem;
+    padding: 0.0625rem 0.4375rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.meta__sev--error {
+    background: color-mix(in oklab, var(--ui-danger) 16%, transparent);
+    color: var(--ui-danger);
+}
+
+.meta__sev--warning {
+    background: color-mix(in oklab, var(--ui-warning) 18%, transparent);
+    color: var(--ui-warning);
+}
+
+.meta__sev--guideline {
+    background: var(--ui-panel-alt);
+    color: var(--ui-content-subtle);
+}
+
+.meta__tool code {
+    background: none;
+    padding: 0;
+    color: var(--ui-content-muted);
+}
+
+.meta__escape {
+    color: var(--ui-content-subtle);
+}
+
+/* Selector de documento bajo lg, donde el índice lateral no cabe. */
+.doc-select {
+    width: 100%;
+    border: 1px solid var(--ui-line-strong);
+    border-radius: 0.5rem;
+    background: var(--ui-panel);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--ui-content);
+}
+
+.doc-select:focus-visible {
+    outline: 2px solid var(--ui-danger);
+    outline-offset: 2px;
+}
+
+/* ── Capa en lenguaje llano ───────────────────────────────────────────── */
+
+/* Sin caja: se repite en las 56 reglas y un recuadro por regla pesaría más
+   de lo que aclara. La distinción la hace el color, no el marco. */
+.markdown .plain {
+    color: var(--ui-content-muted);
+}
+
+.markdown .plain strong {
+    margin-right: 0.125rem;
+    color: var(--ui-content-subtle);
+    font-weight: 600;
+}
+
+/* ── Prosa ────────────────────────────────────────────────────────────── */
+
+.markdown a:not(.rule__id) {
+    color: var(--ui-danger);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+}
+
+.markdown strong {
+    font-weight: 600;
+    color: var(--ui-content);
+}
+
+.markdown ul,
+.markdown ol {
+    padding-left: 1.25rem;
+}
+
+.markdown ul {
+    list-style: disc;
+}
+.markdown ol {
+    list-style: decimal;
+}
+
+.markdown li::marker {
+    color: var(--ui-content-subtle);
+}
+
+.markdown li + li {
+    margin-top: 0.375rem;
+}
+
+.markdown li > p {
+    margin: 0;
+}
+
+.markdown code {
+    border-radius: 0.25rem;
+    background: color-mix(in oklab, var(--ui-danger) 10%, transparent);
+    padding: 0.125rem 0.3125rem;
+    font-size: 0.8125em;
+    color: var(--ui-danger);
+}
+
+.markdown pre {
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    background: var(--ui-panel-alt);
+    padding: 0.9375rem 1.125rem;
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    tab-size: 4;
+}
+
+.markdown pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+}
+
+/* Callout de prosa. 1px: un borde grueso de color compite con la barra de
+   severidad, que es la señal que sí debe destacar. */
+.markdown blockquote {
+    border-left: 1px solid var(--ui-line-strong);
+    padding-left: 1rem;
+    color: var(--ui-content-muted);
+}
+
+.markdown blockquote p {
+    margin: 0;
+}
+
+.markdown hr {
+    margin-block: 2rem;
+    border: 0;
+    border-top: 1px solid var(--ui-line);
+}
+
+/* ── Tablas ───────────────────────────────────────────────────────────── */
+
+.markdown table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+}
+
+.markdown th,
+.markdown td {
+    border-bottom: 1px solid var(--ui-line);
+    padding: 0.5rem 0.875rem 0.5rem 0;
+    text-align: left;
+    vertical-align: top;
+}
+
+.markdown th {
+    border-bottom-color: var(--ui-line-strong);
+    font-weight: 600;
+    color: var(--ui-content-muted);
+    white-space: nowrap;
+}
+
+.markdown tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* ── Superficies del navegador ────────────────────────────────────────── */
+
+.markdown ::selection {
+    background: color-mix(in oklab, var(--ui-danger) 26%, transparent);
+    color: var(--ui-content);
+}
+
+.markdown a:focus-visible,
+.doc-link:focus-visible,
+.outline-link:focus-visible {
+    outline: 2px solid var(--ui-danger);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+.markdown pre,
+aside .sticky,
+nav .sticky {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ui-line-strong) transparent;
+}
+
+
+/* ── Guías verticales del índice y del rail ───────────────────────────── */
+
+.doc-nav,
+.outline-list {
+    border-left: 1px solid var(--ui-line);
+}
+
+/* ── Bloque de código ─────────────────────────────────────────────────── */
+
+.code {
+    position: relative;
+}
+
+.code pre {
+    padding-left: 0;
+}
+
+.code code {
+    counter-reset: line;
+    display: block;
+}
+
+.code .line {
+    display: block;
+    padding-left: 3.25rem;
+    text-indent: -0.0625rem;
+}
+
+/* Una línea en blanco colapsaría a altura cero y se saltaría su número. */
+.code .line:empty::after {
+    content: " ";
+}
+
+.code .line::before {
+    counter-increment: line;
+    content: counter(line);
+    position: absolute;
+    left: 0;
+    width: 2.25rem;
+    text-align: right;
+    color: var(--ui-content-subtle);
+    opacity: 0.55;
+    user-select: none;
+}
+
+.code__copy {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ui-line);
+    border-radius: 0.375rem;
+    background: var(--ui-panel);
+    padding: 0.3125rem;
+    color: var(--ui-content-subtle);
+    opacity: 0;
+    transition:
+        opacity 150ms ease,
+        color 150ms ease;
+}
+
+.code:hover .code__copy,
+.code__copy:focus-visible {
+    opacity: 1;
+}
+
+.code__copy:hover {
+    color: var(--ui-content);
+}
+
+[x-cloak] {
+    display: none !important;
+}

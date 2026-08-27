@@ -51,6 +51,13 @@ return [
             ],
         ],
 
+        [
+            'label' => 'menu.docs',
+            'icon' => 'lucide-book-open',
+            'route' => 'general.docs.index',
+            'active_route' => 'general.docs.*',
+        ],
+
         // ── Operaciones ──────────────────────────────────────────────────
         // [
         //     'label'        => 'Operaciones',

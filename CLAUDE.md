@@ -11,10 +11,9 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 - **laravel/framework** — v13
 - **livewire/livewire** — v4
 - **tallstackui/tallstackui** — v3
-- **spatie/laravel-permission** — v7
+- **spatie/laravel-permission** — v8
 - **spatie/laravel-medialibrary** — v11
 - **diglactic/laravel-breadcrumbs** — v10
-- **dedoc/scramble** — v0.13
 - **sentry/sentry-laravel** — v4
 - **laravel/boost** — latest (dev)
 - **tailwindcss** — v4
@@ -177,6 +176,23 @@ in a URL people copy: same properties, 26 characters, no hyphens.
 === architecture rules ===
 
 # Project Architecture
+
+**The architecture rules live in `docs/ARCHITECTURE_RULES.md`.** 56 numbered,
+citable rules (R1–R56) covering module boundaries, data ownership, migrations,
+authorization, queues and code form. Read it before designing anything new, and
+cite rules by ID in review ("this violates R13"). It is also served in-app at
+`/docs`.
+
+**What follows is the structure in force today, and it is not yet the one the
+rules describe.** The rules define the destination — modules under
+`app/Modules/{Context}/`, the `Personal` → `Access` rename, table prefixes —
+and none of it has been migrated. Until it is, **write new code in the
+structure below** and copy the shape of what already exists; `Personal ›
+Usuarios` is the most complete module.
+
+One word collides between the two, so keep them apart: what this section calls
+a **domain** (a UI folder: `General`, `Personal`) is not what R1 calls a
+**module** (a bounded context). R1 retires the word "domain" entirely.
 
 This project organizes the authenticated area into **domains** (e.g. General, Operations) and each domain has **modules** (e.g. Dashboard, Users, Settings).
 

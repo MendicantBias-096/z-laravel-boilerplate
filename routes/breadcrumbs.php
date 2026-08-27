@@ -11,6 +11,10 @@ Breadcrumbs::for('general.notifications.index', function (BreadcrumbTrail $trail
     $trail->push(__('notifications.title'), route('general.notifications.index'));
 });
 
+Breadcrumbs::for('general.docs.index', function (BreadcrumbTrail $trail): void {
+    $trail->push(__('docs.title'), route('general.docs.index'));
+});
+
 // ── Personal ──────────────────────────────────────────────────────────────
 
 Breadcrumbs::for('personal', function (BreadcrumbTrail $trail): void {

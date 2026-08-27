@@ -23,3 +23,6 @@ Route::view('/settings', 'app.general.settings.index')
 
 Route::view('/notifications', 'app.general.notifications.index')
     ->name('general.notifications.index');
+
+Route::view('/docs', 'app.general.docs.index')
+    ->name('general.docs.index');
