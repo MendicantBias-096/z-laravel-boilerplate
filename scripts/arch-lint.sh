@@ -163,6 +163,35 @@ check_R6() {
     (( found )) || pass R6 "las carpetas de los módulos son tipos conocidos"
 }
 
+# R25 · toda tabla de un módulo lleva el prefijo de su módulo
+# La lista de exentas vive en config/arch.php, que R30 lee también: dos copias
+# es lo que hace que una se quede corta.
+check_R25() {
+    local exempt prefixes found=0 table file renamed
+    exempt=$(sed -n "s/^        '\([a-z_]*\)',$/\1/p" config/arch.php | tr '\n' ' ')
+    prefixes=$(sed -n "s/.*'module_prefixes' => \[\(.*\)\].*/\1/p" config/arch.php | tr -d "' " | tr ',' '|')
+
+    # Lo que cuenta es el nombre final, no el de la migración que la creó: una
+    # tabla renombrada después cumple la regla aunque naciera sin prefijo.
+    renamed=" $(find app/Modules database/migrations -name '*.php' 2>/dev/null \
+        | xargs -r grep -hoE "Schema::rename\('[a-z_]+'" 2>/dev/null \
+        | sed "s/.*'\(.*\)'/\1/" | tr '\n' ' ')"
+
+    while read -r file; do
+        [[ -n "$file" ]] || continue
+        while read -r table; do
+            [[ -n "$table" ]] || continue
+            [[ " $exempt " == *" $table "* ]] && continue
+            [[ "$renamed" == *" $table "* ]] && continue
+            [[ "$table" =~ ^(${prefixes})_ ]] && continue
+            report R25 error "$(basename "$file") crea «$table» sin prefijo de módulo"
+            found=1
+        done < <(grep -oE "Schema::create\('[a-z_]+'" "$file" | sed "s/.*'\(.*\)'/\1/")
+    done < <(find app/Modules database/migrations -name '*.php' -not -path '*/Tests/*' 2>/dev/null)
+
+    (( found )) || pass R25 "toda tabla propia lleva el prefijo de su módulo"
+}
+
 # R26 · las migraciones de un módulo viven dentro del módulo
 # Lo que queda en database/migrations/ es infraestructura sin dueño: cache,
 # jobs y tokens. Cualquier otra cosa ahí pertenece a algún módulo.
@@ -306,14 +335,14 @@ check_EXC() {
 # Reglas que este script todavía no comprueba, y por qué. Se declaran en vez de
 # callar: un check que da verde porque no encontró nada que mirar enseña a no
 # creerle (R56).
-PENDING='R25,R33 (las tablas aún no llevan prefijo de módulo) · R40 (los permisos siguen en español)'
+PENDING='R33 (una FK que cruce módulos aún no se comprueba) · R40 (los permisos siguen en español)'
 
 main() {
     echo "arch-lint · docs/ARCHITECTURE_RULES.md"
     echo
 
     local rule
-    for rule in R2 R3 R5 R6 R26 R36 R37 R38 R44 R48 R52 R55 EXC; do
+    for rule in R2 R3 R5 R6 R25 R26 R36 R37 R38 R44 R48 R52 R55 EXC; do
         wants "$rule" && "check_$rule"
     done
 

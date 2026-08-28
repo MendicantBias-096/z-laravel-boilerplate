@@ -240,7 +240,7 @@ Livewire     →  Livewire/Users/Table.php                       returns view('a
 | Route name | `{context}.{resource}.{action}` | `access.users.index` |
 | Route file | `app/Modules/{Context}/Routes/web.php` | — |
 | URL | kebab-case, no prefix for platform | `/users` |
-| Table | `{context}_{plural}` | `access_profiles` *(pending)* |
+| Table | `{context}_{plural}` | `access_profiles` |
 | Permission | `{context}.{resource}.{action}` in English | `access.users.view` *(pending)* |
 
 ## What a module ServiceProvider must register
@@ -264,8 +264,9 @@ Two traps worth knowing, both silent:
 
 ## Still pending
 
-The tables have no module prefix yet (R25, R33) and permissions are still in
-Spanish (R40). Both need a data migration, so they are their own step.
+Permissions are still Spanish strings (R40); moving them to
+`{context}.{resource}.{action}` needs a data migration and the seeded rows
+handled, so it is its own step.
 
 Use the `create-module` skill for full instructions on creating new domains and modules.
 
