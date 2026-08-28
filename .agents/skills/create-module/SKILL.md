@@ -234,6 +234,10 @@ Breadcrumbs::for('{context}', function (BreadcrumbTrail $trail): void {
 });
 ```
 
+Add that key to `app/Modules/Platform/Resources/lang/{es,en}/menu.php` in the
+same step. A missing one renders as `platform::menu.{context}` at the head of
+every breadcrumb in the module.
+
 ## Step 6 — `README.md`
 
 One screen, answering what the next person actually asks:

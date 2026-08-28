@@ -108,9 +108,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * PHPStan no conoce las columnas de Eloquent: sin `@property` cada lectura de
+ * `$invoice->name` es un error, en el componente y en los breadcrumbs.
+ *
+ * @property string $id
+ * @property string $name
+ */
 class {Model} extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    /** @use HasFactory<{Model}Factory> */
+    use HasFactory;
+
+    use HasUuids, SoftDeletes;
 
     protected $table = '{table}';
 
@@ -224,6 +234,7 @@ class {Model}Form extends Form
 
     public string $name = '';
 
+    /** @return array<string, list<string>> */
     public function rules(): array
     {
         return [
@@ -750,15 +761,47 @@ $this->mergeConfigFrom(__DIR__.'/Config/permissions.php', '{context}');
 
 Then a seeder that reads its own key, registered in `database/seeders/DatabaseSeeder.php`
 with an explicit `use` — an implicit namespace is what broke the clean install
-when the seeders moved:
+when the seeders moved.
 
+**Creating a permission gives it to nobody.** Assign them, or the module works
+for the admin — `Gate::before` short-circuits before permissions are ever
+consulted — and returns 403 to everyone else. That failure only shows up once a
+real user opens the screen, which is long after you tested it as admin.
+
+`app/Modules/{Context}/Database/Seeders/{Context}PermissionsSeeder.php`
 ```php
-foreach (config('{context}.permissions') as $module => $permissions) {
-    foreach ($permissions as $permission) {
-        Permission::firstOrCreate(['name' => $permission]);
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\{Context}\Database\Seeders;
+
+use App\Modules\Access\Enums\Roles;
+use App\Modules\Access\Models\Role;
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+
+class {Context}PermissionsSeeder extends Seeder
+{
+    public function run(): void
+    {
+        /** @var array<string, list<string>> $groups */
+        $groups = config('{context}.permissions', []);
+        $names = array_merge(...array_values($groups));
+
+        foreach ($names as $name) {
+            Permission::firstOrCreate(['name' => $name]);
+        }
+
+        // Un módulo cuyos permisos nadie tiene es un módulo que nadie puede
+        // administrar. Depender de Access aquí es legítimo: es plataforma (R9).
+        Role::findByName(Roles::ADMIN->value)->givePermissionTo($names);
     }
 }
 ```
+
+Give them to the roles that should have them beyond `admin` in the same place —
+it is the module's own seeder, so deciding who sees its screens is its call.
 
 Permissions are still Spanish strings. R40 moves them to `{context}.{resource}.{action}`
 in English, which is a data migration of its own — follow the existing form
@@ -778,6 +821,16 @@ ddev exec php artisan test --compact
 Then load `/{context}/{resource}` in the browser and click through create, edit
 and delete. The suite does not exercise the wrapper views or the route
 bindings — a green suite with a broken screen is the normal failure here.
+
+**Check it as a non-admin too.** `Gate::before` returns true for admin before
+any permission is read, so the screens work for you whether or not the
+permissions were ever assigned. Log in with the DEV «Usuario» button, or:
+
+```bash
+ddev exec php artisan tinker --execute 'echo json_encode(\App\Modules\Access\Models\Role::findByName("admin")->hasPermissionTo("ver {model_es}"));'
+```
+
+`false` means step 12 did not run or did not assign.
 
 ## Step 14 — Commit
 
