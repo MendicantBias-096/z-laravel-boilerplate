@@ -2,7 +2,10 @@
 
 namespace App\Modules\Access\Tests\Feature\Users;
 
+use App\Modules\Access\Livewire\Roles\Form as RoleForm;
+use App\Modules\Access\Models\Role as AccessRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -45,6 +48,46 @@ class RoleCrudTest extends TestCase
         $this->actingAs($admin)
             ->get(route('access.roles.edit', $role))
             ->assertStatus(200);
+    }
+
+    /**
+     * Renombrar la etiqueta no puede mover el identificador.
+     *
+     * `Gate::before` pregunta por `Roles::ADMIN` y el seeder busca por `name`:
+     * si editar «Administrador» regenerase el slug, todos los administradores
+     * perderían sus privilegios sin un error y el siguiente seed crearía un
+     * segundo rol `admin`.
+     */
+    public function test_renaming_a_role_keeps_its_slug(): void
+    {
+        $this->actingAs($this->createAdmin());
+        $role = AccessRole::findByName('admin');
+        $role->update(['display_name' => 'Administrador']);
+
+        Livewire::test(RoleForm::class, ['record' => $role])
+            ->set('display_name', 'Administrador General')
+            ->call('save');
+
+        $this->assertDatabaseHas('roles', [
+            'id' => $role->id,
+            'name' => 'admin',
+            'display_name' => 'Administrador General',
+        ]);
+    }
+
+    /** Y al crear sí se deriva del nombre visible, que es de donde sale. */
+    public function test_creating_a_role_derives_the_slug_from_its_name(): void
+    {
+        $this->actingAs($this->createAdmin());
+
+        Livewire::test(RoleForm::class)
+            ->set('display_name', 'Jefe de Almacén')
+            ->call('save');
+
+        $this->assertDatabaseHas('roles', [
+            'name' => 'jefe-de-almacen',
+            'display_name' => 'Jefe de Almacén',
+        ]);
     }
 
     public function test_role_exists_in_database_after_seeding(): void
