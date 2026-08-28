@@ -44,6 +44,9 @@ return [
     'role_permissions' => 'Role permissions',
     'role_permissions_desc' => 'Select the access this role will have.',
     'role_btn_save' => 'Save',
+    'role_protected' => 'Platform role',
+    'role_protected_desc' => 'This role is defined by the application code. Its name and permissions are restored on every install, so here they are read-only.',
+    'role_protected_error' => 'Cannot edit',
 
     // User toasts
     'user_perms_restored' => 'Permissions restored',
@@ -75,6 +78,7 @@ return [
     'role_delete_cancel' => 'Cancel',
     'role_delete_error' => 'Cannot delete',
     'role_delete_has_users' => 'The role ":name" has assigned users.',
+    'role_delete_protected' => 'The role ":name" is defined by the platform and would be recreated on the next install.',
     'role_deleted' => 'Role deleted',
     'role_deleted_desc' => 'The role was deleted successfully.',
 

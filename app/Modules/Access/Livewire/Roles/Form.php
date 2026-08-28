@@ -111,9 +111,27 @@ class Form extends Component
             && array_diff($permissions, $this->permissionList) === [];
     }
 
+    /** Un rol de plataforma se muestra, pero no se edita. */
+    #[Computed]
+    public function isProtected(): bool
+    {
+        return $this->record?->is_protected === true;
+    }
+
     public function save(): void
     {
         $isEdit = $this->record instanceof Role;
+
+        // La vista ya desactiva los campos; esto es lo que de verdad decide.
+        // Sin el guard bastaría con quitar el `disabled` desde el navegador
+        // para escribir un cambio que el siguiente seed revertiría.
+        if ($this->isProtected()) {
+            $this->toast()
+                ->error(__('platform::app.role_protected_error'), __('platform::app.role_protected_desc'))
+                ->send();
+
+            return;
+        }
 
         $this->validate([
             'display_name' => ['required', 'string', 'max:100'],

@@ -34,7 +34,14 @@
         striped
     >
         @interact('column_name', $row)
-            <code class="rounded bg-panel-alt px-2 py-0.5 font-mono text-xs text-content-subtle">{{ $row->name }}</code>
+            <div class="flex items-center gap-2">
+                <code class="rounded bg-panel-alt px-2 py-0.5 font-mono text-xs text-content-subtle">{{ $row->name }}</code>
+                @if ($row->is_protected)
+                    <span title="{{ __('platform::app.role_protected') }}">
+                        @svg('lucide-lock', 'size-3.5 text-content-subtle')
+                    </span>
+                @endif
+            </div>
         @endinteract
 
         @interact('column_permissions', $row)

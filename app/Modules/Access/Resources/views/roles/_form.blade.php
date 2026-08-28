@@ -2,6 +2,17 @@
     <form wire:submit="save">
         <div class="space-y-6">
 
+            {{-- Aviso de rol de plataforma --}}
+            @if ($this->isProtected)
+                <div class="flex items-start gap-3 rounded-lg border border-amber-400/40 bg-amber-50 px-4 py-3 dark:border-amber-600/40 dark:bg-amber-950/30">
+                    @svg('lucide-lock', 'mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-400')
+                    <div>
+                        <p class="text-sm font-semibold text-amber-900 dark:text-amber-200">{{ __('platform::app.role_protected') }}</p>
+                        <p class="text-xs text-amber-800 dark:text-amber-300/80">{{ __('platform::app.role_protected_desc') }}</p>
+                    </div>
+                </div>
+            @endif
+
             {{-- Datos del rol --}}
             <x-ts-card>
                 <x-ts-input
@@ -9,6 +20,7 @@
                     wire:model.live="display_name"
                     placeholder="{{ __('platform::app.role_name_ph') }}"
                     hint="{{ __('platform::app.role_name_hint') }}"
+                    :disabled="$this->isProtected"
                 />
 
                 @if ($name)
@@ -50,7 +62,12 @@
                                             <button
                                                 type="button"
                                                 wire:click="toggleModule('{{ $module }}')"
-                                                class="flex cursor-pointer items-center gap-1.5 rounded px-1 py-0.5"
+                                                @disabled($this->isProtected)
+                                                @class([
+                                                    'flex items-center gap-1.5 rounded px-1 py-0.5',
+                                                    'cursor-pointer' => !$this->isProtected,
+                                                    'cursor-not-allowed' => $this->isProtected,
+                                                ])
                                             >
                                                 <span @class([
                                                     'flex size-3.5 shrink-0 items-center justify-center rounded border transition-colors',
@@ -74,7 +91,11 @@
                                                     $permDesc  = __("access::roles.descriptions.{$permission}");
                                                 @endphp
                                                 <label
-                                                    class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 mt-[4px] ml-1 transition-colors hover:bg-primary-50 dark:hover:bg-primary-950/30"
+                                                    @class([
+                                                        'flex items-center gap-2 rounded px-2 py-1 mt-[4px] ml-1 transition-colors',
+                                                        'cursor-pointer hover:bg-primary-50 dark:hover:bg-primary-950/30' => !$this->isProtected,
+                                                        'cursor-not-allowed' => $this->isProtected,
+                                                    ])
                                                     x-data="{
                                                         show: false,
                                                         pos: { top: 0, left: 0 },
@@ -92,6 +113,7 @@
                                                             type="checkbox"
                                                             wire:model.live="permissionList"
                                                             value="{{ $permission }}"
+                                                            @disabled($this->isProtected)
                                                             class="peer sr-only"
                                                         />
                                                         <span class="absolute inset-0 rounded border border-line bg-panel transition-colors peer-checked:border-primary-500 peer-checked:bg-primary-500"></span>
@@ -130,9 +152,11 @@
                            class="text-sm text-content-muted hover:text-content">
                             {{ __('platform::app.cancel') }}
                         </a>
-                        <x-ts-button type="submit" wire:loading.attr="disabled" sm>
-                            {{ __('platform::app.role_btn_save') }}
-                        </x-ts-button>
+                        @unless ($this->isProtected)
+                            <x-ts-button type="submit" wire:loading.attr="disabled" sm>
+                                {{ __('platform::app.role_btn_save') }}
+                            </x-ts-button>
+                        @endunless
                     </div>
                 </x-slot:footer>
             </x-ts-card>
