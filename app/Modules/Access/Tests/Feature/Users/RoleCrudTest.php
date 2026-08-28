@@ -147,12 +147,12 @@ class RoleCrudTest extends TestCase
 
         $adminRole = Role::findByName('admin');
 
-        $this->assertTrue($adminRole->hasPermissionTo('ver usuarios'));
-        $this->assertTrue($adminRole->hasPermissionTo('crear usuarios'));
-        $this->assertTrue($adminRole->hasPermissionTo('editar usuarios'));
-        $this->assertTrue($adminRole->hasPermissionTo('eliminar usuarios'));
-        $this->assertTrue($adminRole->hasPermissionTo('ver roles'));
-        $this->assertTrue($adminRole->hasPermissionTo('administrar sistema'));
+        $this->assertTrue($adminRole->hasPermissionTo('access.users.view'));
+        $this->assertTrue($adminRole->hasPermissionTo('access.users.create'));
+        $this->assertTrue($adminRole->hasPermissionTo('access.users.update'));
+        $this->assertTrue($adminRole->hasPermissionTo('access.users.delete'));
+        $this->assertTrue($adminRole->hasPermissionTo('access.roles.view'));
+        $this->assertTrue($adminRole->hasPermissionTo('platform.settings.manage'));
     }
 
     public function test_user_role_has_no_permissions(): void

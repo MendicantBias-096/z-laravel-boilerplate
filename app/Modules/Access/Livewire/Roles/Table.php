@@ -27,7 +27,7 @@ class Table extends Component
 
     public function confirmDelete(string|int $id): void
     {
-        $this->authorize('eliminar roles');
+        $this->authorize('access.roles.delete');
 
         $role = Role::findOrFail($id);
 
@@ -52,7 +52,7 @@ class Table extends Component
 
     public function delete(string|int $id): void
     {
-        $this->authorize('eliminar roles');
+        $this->authorize('access.roles.delete');
 
         $role = Role::find($id);
 

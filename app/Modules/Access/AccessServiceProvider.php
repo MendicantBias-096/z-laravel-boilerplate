@@ -52,6 +52,7 @@ class AccessServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Console\MigrateMorphTypes::class,
+                Console\RenamePermissions::class,
                 Console\SyncRolesAndPermissions::class,
             ]);
         }

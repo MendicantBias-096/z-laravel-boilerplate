@@ -19,32 +19,32 @@ return [
     'events' => [
 
         'user_created' => [
-            'permission' => 'notificacion usuario creado',
+            'permission' => 'access.notifications.user-created',
             'channels' => ['database'],
         ],
 
         'user_updated' => [
-            'permission' => 'notificacion usuario editado',
+            'permission' => 'access.notifications.user-updated',
             'channels' => ['database'],
         ],
 
         'user_deleted' => [
-            'permission' => 'notificacion usuario eliminado',
+            'permission' => 'access.notifications.user-deleted',
             'channels' => ['database'],
         ],
 
         'role_created' => [
-            'permission' => 'notificacion rol creado',
+            'permission' => 'access.notifications.role-created',
             'channels' => ['database'],
         ],
 
         'role_updated' => [
-            'permission' => 'notificacion rol actualizado',
+            'permission' => 'access.notifications.role-updated',
             'channels' => ['database'],
         ],
 
         'role_deleted' => [
-            'permission' => 'notificacion rol eliminado',
+            'permission' => 'access.notifications.role-deleted',
             'channels' => ['database'],
         ],
 

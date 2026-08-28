@@ -20,14 +20,14 @@ Route::middleware(['web', 'auth', 'verified'])->name('access.')->group(function 
     Route::prefix('roles')->name('roles.')->group(function (): void {
 
         Route::view('/', 'access::roles.index')
-            ->middleware('permission:ver roles')
+            ->middleware('permission:access.roles.view')
             ->name('index');
 
         Route::view('/create', 'access::roles.create')
-            ->middleware('permission:crear roles')
+            ->middleware('permission:access.roles.create')
             ->name('create');
 
-        Route::middleware('permission:editar roles')
+        Route::middleware('permission:access.roles.update')
             ->get('/{role}/edit', fn (Role $role): Factory|View => view('access::roles.edit', ['role' => $role]))
             ->name('edit');
     });
@@ -35,17 +35,17 @@ Route::middleware(['web', 'auth', 'verified'])->name('access.')->group(function 
     Route::prefix('users')->name('users.')->group(function (): void {
 
         Route::view('/', 'access::users.index')
-            ->middleware('permission:ver usuarios')
+            ->middleware('permission:access.users.view')
             ->name('index');
 
         Route::view('/create', 'access::users.create')
-            ->middleware('permission:crear usuarios')
+            ->middleware('permission:access.users.create')
             ->name('create');
 
         // `permission:` es la puerta gruesa —quién puede editar usuarios— y
         // `can:` la decisión sobre este usuario concreto, que vive en
         // `UserPolicy::update()` (R39).
-        Route::middleware(['permission:editar usuarios', 'can:update,user'])
+        Route::middleware(['permission:access.users.update', 'can:update,user'])
             ->get('/{user}/edit', fn (User $user): Factory|View => view(
                 'access::users.edit',
                 ['user' => $user]

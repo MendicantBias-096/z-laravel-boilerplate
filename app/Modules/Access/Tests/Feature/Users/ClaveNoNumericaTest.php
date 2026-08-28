@@ -143,9 +143,9 @@ class TablaDePrueba extends Component
 
     protected string $modelClass = RegistroDePrueba::class;
 
-    protected string $deletePermission = 'eliminar usuarios';
+    protected string $deletePermission = 'access.users.delete';
 
-    protected string $restorePermission = 'restaurar usuarios';
+    protected string $restorePermission = 'access.users.restore';
 
     protected string $modelLabel = 'Registro';
 

@@ -241,7 +241,7 @@ Livewire     →  Livewire/Users/Table.php                       returns view('a
 | Route file | `app/Modules/{Context}/Routes/web.php` | — |
 | URL | kebab-case, no prefix for platform | `/users` |
 | Table | `{context}_{plural}` | `access_profiles` |
-| Permission | `{context}.{resource}.{action}` in English | `access.users.view` *(pending)* |
+| Permission | `{context}.{resource}.{action}` in English | `access.users.view` |
 
 ## What a module ServiceProvider must register
 
@@ -264,9 +264,8 @@ Two traps worth knowing, both silent:
 
 ## Still pending
 
-Permissions are still Spanish strings (R40); moving them to
-`{context}.{resource}.{action}` needs a data migration and the seeded rows
-handled, so it is its own step.
+R33 — that no foreign key crosses a module boundary — has no check yet: it
+needs the table→module map that R25's prefix now makes possible.
 
 Use the `create-module` skill for full instructions on creating new domains and modules.
 

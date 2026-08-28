@@ -172,8 +172,12 @@
                                         <div class="grid gap-x-2 gap-y-0.5 pb-2 {{ count($permissions) > 1 ? 'grid-cols-2' : 'grid-cols-1' }}" style="margin-top: 6px;">
                                             @foreach ($permissions as $permission)
                                                 @php
-                                                    $permLabel = __("access::roles.permissions.{$permission}");
-                                                    $permDesc  = __("access::roles.descriptions.{$permission}");
+                                                    // El nombre del permiso lleva puntos (R40) y `__()` los
+                                                    // lee como niveles de array, así que la búsqueda se hace
+                                                    // sobre el array ya resuelto, donde el punto no significa
+                                                    // nada.
+                                                    $permLabel = __('access::roles.permissions')[$permission] ?? $permission;
+                                                    $permDesc  = __('access::roles.descriptions')[$permission] ?? '';
                                                 @endphp
                                                 <label
                                                     class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 mt-[4px] ml-1 transition-colors hover:bg-primary-50 dark:hover:bg-primary-950/30"

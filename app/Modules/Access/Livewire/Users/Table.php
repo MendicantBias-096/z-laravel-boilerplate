@@ -18,9 +18,9 @@ class Table extends Component
 
     protected string $modelClass = User::class;
 
-    protected string $deletePermission = 'eliminar usuarios';
+    protected string $deletePermission = 'access.users.delete';
 
-    protected string $restorePermission = 'restaurar usuarios';
+    protected string $restorePermission = 'access.users.restore';
 
     protected string $modelLabel = 'Usuario';
 
@@ -78,7 +78,7 @@ class Table extends Component
             ['index' => 'action',      'label' => __('platform::table.users.headers.actions'),         'sortable' => false],
         ];
 
-        $canRestore = auth()->user()->can('restaurar usuarios');
+        $canRestore = auth()->user()->can('access.users.restore');
 
         $query = $canRestore
             ? User::withTrashed()->where('id', '!=', auth()->id())->where('is_protected', false)
