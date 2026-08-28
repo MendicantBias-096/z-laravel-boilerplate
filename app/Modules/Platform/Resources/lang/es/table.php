@@ -37,6 +37,15 @@ return [
     'results' => 'resultados de',
     'permission' => 'permiso|permisos',
 
+    // Cabeceras y estados que sirven a cualquier recurso; los
+    // especificos viven bajo la clave de su recurso.
+    'headers' => [
+        'status' => 'Estado',
+        'actions' => 'Acciones',
+    ],
+    'status_active' => 'Activo',
+    'status_deleted' => 'Eliminado',
+
     // Usuarios
     'users' => [
         'headers' => [

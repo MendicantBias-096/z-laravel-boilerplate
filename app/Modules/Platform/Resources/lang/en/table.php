@@ -37,6 +37,15 @@ return [
     'results' => 'results of',
     'permission' => 'permission|permissions',
 
+    // Headers and states any resource can use; resource-specific
+    // ones live under their own key.
+    'headers' => [
+        'status' => 'Status',
+        'actions' => 'Actions',
+    ],
+    'status_active' => 'Active',
+    'status_deleted' => 'Deleted',
+
     // Users
     'users' => [
         'headers' => [

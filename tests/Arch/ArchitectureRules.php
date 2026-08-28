@@ -28,6 +28,15 @@ use PHPat\Test\PHPat;
  */
 final class ArchitectureRules
 {
+    /**
+     * El prefijo de un módulo cualquiera, sin cerrar.
+     *
+     * Cada uso lo cierra con `\\\\` tras el nombre de la carpeta. Sin esa
+     * barra la regex acepta cualquier continuación y `Data` selecciona
+     * también `Database`: R24 exigía entonces `final readonly` a factories y
+     * seeders, un falso positivo que solo aparece cuando existe el primer
+     * módulo con carpeta `Database/`.
+     */
     private const MODULE = '/^App\\\\Modules\\\\[A-Za-z]+';
 
     /**
@@ -91,9 +100,9 @@ final class ArchitectureRules
     public function test_r13_contracts_no_dependen_de_models(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Contracts/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Contracts\\\\/', true))
             ->shouldNotDependOn()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Models/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Models\\\\/', true))
             ->because('un contrato que devuelve un modelo es un import disfrazado, y arrastra sus relaciones al otro lado de la frontera (R13)');
     }
 
@@ -106,9 +115,9 @@ final class ArchitectureRules
     public function test_r17_models_no_dependen_de_actions(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Models/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Models\\\\/', true))
             ->shouldNotDependOn()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Actions/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Actions\\\\/', true))
             ->because('si el modelo llama al Action, la lógica se esconde donde nadie la busca (R17)');
     }
 
@@ -121,7 +130,7 @@ final class ArchitectureRules
     public function test_r21_actions_son_final(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Actions/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Actions\\\\/', true))
             ->shouldBeFinal()
             ->because('un caso de uso se compone, no se extiende (R21)');
     }
@@ -130,7 +139,7 @@ final class ArchitectureRules
     public function test_r21_actions_tienen_un_solo_metodo_handle(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Actions/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Actions\\\\/', true))
             ->shouldHaveOnlyOnePublicMethodNamed('handle')
             ->because('un archivo, una acción, un test; en cuanto hay dos métodos públicos vuelve a ser un Service (R21)');
     }
@@ -145,7 +154,7 @@ final class ArchitectureRules
     public function test_r24_los_dtos_son_readonly(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Data/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Data\\\\/', true))
             ->shouldBeReadonly()
             ->because('un DTO es una caja de datos: si se puede mutar, deja de ser una foto del instante (R24)');
     }
@@ -154,7 +163,7 @@ final class ArchitectureRules
     public function test_r24_los_dtos_son_final(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Data/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Data\\\\/', true))
             ->shouldBeFinal()
             ->because('un DTO no se extiende: se construye otro (R24)');
     }
@@ -170,7 +179,7 @@ final class ArchitectureRules
     public function test_r14_los_eventos_se_despachan_tras_el_commit(): Rule
     {
         return PHPat::rule()
-            ->classes(Selector::inNamespace(self::MODULE.'\\\\Events/', true))
+            ->classes(Selector::inNamespace(self::MODULE.'\\\\Events\\\\/', true))
             ->shouldImplement()
             ->classes(Selector::classname(ShouldDispatchAfterCommit::class))
             ->because('un evento despachado dentro de la transacción avisa de algo que puede no haber ocurrido (R14)');

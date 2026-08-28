@@ -273,17 +273,7 @@ parameters:
 			path: app/Modules/Access/Livewire/Roles/Form.php
 
 
-		-
-			message: '#^Method App\\Modules\\Access\\Livewire\\Roles\\Table\:\:applyTableQuery\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Modules/Access/Livewire/Roles/Table.php
 
-		-
-			message: '#^Method App\\Modules\\Access\\Livewire\\Roles\\Table\:\:applyTableQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Modules/Access/Livewire/Roles/Table.php
 
 		-
 			message: '#^Method App\\Modules\\Access\\Livewire\\Roles\\Table\:\:defaultSort\(\) return type has no value type specified in iterable type array\.$#'
@@ -303,17 +293,7 @@ parameters:
 			count: 1
 			path: app/Modules/Access/Livewire/Roles/Table.php
 
-		-
-			message: '#^Property App\\Modules\\Access\\Livewire\\Roles\\Table\:\:\$filters type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Access/Livewire/Roles/Table.php
 
-		-
-			message: '#^Property App\\Modules\\Access\\Livewire\\Roles\\Table\:\:\$sort type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Access/Livewire/Roles/Table.php
 
 		-
 			message: '#^Access to an undefined property App\\Modules\\Access\\Livewire\\Users\\Form\:\:\$selectedTemplate\.$#'
@@ -423,17 +403,7 @@ parameters:
 			count: 1
 			path: app/Modules/Access/Livewire/Users/Table.php
 
-		-
-			message: '#^Method App\\Modules\\Access\\Livewire\\Users\\Table\:\:applyTableQuery\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Modules/Access/Livewire/Users/Table.php
 
-		-
-			message: '#^Method App\\Modules\\Access\\Livewire\\Users\\Table\:\:applyTableQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Modules/Access/Livewire/Users/Table.php
 
 		-
 			message: '#^Method App\\Modules\\Access\\Livewire\\Users\\Table\:\:defaultSort\(\) return type has no value type specified in iterable type array\.$#'
@@ -459,17 +429,7 @@ parameters:
 			count: 1
 			path: app/Modules/Access/Livewire/Users/Table.php
 
-		-
-			message: '#^Property App\\Modules\\Access\\Livewire\\Users\\Table\:\:\$filters type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Access/Livewire/Users/Table.php
 
-		-
-			message: '#^Property App\\Modules\\Access\\Livewire\\Users\\Table\:\:\$sort type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Modules/Access/Livewire/Users/Table.php
 
 		-
 			message: '#^Using nullsafe property access "\?\-\>display_name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'

@@ -3,6 +3,7 @@
 namespace App\Modules\Platform\Traits\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\WithPagination;
 
 /**
@@ -34,10 +35,14 @@ trait HasTable
 
     public int $quantity = 25;
 
-    /** ['column' => string, 'direction' => 'asc'|'desc'] */
+    /** @var array<string, string> */
     public array $sort = [];
 
-    /** Valores actuales de cada filtro declarado en filterable(). */
+    /**
+     * Valores actuales de cada filtro declarado en filterable().
+     *
+     * @var array<string, mixed>
+     */
     public array $filters = [];
 
     public function mountHasTable(): void
@@ -86,7 +91,18 @@ trait HasTable
         $this->resetPage();
     }
 
-    /** Aplica búsqueda + filtros + orden a la query. Llamar en render(). */
+    /**
+     * Aplica búsqueda + filtros + orden a la query. Llamar en render().
+     *
+     * Los genéricos son obligatorios: PHPStan atribuye el error del trait
+     * a cada clase que lo usa, así que sin ellos todo Table nuevo nace con
+     * cuatro errores que su baseline no cubre y el CI se pone rojo.
+     *
+     * @template TModel of Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return Builder<TModel>
+     */
     protected function applyTableQuery(Builder $query): Builder
     {
         $searchable = $this->searchable();

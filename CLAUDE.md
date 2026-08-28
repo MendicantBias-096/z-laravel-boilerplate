@@ -144,7 +144,7 @@ logs and URLs, and slightly heavier indexes and joins.
 Integer, UUID (`HasUuids`) and ULID (`HasUlids`) all work with no configuration:
 the row actions in `App\Traits\Livewire\HasSoftDeletes` type the id as
 `string|int`, and `<x-ui.ts-table.actions>` sends it to the browser through
-`Js::from()`. Covered by `tests/Feature/Personal/ClaveNoNumericaTest.php` —
+`Js::from()`. Covered by `app/Modules/Access/Tests/Feature/Users/ClaveNoNumericaTest.php` —
 reverting either half turns it red, which is the point: it used to be possible
 to break both and keep the suite green.
 
@@ -446,7 +446,7 @@ The project includes its own MCP server (`boilerplate`) for architecture introsp
 
 - **ListDomains** — Lists all registered domains with route files, URL prefixes, middleware, and modules.
 - **GetModuleStructure** — Returns the complete file structure of a module (model, views, components, routes, permissions, menu).
-- **ListPermissions** — Lists all roles, permissions, and assignments from `config/roles.php`.
+- **ListPermissions** — Lists all roles, permissions, and assignments from `app/Modules/Access/Config/permissions.php` (merged as `config('roles')`).
 - **GetMenuStructure** — Returns the sidebar menu structure from `config/menu.php`.
 
 ## When to use
