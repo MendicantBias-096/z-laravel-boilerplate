@@ -146,6 +146,13 @@ step "Running database migrations and seeders"
 ddev artisan migrate --no-interaction --seed
 ok "Database ready (PostgreSQL) — admin@example.com and user@example.com created"
 
+# ── 8. Public storage ─────────────────────────────────────────────────────────
+# Sin el enlace, una foto de perfil se guarda pero se sirve con 403: el archivo
+# existe en storage/app/public y nadie puede alcanzarlo desde el navegador.
+step "Linking public storage"
+ddev artisan storage:link
+ok "public/storage linked — uploaded media is reachable"
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 echo ""
 echo -e "  ${GREEN}${BOLD}Setup complete!${RESET}"
