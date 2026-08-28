@@ -77,7 +77,7 @@ class NotificationsBell extends Component
         $today = now()->startOfDay();
         $yesterday = now()->subDay()->startOfDay();
 
-        return $notifications->groupBy(function ($notification) use ($today, $yesterday): string|array|null {
+        return $notifications->groupBy(function ($notification) use ($today, $yesterday): string {
             if ($notification->created_at >= $today) {
                 return __('platform::notifications.group_today');
             }

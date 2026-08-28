@@ -37,7 +37,7 @@ class Index extends Component
 
         $installed = $this->getInstalledPackages();
 
-        return collect($packages)->map(function (array $item) use ($installed): array {
+        return array_values(collect($packages)->map(function (array $item) use ($installed): array {
             if ($item['package'] === null && isset($item['static'])) {
                 $version = $item['static'];
             } elseif ($item['package'] === null) {
@@ -52,7 +52,7 @@ class Index extends Component
                 'version' => $version,
                 'icon' => $item['icon'],
             ];
-        })->toArray();
+        })->all());
     }
 
     /**

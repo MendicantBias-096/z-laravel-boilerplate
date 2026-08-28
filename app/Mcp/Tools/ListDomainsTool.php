@@ -24,7 +24,7 @@ class ListDomainsTool extends Tool
         $bootstrapContent = File::get($bootstrapPath);
 
         // Find route files registered in the "then" callback
-        $routeFiles = glob(base_path('routes/*.php'));
+        $routeFiles = glob(base_path('routes/*.php')) ?: [];
 
         // Known system route files that are NOT domains
         $systemRoutes = ['web.php', 'api.php', 'console.php', 'channels.php', 'breadcrumbs.php', 'ai.php'];

@@ -130,7 +130,12 @@ trait HasTable
         }
 
         if (! empty($this->sort['column'])) {
-            $query->orderBy($this->sort['column'], $this->sort['direction'] ?? 'asc');
+            // `orderBy` solo acepta 'asc' o 'desc'. La dirección viene de una
+            // propiedad pública de Livewire, o sea del navegador: normalizarla
+            // aquí es lo que impide que llegue cualquier cosa a la consulta.
+            $direction = ($this->sort['direction'] ?? 'asc') === 'desc' ? 'desc' : 'asc';
+
+            $query->orderBy($this->sort['column'], $direction);
         }
 
         return $query;
