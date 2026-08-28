@@ -1,0 +1,105 @@
+# Llamadas prohibidas por docs/ARCHITECTURE_RULES.md.
+#
+# Van aquí y no en PHPat porque no son dependencias entre clases sino sitios de
+# llamada: PHPat razona sobre tipos y no inspecciona cuerpos de método.
+#
+# `allowIn` es una lista blanca de rutas, así que cada entrada dice tanto dónde
+# está prohibida la llamada como dónde sigue siendo correcta. Eso importa: una
+# regla que prohíbe `auth()` en todas partes es falsa, porque en la capa de UI
+# es exactamente lo que hay que usar.
+
+parameters:
+
+    disallowedFunctionCalls:
+        # R18 · Actions y Models no preguntan quién está conectado.
+        #
+        # R14 manda a un worker todo lo que cruza módulos: otro proceso, sin
+        # sesión y sin request. Ahí `auth()` no lanza excepción, devuelve null
+        # y lo escribe. Es el peor tipo de bug: silencioso, correcto en
+        # desarrollo —donde probaste desde el navegador— y roto en producción.
+        -
+            function:
+                - 'auth()'
+                - 'request()'
+                - 'session()'
+                - 'cookie()'
+            message: 'recibe el actor o el dato como parámetro; en un job no hay sesión y esto devuelve null en silencio (R18)'
+            allowIn:
+                - app/Livewire/*
+                - app/Http/*
+                - app/Providers/*
+                - app/View/*
+                - app/Modules/*/Livewire/*
+                - app/Modules/*/Http/*
+
+        # R39 · Una autorización se decide en la Policy.
+        #
+        # Alcanza `app/` y no `routes/`, que está fuera de los `paths` de
+        # PHPStan. Las dos guardas que quedan en `routes/personal.php` —la
+        # cicatriz que R39 cita— entran a este check cuando R41 mueva las rutas
+        # dentro de cada módulo.
+        -
+            function:
+                - 'abort_if()'
+                - 'abort_unless()'
+            message: 'una decisión de autorización se toma en la Policy, que es testeable y reutilizable desde el componente (R39)'
+            allowIn:
+                - app/Policies/*
+                - app/Modules/*/Policies/*
+                # Una guarda de entorno no es una autorización de dominio: no
+                # pregunta quién eres, pregunta dónde corre el código.
+                - app/Livewire/Auth/*
+
+    disallowedStaticCalls:
+        # R29 · Ningún módulo consulta las tablas de otro.
+        #
+        # El acoplamiento de lectura es el que no se ve: nadie escribe en la
+        # tabla de otro módulo por accidente, pero leerla pasa todos los días y
+        # crea una dependencia que el dueño ni sabe que tiene.
+        -
+            method:
+                - 'Illuminate\Support\Facades\DB::table()'
+                - 'Illuminate\Support\Facades\DB::select()'
+                - 'Illuminate\Support\Facades\DB::statement()'
+            message: 'usa el modelo de tu módulo, o el contrato del módulo dueño; una consulta cruda salta la frontera sin dejar rastro (R29)'
+            allowIn:
+                - database/migrations/*
+                - app/Modules/*/Database/Migrations/*
+
+        # R28 · Y tampoco por una regla de validación.
+        #
+        # DESACTIVADA HASTA QUE EXISTAN LOS MÓDULOS, a propósito. Lo que R28
+        # prohíbe es validar contra la tabla de OTRO módulo; validar la propia
+        # es correcto y es lo único que hay hoy — los cinco `Rule::unique()`
+        # del proyecto apuntan a `users` y `roles` desde su propio código.
+        #
+        # Decidir «ajena» necesita el mapa tabla→módulo que da el prefijo de
+        # R25, y ese mapa no existe hasta la migración. Activarla ahora sería
+        # marcar cinco falsos positivos y aprender a ignorar el check.
+        #
+        # -
+        #     method:
+        #         - 'Illuminate\Validation\Rule::exists()'
+        #         - 'Illuminate\Validation\Rule::unique()'
+        #     message: 'valida la existencia por el contrato del módulo dueño, en lote (R28, R12)'
+        #     allowIn:
+        #         - app/Modules/*/Rules/*
+
+        # R42 · Lo que sale de la aplicación va a cola.
+        #
+        # Solo se declaran las salidas que son inequívocamente remotas.
+        # `Storage::disk()` queda fuera a propósito: si el disco es local o
+        # remoto se decide en configuración, y un check estático no puede
+        # saberlo sin inventarse la respuesta.
+        -
+            method:
+                - 'Illuminate\Support\Facades\Http::*()'
+                - 'Illuminate\Support\Facades\Mail::send()'
+                - 'Illuminate\Support\Facades\Mail::raw()'
+            message: 'una llamada de red bloquea el request de quien guardó el formulario; va a un job (R42)'
+            allowIn:
+                - app/Jobs/*
+                - app/Console/*
+                - app/Modules/*/Jobs/*
+                - app/Modules/*/Listeners/*
+                - app/Modules/*/Console/*

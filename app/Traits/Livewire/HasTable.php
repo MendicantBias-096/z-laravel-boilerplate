@@ -91,7 +91,8 @@ trait HasTable
     {
         $searchable = $this->searchable();
 
-        // ponytail: ilike = Postgres (búsqueda case-insensitive); cambiar a like si migras a MySQL/SQLite
+        // ponytail: `ilike` es de Postgres y hace la búsqueda insensible a
+        // mayúsculas; en MySQL o SQLite hay que cambiarlo por `like`.
         if ($this->search !== '' && $searchable !== []) {
             $query->where(function (Builder $q) use ($searchable) {
                 foreach ($searchable as $column) {

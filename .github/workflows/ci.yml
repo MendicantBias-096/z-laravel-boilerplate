@@ -33,8 +33,19 @@ jobs:
       - name: Pint (format check)
         run: vendor/bin/pint --test
 
-      - name: PHPStan (static analysis)
+      - name: PHPStan (static analysis, with PHPat)
         run: vendor/bin/phpstan analyse --no-progress
+
+      # arch:check necesita que Laravel arranque, no la base de datos: solo
+      # lee código. Va en Lint y no en Tests para que una regla de
+      # arquitectura no ponga en rojo un check que se llama «Tests».
+      - name: Prepare environment
+        run: |
+          cp .env.example .env || true
+          php artisan key:generate
+
+      - name: Arch check (needs the code)
+        run: php artisan arch:check
 
   test:
     name: Tests

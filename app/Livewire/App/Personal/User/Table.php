@@ -24,7 +24,10 @@ class Table extends Component
 
     protected string $modelLabel = 'Usuario';
 
-    /** Búsqueda manual (incluye la relación profile) en render(); el trait no la generaliza. */
+    /**
+     * Búsqueda manual en render(), porque incluye la relación `profile` y
+     * el trait no generaliza ese caso.
+     */
     protected function filterable(): array
     {
         return ['email' => 'ilike'];

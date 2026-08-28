@@ -84,7 +84,7 @@ skip() { printf '%s· %s   %s%s\n' "$DIM" "$1" "$2" "$OFF"; }
 
 wants() { [[ -z "$ONLY_RULE" || "$ONLY_RULE" == "$1" ]]; }
 
-# ── R36 · un tag semver alcanzable desde trunk ────────────────────────────────
+# R36 · un tag semver alcanzable desde trunk
 check_R36() {
     local described
     if described=$(git describe --tags --match 'v*' 2>/dev/null); then
@@ -94,7 +94,7 @@ check_R36() {
     fi
 }
 
-# ── R38 · las migraciones cambian esquema, no datos ───────────────────────────
+# R38 · las migraciones cambian esquema, no datos
 check_R38() {
     local found=0 f
     while read -r f; do
@@ -108,7 +108,7 @@ check_R38() {
     (( found )) || pass R38 "ninguna migración transforma datos"
 }
 
-# ── R48 · sin banners ni separadores ASCII ────────────────────────────────────
+# R48 · sin banners ni separadores ASCII
 check_R48() {
     local hits
     hits=$(targets .php "${CODE_DIRS[@]}" "${OWN_CONFIGS[@]}" \
@@ -126,7 +126,7 @@ check_R48() {
     (( count > 8 )) && echo "      … y $((count - 8)) más"
 }
 
-# ── R52 · un archivo no pasa de 350 líneas ────────────────────────────────────
+# R52 · un archivo no pasa de 350 líneas
 check_R52() {
     local found=0 lines f
     while read -r f; do
@@ -141,26 +141,7 @@ check_R52() {
     (( found )) || pass R52 "ningún archivo pasa de 350 líneas"
 }
 
-# ── R53 · nombres de una letra fuera de la lista blanca ───────────────────────
-# Cerrada: $i/$k/$v como índices, $q para closures de query, $a/$b para
-# comparadores — las dos últimas son el idioma de Laravel y de PHP, y pelearse
-# con ellas cuesta más de lo que aclara.
-check_R53() {
-    local hits
-    hits=$(targets .php "${CODE_DIRS[@]}" \
-        | xargs -r grep -nE '\$[a-hj-pr-uwxyz]\b' 2>/dev/null \
-        | grep -vE '\$(a|b)\b')
-
-    if [[ -z "$hits" ]]; then
-        pass R53 "sin variables de una letra fuera de la lista blanca"
-        return
-    fi
-
-    report R53 warning "$(wc -l <<<"$hits") nombres de una letra:"
-    head -6 <<<"$hits" | sed 's/^/      /' | cut -c1-100
-}
-
-# ── R55 · el baseline lleva fecha de vencimiento y no ha pasado ───────────────
+# R55 · el baseline lleva fecha de vencimiento y no ha pasado
 check_R55() {
     local file=phpstan-baseline.neon
 
@@ -182,7 +163,7 @@ check_R55() {
     fi
 }
 
-# ── EXC · formato y caducidad de las válvulas de escape ───────────────────────
+# EXC · formato y caducidad de las válvulas de escape
 # `arch-exception` lleva fecha porque promete arreglarse; `arch-accepted` no la
 # lleva porque es una decisión revisada. Confundirlas es lo que convierte una
 # excepción en una fecha que alguien corre cada año.
@@ -217,7 +198,7 @@ check_EXC() {
     (( bad )) || pass EXC "las válvulas de escape tienen formato válido y ninguna venció"
 }
 
-# ── reglas que esperan a la migración a app/Modules/ ──────────────────────────
+# reglas que esperan a la migración a app/Modules/
 # Se declaran omitidas en vez de pasar en silencio: un check que da verde
 # porque no encontró nada que mirar enseña a no creerle (R56).
 PENDING='R2 R3 R5 R6 R25 R26 R33 R40 R44'
@@ -227,7 +208,7 @@ main() {
     echo
 
     local rule
-    for rule in R36 R38 R48 R52 R53 R55 EXC; do
+    for rule in R36 R38 R48 R52 R55 EXC; do
         wants "$rule" && "check_$rule"
     done
 

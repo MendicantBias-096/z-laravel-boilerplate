@@ -185,8 +185,16 @@ lees R2 («un módulo es una carpeta bajo `app/Modules/`») y luego miras el
 código, no vas a encontrar esa carpeta: hoy la estructura es la anterior, con
 todo bajo `app/Livewire/App/`.
 
-Lo mismo con los verificadores: el documento dice que 44 reglas rompen el build,
-y todavía no hay nada que las compruebe.
+Los verificadores, en cambio, ya empezaron. Corren en cada push:
+
+```bash
+./scripts/arch-lint.sh          # R36, R38, R48, R52, R55 y las válvulas
+ddev exec php artisan arch:check   # R46, R53
+ddev exec vendor/bin/phpstan analyse   # R9, R13, R14, R17, R18, R21, R24, R29, R39, R42
+```
+
+Las reglas que hablan de módulos todavía no se comprueban, y los dos comandos
+lo dicen en su última línea en vez de dar un verde que no significa nada.
 
 Mientras tanto:
 

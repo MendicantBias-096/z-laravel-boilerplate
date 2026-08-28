@@ -1,10 +1,23 @@
 includes:
     - vendor/larastan/larastan/extension.neon
+    - vendor/phpat/phpat/extension.neon
+    - vendor/spaze/phpstan-disallowed-calls/extension.neon
+    - phpstan-disallowed.neon
     - phpstan-baseline.neon
+
+services:
+    # Las reglas de arquitectura que son aserciones de dependencia. Viven
+    # dentro de PHPStan para que no haya un segundo binario ni una segunda
+    # pasada de CI.
+    -
+        class: Tests\Arch\ArchitectureRules
+        tags:
+            - phpat.test
 
 parameters:
     paths:
         - app/
+        - tests/Arch/
     level: 6
 
     # Un error dentro de un trait se atribuye al trait o a la clase que lo usa

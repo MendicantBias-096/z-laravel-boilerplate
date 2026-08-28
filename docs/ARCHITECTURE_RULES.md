@@ -1771,7 +1771,7 @@ archivo de 1806 líneas tampoco nació así.
 
 ## R53 — Los nombres son completos y pronunciables; los booleanos llevan prefijo verbal.
 
-> Enforcement: script propio · `scripts/arch-lint.sh` · Severidad: warning
+> Enforcement: script propio · `php artisan arch:check` · Severidad: warning
 > Escape: puntual
 
 **Qué significa.** Los nombres se escriben completos: `period`, no `p`. Los

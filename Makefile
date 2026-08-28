@@ -69,6 +69,7 @@ check: ## Run every verification: arch rules, format, static analysis, tests
 	@./scripts/arch-lint.sh
 	@ddev exec vendor/bin/pint --test
 	@ddev exec vendor/bin/phpstan analyse --no-progress
+	@ddev exec php artisan arch:check
 	@ddev exec php artisan test --compact
 
 logs: ## Follow DDEV web container logs
