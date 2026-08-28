@@ -21,7 +21,6 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements AuditableContract, MustVerifyEmail, PasskeyUser
 {
-
     /**
      * El resolver de factories de Eloquent busca `Database\Factories\…` a
      * partir de `App\`, así que para un modelo de módulo apunta a una clase
@@ -32,6 +31,7 @@ class User extends Authenticatable implements AuditableContract, MustVerifyEmail
     {
         return UserFactory::new();
     }
+
     /** @use HasFactory<UserFactory> */
     use Auditable, HasApiTokens, HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, SoftDeletes, TwoFactorAuthenticatable;
 

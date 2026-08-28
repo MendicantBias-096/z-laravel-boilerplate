@@ -7,7 +7,6 @@ return [
     'users' => 'Usuarios',
     'new_user' => 'Nuevo usuario',
 
-
     /**
      * Grupos de módulos
      */

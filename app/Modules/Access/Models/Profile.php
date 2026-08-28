@@ -14,7 +14,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Profile extends Model implements AuditableContract, HasMedia
 {
-
     /**
      * El resolver de factories de Eloquent busca `Database\Factories\…` a
      * partir de `App\`, así que para un modelo de módulo apunta a una clase
@@ -25,6 +24,7 @@ class Profile extends Model implements AuditableContract, HasMedia
     {
         return ProfileFactory::new();
     }
+
     /** @use HasFactory<ProfileFactory> */
     use Auditable, HasFactory, HasPhoto, InteractsWithMedia {
         HasPhoto::registerMediaCollections insteadof InteractsWithMedia;

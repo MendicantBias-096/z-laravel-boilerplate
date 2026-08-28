@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProfileFactory extends Factory
 {
-    /** @var class-string<\App\Modules\Access\Models\Profile> */
-    protected $model = \App\Modules\Access\Models\Profile::class;
+    /** @var class-string<Profile> */
+    protected $model = Profile::class;
 
     /**
      * Define the model's default state.

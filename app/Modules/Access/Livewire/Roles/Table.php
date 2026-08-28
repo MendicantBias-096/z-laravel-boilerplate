@@ -3,9 +3,9 @@
 namespace App\Modules\Access\Livewire\Roles;
 
 use App\Modules\Access\Models\Role;
+use App\Modules\Access\Notifications\RoleDeletedNotification;
 use App\Modules\Platform\Services\NotificationsService;
 use App\Modules\Platform\Traits\Livewire\HasTable;
-use App\Modules\Access\Notifications\RoleDeletedNotification;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
