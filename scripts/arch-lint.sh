@@ -108,6 +108,23 @@ check_R38() {
     (( found )) || pass R38 "ninguna migración transforma datos"
 }
 
+# R37 · toda migración declara down()
+# La otra mitad de R37 es el test de ida y vuelta. Son dos afirmaciones y por
+# eso son dos checks: si solo estuviera el test, una migración sin `down()`
+# fallaría por rebote —al recrear su tabla— y el nombre del fallo apuntaría al
+# sitio equivocado. `Migrator` omite un `down()` ausente sin decir nada.
+check_R37() {
+    local found=0 f
+    while read -r f; do
+        [[ -n "$f" ]] || continue
+        grep -q 'function down' "$f" && continue
+        report R37 error "$f no declara down(); Migrator lo omite en silencio"
+        found=1
+    done < <(targets .php database/migrations)
+
+    (( found )) || pass R37 "todas las migraciones declaran down()"
+}
+
 # R48 · sin banners ni separadores ASCII
 check_R48() {
     local hits
@@ -208,7 +225,7 @@ main() {
     echo
 
     local rule
-    for rule in R36 R38 R48 R52 R55 EXC; do
+    for rule in R36 R37 R38 R48 R52 R55 EXC; do
         wants "$rule" && "check_$rule"
     done
 

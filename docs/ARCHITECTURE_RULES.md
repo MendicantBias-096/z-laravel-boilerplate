@@ -1259,6 +1259,12 @@ este mismo repositorio.
 
 Verificación: ningún PR contiene `create_X` y `alter_X` de la misma tabla.
 
+Una excepción, y es la única: **añadir un `down()` que faltaba**. R34 existe
+porque editar una migración ya aplicada deja las bases desincronizadas, y un
+`down()` ausente nunca se ejecutó en ninguna parte, así que no hay nada que
+desincronizar. Se hizo una vez, en `create_media_table`, para que R37 pudiera
+existir.
+
 ## R35 — El boilerplate consolida sus migraciones al cerrar versión; un producto instanciado congela todo lo anterior al último tag desplegado.
 
 > Enforcement: script propio · `scripts/arch-lint.sh` · Severidad: warning
