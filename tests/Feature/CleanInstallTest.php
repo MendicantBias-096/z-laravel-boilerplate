@@ -29,6 +29,23 @@ class CleanInstallTest extends TestCase
     }
 
     /**
+     * `setup.sh` deja `public/storage` enlazado.
+     *
+     * Se comprueba sobre el guion y no sobre el enlace porque lo que se rompe
+     * es la instalación, no este entorno: sin esa línea la foto de perfil se
+     * guarda bien y se sirve con 403, que es un fallo que nadie atribuye a la
+     * instalación.
+     */
+    public function test_setup_links_public_storage(): void
+    {
+        $this->assertStringContainsString(
+            'artisan storage:link',
+            (string) file_get_contents(base_path('setup.sh')),
+            'setup.sh debe enlazar public/storage o la primera foto subida dará 403.'
+        );
+    }
+
+    /**
      * El morph map guarda un alias, no el nombre de la clase.
      *
      * Sin él, mover un modelo de namespace deja las filas polimórficas
