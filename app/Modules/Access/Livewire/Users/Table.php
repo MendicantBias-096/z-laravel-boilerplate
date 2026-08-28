@@ -3,10 +3,10 @@
 namespace App\Modules\Access\Livewire\Users;
 
 use App\Modules\Access\Models\User;
+use App\Modules\Access\Notifications\UserDeletedNotification;
 use App\Modules\Platform\Services\NotificationsService;
 use App\Modules\Platform\Traits\Livewire\HasSoftDeletes;
 use App\Modules\Platform\Traits\Livewire\HasTable;
-use App\Modules\Access\Notifications\UserDeletedNotification;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;

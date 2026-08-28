@@ -7,7 +7,6 @@ return [
     'users' => 'Users',
     'new_user' => 'New user',
 
-
     'groups' => [
         'access' => 'Access',
         'configuracion' => 'Configuration',

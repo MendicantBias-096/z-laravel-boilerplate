@@ -3,9 +3,9 @@
 namespace App\Modules\Access\Livewire\Roles;
 
 use App\Modules\Access\Models\Role;
-use App\Modules\Platform\Services\NotificationsService;
 use App\Modules\Access\Notifications\RoleCreatedNotification;
 use App\Modules\Access\Notifications\RoleUpdatedNotification;
+use App\Modules\Platform\Services\NotificationsService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
