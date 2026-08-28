@@ -71,18 +71,26 @@ contraseñas están en `database/seeders/UsersTableSeeder.php`.
 ## El mapa: qué hay dentro
 
 ```
-app/          el código de la aplicación
-config/       ajustes: menú lateral, permisos, notificaciones
-database/     migraciones (la forma de las tablas) y datos de prueba
+app/Modules/  los módulos: cada uno con todo lo suyo dentro
+config/       ajustes globales: el menú lateral y la configuración de paquetes
+database/     solo migraciones de infraestructura (cache, colas, tokens)
 docs/         esta documentación
-lang/         los textos en español y en inglés
-resources/    las pantallas (Blade) y los estilos
-routes/       qué dirección web lleva a qué pantalla
-tests/        las pruebas automáticas
+resources/    los estilos y las piezas de interfaz compartidas
+routes/       lo que no pertenece a ningún módulo
+tests/        las pruebas que cruzan módulos
 ```
 
-Las tres carpetas que vas a tocar casi siempre son `app/`, `resources/` y
-`routes/`.
+**Casi todo lo que vas a tocar está dentro de un módulo.** Hoy hay dos:
+
+```
+app/Modules/Access/     usuarios, roles, permisos, perfiles, login
+app/Modules/Platform/   configuración, notificaciones, piezas compartidas
+```
+
+Y cada uno tiene la misma forma por dentro: `Models/` para los datos,
+`Livewire/` para las pantallas, `Resources/views/` para el HTML,
+`Routes/web.php` para las direcciones, `Tests/` para sus pruebas. Si escribes
+una notificación, va en `Notifications/`. No hay que decidir nada.
 
 ## Trece palabras que vas a leer todo el rato
 
@@ -179,11 +187,14 @@ Los dos están en el menú de la izquierda.
 
 Esto es importante y conviene decirlo antes de que te confunda.
 
-**Las reglas de arquitectura describen hacia dónde va el proyecto, no dónde está
-hoy.** Se acordaron en agosto de 2026 y su implementación está pendiente. Si
-lees R2 («un módulo es una carpeta bajo `app/Modules/`») y luego miras el
-código, no vas a encontrar esa carpeta: hoy la estructura es la anterior, con
-todo bajo `app/Livewire/App/`.
+**La estructura ya es la que describen las reglas.** `app/Modules/` existe, los
+dos módulos de plataforma se llaman `Access` y `Platform`, y cada uno lleva sus
+migraciones, sus vistas y sus tests dentro.
+
+Lo que falta es de datos, no de estructura: las tablas todavía no llevan el
+prefijo de su módulo (R25) y los permisos siguen escritos en español (R40).
+Las dos cosas necesitan migrar datos ya sembrados, así que son un paso aparte —
+y los verificadores lo dicen en su última línea cada vez que corren.
 
 Los verificadores, en cambio, ya empezaron. Corren en cada push:
 
@@ -201,6 +212,6 @@ Mientras tanto:
 - **Para entender por qué el proyecto está organizado como está** y hacia dónde
   va, lee las reglas.
 - **Para saber cómo se escribe código hoy**, mira los módulos que ya existen
-  (`Personal › Usuarios` es el más completo) y copia su forma.
+  (`Access › Usuarios` es el más completo) y copia su forma.
 
-Cuando la migración se haga, esta sección desaparece.
+Cuando esas dos deudas se salden, esta sección desaparece.

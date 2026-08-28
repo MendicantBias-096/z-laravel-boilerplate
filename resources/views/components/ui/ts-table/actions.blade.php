@@ -63,7 +63,7 @@
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-dark-300 dark:hover:bg-dark-600"
                     >
                         @svg('lucide-pencil', 'size-4 shrink-0 text-gray-400')
-                        {{ __('table.actions.edit') }}
+                        {{ __('platform::table.actions.edit') }}
                     </a>
                 @endcan
             @endif
@@ -78,7 +78,7 @@
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-950"
                     >
                         @svg('lucide-rotate-ccw', 'size-4 shrink-0')
-                        {{ __('table.actions.restore') }}
+                        {{ __('platform::table.actions.restore') }}
                     </button>
                 @endcan
 
@@ -92,7 +92,7 @@
                         class="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
                     >
                         @svg('lucide-trash-2', 'size-4 shrink-0')
-                        {{ __('table.actions.delete') }}
+                        {{ __('platform::table.actions.delete') }}
                     </button>
                 @endcan
             @endif

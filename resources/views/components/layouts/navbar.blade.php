@@ -41,7 +41,7 @@
         {{-- Derecha: notificaciones + usuario --}}
         <div class="flex items-center gap-2">
 
-        @livewire('notifications.notifications-bell')
+        @livewire('platform::notifications.notifications-bell')
 
         <div class="relative" x-data="{ open: false }">
 
@@ -102,7 +102,7 @@
                 <div class="p-1">
                     <a href="{{ route('settings') }}" wire:navigate class="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-content-muted hover:bg-panel-alt hover:text-content">
                         @svg('lucide-settings', 'size-4 text-content-subtle')
-                        {{ __('settings.nav_settings') }}
+                        {{ __('platform::settings.nav_settings') }}
                     </a>
                 </div>
 
@@ -111,7 +111,7 @@
                         @csrf
                         <button type="submit" class="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-danger hover:bg-danger/10">
                             @svg('lucide-log-out', 'size-4')
-                            {{ __('settings.nav_logout') }}
+                            {{ __('platform::settings.nav_logout') }}
                         </button>
                     </form>
                 </div>

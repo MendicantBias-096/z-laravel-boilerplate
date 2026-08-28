@@ -25,9 +25,9 @@
 >
     {{-- Header --}}
     @php
-        $sidebarLogoPath = \App\Models\Setting::get('logo_path');
+        $sidebarLogoPath = \App\Modules\Platform\Models\Setting::get('logo_path');
         $sidebarLogoUrl  = $sidebarLogoPath ? Storage::disk('public')->url($sidebarLogoPath) : null;
-        $sidebarName     = \App\Models\Setting::get('app_short_name') ?: \App\Models\Setting::get('app_name', config('app.name'));
+        $sidebarName     = \App\Modules\Platform\Models\Setting::get('app_short_name') ?: \App\Modules\Platform\Models\Setting::get('app_name', config('app.name'));
     @endphp
     <div
         class="flex h-16 flex-none items-center justify-between border-b border-line px-5"

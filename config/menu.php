@@ -22,37 +22,37 @@ return [
      */
     'menu' => [
         [
-            'label' => 'menu.dashboard',
+            'label' => 'platform::menu.dashboard',
             'icon' => 'lucide-home',
             'route' => 'dashboard',
         ],
 
         // Personal
         [
-            'label' => 'menu.personal',
+            'label' => 'platform::menu.access',
             'icon' => 'lucide-users',
-            'active_route' => 'personal.*',
+            'active_route' => 'access.*',
             'items' => [
                 [
-                    'label' => 'menu.users',
-                    'route' => 'personal.usuarios.index',
-                    'active_route' => 'personal.usuarios.*',
+                    'label' => 'platform::menu.users',
+                    'route' => 'access.users.index',
+                    'active_route' => 'access.users.*',
                     'permission' => 'ver usuarios',
                 ],
                 [
-                    'label' => 'menu.roles',
-                    'route' => 'personal.roles.index',
-                    'active_route' => 'personal.roles.*',
+                    'label' => 'platform::menu.roles',
+                    'route' => 'access.roles.index',
+                    'active_route' => 'access.roles.*',
                     'permission' => 'ver roles',
                 ],
             ],
         ],
 
         [
-            'label' => 'menu.docs',
+            'label' => 'platform::menu.docs',
             'icon' => 'lucide-book-open',
-            'route' => 'general.docs.index',
-            'active_route' => 'general.docs.*',
+            'route' => 'platform.docs.index',
+            'active_route' => 'platform.docs.*',
         ],
 
         // Operaciones

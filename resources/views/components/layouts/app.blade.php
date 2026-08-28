@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ \App\Models\Setting::get('app_name', config('app.name', 'Laravel')) }}{{ $title ? ' | ' . $title : '' }}</title>
-    @php $faviconPath = \App\Models\Setting::get('favicon_path') ?? \App\Models\Setting::get('logo_path'); @endphp
+    <title>{{ \App\Modules\Platform\Models\Setting::get('app_name', config('app.name', 'Laravel')) }}{{ $title ? ' | ' . $title : '' }}</title>
+    @php $faviconPath = \App\Modules\Platform\Models\Setting::get('favicon_path') ?? \App\Modules\Platform\Models\Setting::get('logo_path'); @endphp
     @if($faviconPath)
         <link rel="icon" href="{{ Storage::disk('public')->url($faviconPath) }}">
     @else
@@ -50,7 +50,7 @@
         class="mx-auto flex min-h-screen w-full min-w-[320px] flex-col bg-canvas text-content transition-all duration-300 ease-out"
     >
         <x-layouts.sidebar />
-        @livewire('layouts.navbar')
+        @livewire('platform::layouts.navbar')
 
         {{-- Page subheader: fijo debajo del navbar --}}
         @if ($icon || $title)
@@ -88,11 +88,11 @@
         <footer id="page-footer" class="fixed start-0 end-0 bottom-0 z-20 flex flex-none items-center border-t border-line bg-canvas transition-all duration-300 ease-out">
             <div class="flex w-full items-center justify-between px-4 py-4 lg:px-8">
                 <span class="text-sm text-content-subtle">
-                    © {{ date('Y') }} <span class="font-medium text-content-muted">{{ \App\Models\Setting::get('app_name', config('app.name')) }}</span>
+                    © {{ date('Y') }} <span class="font-medium text-content-muted">{{ \App\Modules\Platform\Models\Setting::get('app_name', config('app.name')) }}</span>
                 </span>
                 @if(config('app.developer'))
                 <span class="text-sm text-content-subtle flex items-center gap-1.5">
-                    {{ __('settings.developed_with') }}
+                    {{ __('platform::settings.developed_with') }}
                     @svg('lucide-heart', 'size-3.5 text-red-500 fill-red-500')
                     <span class="font-medium text-content-muted">{{ config('app.developer') }}</span>
                 </span>

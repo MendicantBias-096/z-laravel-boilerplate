@@ -3,8 +3,8 @@
     {{-- ── Mi rol ──────────────────────────────────────────────────────── --}}
     <div class="pb-8 md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">{{ __('settings.my_role') }}</h3>
-            <p class="mt-1 text-sm text-content-muted">{{ __('settings.my_role_desc') }}</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('platform::settings.my_role') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.my_role_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
             @php $currentRole = auth()->user()->roles->first(); @endphp
@@ -17,7 +17,7 @@
                     </div>
                 </div>
             @else
-                <p class="text-sm text-content-muted">{{ __('app.user_role_ph') }}</p>
+                <p class="text-sm text-content-muted">{{ __('platform::app.user_role_ph') }}</p>
             @endif
         </div>
     </div>
@@ -25,8 +25,8 @@
     {{-- ── Mis permisos ────────────────────────────────────────────────── --}}
     <div class="pt-8">
         <div class="mb-6">
-            <h3 class="text-sm font-semibold text-content">{{ __('settings.permissions') }}</h3>
-            <p class="mt-1 text-sm text-content-muted">{{ __('settings.permissions_desc') }}</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('platform::settings.permissions') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.permissions_desc') }}</p>
         </div>
 
         @php
@@ -40,7 +40,7 @@
                 <div>
                     <div class="mb-3 flex items-center gap-3">
                         <span class="text-xs font-bold uppercase tracking-widest text-content-subtle">
-                            {{ __("roles.groups.{$group}") }}
+                            {{ __("access::roles.groups.{$group}") }}
                         </span>
                         <div class="h-px flex-1 bg-line"></div>
                     </div>
@@ -50,7 +50,7 @@
                                 <fieldset class="rounded-lg border border-primary-400/40 dark:border-primary-600/40 px-4 pt-3">
                                     <legend class="-ml-1 px-2">
                                         <span class="text-xs font-semibold tracking-wide text-primary-600 dark:text-primary-400">
-                                            {{ __("roles.modules.{$module}") }}
+                                            {{ __("access::roles.modules.{$module}") }}
                                         </span>
                                     </legend>
                                     <div class="grid gap-x-4 gap-y-1 pb-3 {{ count($permModules[$module]) > 1 ? 'grid-cols-2' : 'grid-cols-1' }}" style="margin-top: 6px;">
@@ -74,7 +74,7 @@
                                                     'text-content' => $has,
                                                     'text-content-subtle' => !$has,
                                                 ])>
-                                                    {{ __("roles.permissions.{$permission}") }}
+                                                    {{ __("access::roles.permissions.{$permission}") }}
                                                 </span>
                                             </div>
                                         @endforeach

@@ -35,7 +35,7 @@ Activate the relevant skill whenever you work in that domain — don't wait unti
 - Check for existing components to reuse before creating new ones.
 - Never use `->layout()` in Livewire `render()` methods — layout is set in the wrapper view.
 - Never point routes directly to Livewire classes — always use `fn () => view(...)`.
-- All Livewire component classes live in a subfolder named after the module: `App\Livewire\App\{Domain}\{Module}\Index.php`.
+- All Livewire component classes live inside their module: `App\Modules\{Context}\Livewire\{Resource}\{Name}.php`.
 - Never use `env()` outside of config files — always use `config('key')`.
 
 === ddev rules ===
@@ -183,58 +183,89 @@ authorization, queues and code form. Read it before designing anything new, and
 cite rules by ID in review ("this violates R13"). It is also served in-app at
 `/docs`.
 
-**What follows is the structure in force today, and it is not yet the one the
-rules describe.** The rules define the destination — modules under
-`app/Modules/{Context}/`, the `Personal` → `Access` rename, table prefixes —
-and none of it has been migrated. Until it is, **write new code in the
-structure below** and copy the shape of what already exists; `Personal ›
-Usuarios` is the most complete module.
+The structure below **is** the one the rules describe: the migration to
+`app/Modules/` is done. What is not done yet is named at the end.
 
-One word collides between the two, so keep them apart: what this section calls
-a **domain** (a UI folder: `General`, `Personal`) is not what R1 calls a
-**module** (a bounded context). R1 retires the word "domain" entirely.
+## Modules
 
-This project organizes the authenticated area into **domains** (e.g. General, Operations) and each domain has **modules** (e.g. Dashboard, Users, Settings).
+Two platform modules that every product inherits (R5):
+
+| Module | What lives there |
+| --- | --- |
+| `Access` | identity: users, roles, permissions, profiles, authentication |
+| `Platform` | configuration, notifications, shared UI pieces and validation rules |
+
+Business modules go alongside them and prefix their URLs (`/billing/invoices`);
+platform modules do not (`/users`, not `/access/users`).
+
+## Layout of a module
+
+```
+app/Modules/{Context}/
+├── Contracts/              public (R8): interfaces, their DTOs and exceptions
+├── Events/                 public (R8)
+├── Models/  Actions/  Data/  Enums/  Exceptions/  Http/
+├── Listeners/  Observers/  Rules/  Services/  Traits/
+├── Notifications/  Policies/  Jobs/  Console/  Livewire/
+├── Database/{Migrations,Seeders,Factories}
+├── Resources/{views,lang}
+├── Config/  Routes/{web,breadcrumbs}.php
+├── Tests/{Unit,Feature}
+├── {Context}ServiceProvider.php
+└── README.md
+```
+
+Folders are **by type, not by layer**: a notification goes in `Notifications/`
+and there is nothing to decide. The list is closed — `scripts/arch-lint.sh`
+checks it (R6), so a new type is added there and to R6, not invented in a
+module.
 
 ## Three-Layer Convention
 
-Every page follows this exact pattern (same as auth module):
+Unchanged, only namespaced:
 
 ```
-Route        →  fn () => view('{wrapper}')          never points to Livewire class
-Wrapper      →  {module}/index.blade.php             <x-layouts.app> + @livewire(...)
-Component    →  {module}/_index.blade.php            actual HTML, no layout
-Livewire     →  {Module}/Index.php                   return view('...._index'), no ->layout()
-```
-
-## File Locations
-
-```
-app/Livewire/App/{Domain}/{Module}/Index.php
-resources/views/app/{domain}/{module}/index.blade.php   ← wrapper
-resources/views/app/{domain}/{module}/_index.blade.php  ← component
-routes/{domain}.php
+Route        →  Route::view('/users', 'access::users.index')   never a Livewire class
+Wrapper      →  Resources/views/users/index.blade.php          <x-layouts.app> + @livewire(...)
+Component    →  Resources/views/users/_index.blade.php         actual HTML, no layout
+Livewire     →  Livewire/Users/Table.php                       returns view('access::users._index')
 ```
 
 ## Naming Conventions
 
-| Element            | Convention                           | Example                                    |
-| ------------------ | ------------------------------------ | ------------------------------------------ |
-| Livewire namespace | `App\Livewire\App\{Domain}\{Module}` | `App\Livewire\App\General\Users`           |
-| Livewire class     | Always `Index` inside its folder     | `Users/Index.php`                          |
-| Wrapper view       | `app.{domain}.{module}.index`        | `app.general.users.index`                  |
-| Component view     | `app.{domain}.{module}._index`       | `app.general.users._index`                 |
-| Route              | `fn () => view('{wrapper}')`         | `fn () => view('app.general.users.index')` |
-| Route name         | `{domain}.{module}.{action}`         | `general.users.index`                      |
-| Route file         | `routes/{domain}.php`                | `routes/general.php`                       |
-| URL prefix         | kebab-case                           | `/users`                                   |
+| Element | Convention | Example |
+| --- | --- | --- |
+| Livewire namespace | `App\Modules\{Context}\Livewire` | `App\Modules\Access\Livewire\Users` |
+| View / component | `{context}::{resource}.{name}` | `access::users.index` |
+| Route name | `{context}.{resource}.{action}` | `access.users.index` |
+| Route file | `app/Modules/{Context}/Routes/web.php` | — |
+| URL | kebab-case, no prefix for platform | `/users` |
+| Table | `{context}_{plural}` | `access_profiles` *(pending)* |
+| Permission | `{context}.{resource}.{action}` in English | `access.users.view` *(pending)* |
 
-## Registered Domains
+## What a module ServiceProvider must register
 
-| Domain   | URL prefix  | Route file            | Modules         |
-| -------- | ----------- | --------------------- | --------------- |
-| General  | `/`         | `routes/general.php`  | Dashboard       |
-| Personal | `/personal` | `routes/personal.php` | Roles, Usuarios |
+Laravel discovers by path convention, and inside a module that convention no
+longer applies. Each provider declares: migrations, views, translations,
+routes, breadcrumbs, config, Livewire namespace, morph map and console
+commands. Policies are the one exception — `Gate::guessPolicyName()` finds
+them. The provider itself goes in `bootstrap/providers.php`.
+
+Two traps worth knowing, both silent:
+
+- **Livewire** components are registered with `addNamespace`, not
+  `addLocation`: the latter derives the name by trimming the prefix, so two
+  modules with the same subfolder produce the same name and the first one
+  registered wins, without an error.
+- **Polymorphic columns** (`model_type`, `notifiable_type`, …) store the FQCN
+  as text, so renaming a namespace silently orphans those rows. A morph map
+  keeps an alias in the database instead. `php artisan access:migrate-morph-types`
+  rewrites rows written before the map existed.
+
+## Still pending
+
+The tables have no module prefix yet (R25, R33) and permissions are still in
+Spanish (R40). Both need a data migration, so they are their own step.
 
 Use the `create-module` skill for full instructions on creating new domains and modules.
 
@@ -268,7 +299,7 @@ Use the `create-crud` skill for the complete step-by-step generation guide adapt
 ## Component Structure
 
 ```php
-namespace App\Livewire\App\{Domain}\{Module};
+namespace App\Modules\{Context}\Livewire\{Resource};
 
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;

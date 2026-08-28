@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Enums\Language;
-use App\Enums\Roles;
+use App\Modules\Access\Enums\Roles;
+use App\Modules\Platform\Enums\Language;
 use Tests\TestCase;
 
 class RolesEnumTest extends TestCase

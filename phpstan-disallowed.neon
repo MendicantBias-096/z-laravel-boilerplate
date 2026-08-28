@@ -31,6 +31,9 @@ parameters:
                 - app/View/*
                 - app/Modules/*/Livewire/*
                 - app/Modules/*/Http/*
+                # Una ruta es capa de UI: la propia regla dice que ahí `auth()`
+                # es lo correcto y no se restringe.
+                - app/Modules/*/Routes/*
 
         # R39 · Una autorización se decide en la Policy.
         #
@@ -48,7 +51,14 @@ parameters:
                 - app/Modules/*/Policies/*
                 # Una guarda de entorno no es una autorización de dominio: no
                 # pregunta quién eres, pregunta dónde corre el código.
-                - app/Livewire/Auth/*
+                - app/Modules/Access/Livewire/Auth/*
+                # DEUDA, no exención: las dos guardas de
+                # `Access/Routes/web.php` son autorización y R39 las quiere en
+                # una Policy. Mudarlas exige antes resolver que `Gate::before`
+                # corta para el rol admin, que es justo el actor al que esas
+                # guardas también atan — y eso es un cambio de seguridad que
+                # no cabe dentro de una migración de estructura.
+                - app/Modules/*/Routes/*
 
     disallowedStaticCalls:
         # R29 · Ningún módulo consulta las tablas de otro.

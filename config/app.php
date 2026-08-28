@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use App\Enums\Language;
+use App\Modules\Platform\Enums\Language;
 
 return [
 

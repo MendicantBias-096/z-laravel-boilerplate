@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\LogRequestDuration;
 use App\Http\Middleware\SetLocale;
+use App\Modules\Access\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -20,15 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
-        then: function () {
-            Route::middleware(['web', 'auth'])
-                ->group(base_path('routes/general.php'));
-
-            Route::middleware(['web', 'auth', 'verified'])
-                ->group(base_path('routes/personal.php'));
-
-            require_once base_path('routes/breadcrumbs.php');
-        },
+        // Las rutas y los breadcrumbs de un módulo los carga su propio
+        // ServiceProvider, así que aquí ya no queda nada que agrupar.
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['darkMode', 'locale']);
