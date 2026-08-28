@@ -4,27 +4,21 @@ declare(strict_types=1);
 
 return [
 
-    /*
-     |--------------------------------------------------------------------------
-     | Roles
-     |--------------------------------------------------------------------------
-     |
-     | Deben coincidir con los cases del enum App\Enums\Roles.
-     |
+    /**
+     * Roles
+     *
+     * Deben coincidir con los cases del enum App\Enums\Roles.
      */
     'roles' => [
         'admin' => 'Administrador',
         'user' => 'Usuario',
     ],
 
-    /*
-     |--------------------------------------------------------------------------
-     | Módulos por rol
-     |--------------------------------------------------------------------------
-     |
-     | Módulos a los que cada rol tiene acceso completo por defecto.
-     | El seeder asignará todos los permisos de cada módulo al rol.
-     |
+    /**
+     * Módulos por rol
+     *
+     * Módulos a los que cada rol tiene acceso completo por defecto.
+     * El seeder asignará todos los permisos de cada módulo al rol.
      */
     'roles_modules' => [
         'admin' => [
@@ -37,14 +31,11 @@ return [
         'user' => [],
     ],
 
-    /*
-     |--------------------------------------------------------------------------
-     | Módulos y permisos
-     |--------------------------------------------------------------------------
-     |
-     | Primer nivel: módulos. Segundo nivel: permisos del módulo.
-     | El seeder crea todos los permisos aquí definidos.
-     |
+    /**
+     * Módulos y permisos
+     *
+     * Primer nivel: módulos. Segundo nivel: permisos del módulo.
+     * El seeder crea todos los permisos aquí definidos.
      */
     'permissions' => [
         'usuarios' => [
@@ -79,14 +70,11 @@ return [
         ],
     ],
 
-    /*
-     |--------------------------------------------------------------------------
-     | Grupos de módulos
-     |--------------------------------------------------------------------------
-     |
-     | Agrupa módulos bajo una sección visual en el formulario de roles.
-     | Los módulos que no estén en ningún grupo aparecen en "Otros".
-     |
+    /**
+     * Grupos de módulos
+     *
+     * Agrupa módulos bajo una sección visual en el formulario de roles.
+     * Los módulos que no estén en ningún grupo aparecen en "Otros".
      */
     'module_groups' => [
         'personal' => ['usuarios', 'roles'],

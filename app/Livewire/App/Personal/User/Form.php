@@ -178,9 +178,9 @@ class Form extends Component
     public function render(): Factory|View
     {
         return view('app.personal.users._form', [
-            'roles' => Role::orderBy('display_name')->get()->map(fn ($r): array => [
-                'label' => $r->display_name ?? ucfirst((string) $r->name),
-                'value' => $r->name,
+            'roles' => Role::orderBy('display_name')->get()->map(fn ($role): array => [
+                'label' => $role->display_name ?? ucfirst((string) $role->name),
+                'value' => $role->name,
             ])->toArray(),
         ]);
     }

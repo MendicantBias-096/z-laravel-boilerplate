@@ -53,7 +53,7 @@ class ListDomainsTool extends Tool
                     $pattern = "/middleware\(\[([^\]]+)\]\)[^}]*?group\(base_path\('routes\/{$fileName}'\)\)/s";
                     if (preg_match($pattern, $bootstrapContent, $mwMatches)) {
                         $middleware = array_map(
-                            fn (string $m): string => trim($m, " '\""),
+                            fn (string $middleware): string => trim($middleware, " '\""),
                             explode(',', $mwMatches[1])
                         );
                     }

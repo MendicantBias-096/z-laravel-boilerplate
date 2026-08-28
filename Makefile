@@ -1,4 +1,4 @@
-.PHONY: help setup start stop restart install update dev build migrate fresh logs shell
+.PHONY: help setup start stop restart install update dev build migrate fresh logs shell check
 
 # ── Colors ──────────────────────────────────────────────────────────────────
 BOLD  := \033[1m
@@ -64,6 +64,12 @@ fresh: ## Drop all tables and re-run all migrations + seeders
 	ddev artisan migrate:fresh --seed
 
 # ── Utilities ───────────────────────────────────────────────────────────────
+
+check: ## Run every verification: arch rules, format, static analysis, tests
+	@./scripts/arch-lint.sh
+	@ddev exec vendor/bin/pint --test
+	@ddev exec vendor/bin/phpstan analyse --no-progress
+	@ddev exec php artisan test --compact
 
 logs: ## Follow DDEV web container logs
 	ddev logs -f

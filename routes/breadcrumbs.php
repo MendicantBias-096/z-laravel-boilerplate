@@ -5,7 +5,7 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 use Spatie\Permission\Models\Role;
 
-// ── General › Notificaciones ──────────────────────────────────────────────
+// General › Notificaciones
 
 Breadcrumbs::for('general.notifications.index', function (BreadcrumbTrail $trail): void {
     $trail->push(__('notifications.title'), route('general.notifications.index'));
@@ -15,13 +15,13 @@ Breadcrumbs::for('general.docs.index', function (BreadcrumbTrail $trail): void {
     $trail->push(__('docs.title'), route('general.docs.index'));
 });
 
-// ── Personal ──────────────────────────────────────────────────────────────
+// Personal
 
 Breadcrumbs::for('personal', function (BreadcrumbTrail $trail): void {
     $trail->push('Personal'); // sin URL — solo etiqueta de dominio
 });
 
-// ── Personal › Roles ──────────────────────────────────────────────────────
+// Personal › Roles
 
 Breadcrumbs::for('personal.roles.index', function (BreadcrumbTrail $trail): void {
     $trail->parent('personal');
@@ -38,7 +38,7 @@ Breadcrumbs::for('personal.roles.edit', function (BreadcrumbTrail $trail, Role $
     $trail->push($role->name, route('personal.roles.edit', $role));
 });
 
-// ── Personal › Usuarios ───────────────────────────────────────────────────
+// Personal › Usuarios
 
 Breadcrumbs::for('personal.usuarios.index', function (BreadcrumbTrail $trail): void {
     $trail->parent('personal');

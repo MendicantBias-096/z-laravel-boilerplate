@@ -26,7 +26,7 @@ class SyncRolesAndPermissions extends Command
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // ── 0. Validar consistencia del config ───────────────────────────────
+        // 0. Validar consistencia del config
         $definedModules = array_keys(config('roles.permissions', []));
 
         foreach (config('roles.roles_modules', []) as $role => $modules) {
@@ -39,7 +39,7 @@ class SyncRolesAndPermissions extends Command
             }
         }
 
-        // ── 1. Crear permisos nuevos ──────────────────────────────────────────
+        // 1. Crear permisos nuevos
         $this->info('Sincronizando permisos...');
 
         $created = [];
@@ -59,7 +59,7 @@ class SyncRolesAndPermissions extends Command
             $this->line('  Sin permisos nuevos.');
         }
 
-        // ── 2. Crear roles nuevos y actualizar sus permisos ───────────────────
+        // 2. Crear roles nuevos y actualizar sus permisos
         $this->info('Sincronizando roles...');
 
         foreach (config('roles.roles', []) as $roleName => $displayName) {
@@ -74,7 +74,7 @@ class SyncRolesAndPermissions extends Command
 
             $modules = config("roles.roles_modules.{$roleName}", []);
             $rolePerms = collect($modules)
-                ->flatMap(fn ($m) => config("roles.permissions.{$m}", []))
+                ->flatMap(fn ($module) => config("roles.permissions.{$module}", []))
                 ->all();
 
             $role->syncPermissions($rolePerms);
@@ -83,7 +83,7 @@ class SyncRolesAndPermissions extends Command
             $this->line("  {$status}: {$roleName} ({$displayName}) — ".count($rolePerms).' permisos');
         }
 
-        // ── 3. Asignar permisos nuevos a usuarios con el rol indicado ────────
+        // 3. Asignar permisos nuevos a usuarios con el rol indicado
         if ($this->option('assign') && $created !== []) {
             $roleName = $this->option('role');
 

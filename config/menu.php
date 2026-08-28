@@ -4,24 +4,21 @@ declare(strict_types=1);
 
 return [
 
-    /*
-     |--------------------------------------------------------------------------
-     | Menú principal
-     |--------------------------------------------------------------------------
-     |
-     | Cada ítem puede tener:
-     |   label       - Clave de traducción o texto (pasa por __())
-     |   icon        - Nombre del icono HeroIcons (outline)
-     |   route       - Nombre de la ruta Laravel
-     |   active_route- Patrón wildcard para marcar activo (ej: 'dashboard.users.*')
-     |   permission  - Permiso requerido (Spatie)
-     |   permissions - Array de permisos; basta tener uno
-     |   items       - Array de hijos → convierte el ítem en dropdown
-     |
-     | Regla de visibilidad con hijos:
-     |   El padre se muestra si el usuario tiene permiso de al menos un hijo.
-     |   Si el hijo tiene 'permission', el usuario debe tenerlo para verlo.
-     |
+    /**
+     * Menú principal
+     *
+     * Cada ítem puede tener:
+     *   label       - Clave de traducción o texto (pasa por __())
+     *   icon        - Nombre del icono HeroIcons (outline)
+     *   route       - Nombre de la ruta Laravel
+     *   active_route- Patrón wildcard para marcar activo (ej: 'dashboard.users.*')
+     *   permission  - Permiso requerido (Spatie)
+     *   permissions - Array de permisos; basta tener uno
+     *   items       - Array de hijos → convierte el ítem en dropdown
+     *
+     * Regla de visibilidad con hijos:
+     *   El padre se muestra si el usuario tiene permiso de al menos un hijo.
+     *   Si el hijo tiene 'permission', el usuario debe tenerlo para verlo.
      */
     'menu' => [
         [
@@ -30,7 +27,7 @@ return [
             'route' => 'dashboard',
         ],
 
-        // ── Personal ──────────────────────────────────────────────────────
+        // Personal
         [
             'label' => 'menu.personal',
             'icon' => 'lucide-users',
@@ -58,7 +55,7 @@ return [
             'active_route' => 'general.docs.*',
         ],
 
-        // ── Operaciones ──────────────────────────────────────────────────
+        // Operaciones
         // [
         //     'label'        => 'Operaciones',
         //     'icon'         => 'layout-grid',
@@ -84,7 +81,7 @@ return [
         //     ],
         // ],
 
-        // ── Ventas ───────────────────────────────────────────────────────
+        // Ventas
         // [
         //     'label'        => 'Ventas',
         //     'icon'         => 'bar-chart-2',

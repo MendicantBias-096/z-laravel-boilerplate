@@ -18,6 +18,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Arch rules (arch-lint.sh)
+        run: ./scripts/arch-lint.sh
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:

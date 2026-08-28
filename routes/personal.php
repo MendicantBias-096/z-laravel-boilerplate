@@ -8,18 +8,15 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Dominio: Personal
-|--------------------------------------------------------------------------
-| Prefijo: /personal      Nombre base: personal.
-|
-| Gestión de usuarios, roles y permisos del sistema.
-*/
-
+/**
+ * Dominio: Personal
+ * Prefijo: /personal      Nombre base: personal.
+ *
+ * Gestión de usuarios, roles y permisos del sistema.
+ */
 Route::prefix('personal')->name('personal.')->group(function (): void {
 
-    // ── Roles ─────────────────────────────────────────────────────────────
+    // Roles
     Route::prefix('roles')->name('roles.')->group(function (): void {
 
         Route::view('/', 'app.personal.roles.index')
@@ -35,7 +32,7 @@ Route::prefix('personal')->name('personal.')->group(function (): void {
             ->name('edit');
     });
 
-    // ── Usuarios ──────────────────────────────────────────────────────────
+    // Usuarios
     Route::prefix('usuarios')->name('usuarios.')->group(function (): void {
 
         Route::view('/', 'app.personal.users.index')

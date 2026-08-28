@@ -6,11 +6,9 @@ use App\Enums\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Módulo público
-|--------------------------------------------------------------------------
-*/
+/**
+ * Módulo público
+ */
 Route::view('/', 'public.home.index')->name('home');
 
 Route::post('/locale', function (Request $request) {
