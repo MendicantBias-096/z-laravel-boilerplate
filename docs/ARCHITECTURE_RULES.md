@@ -1299,21 +1299,25 @@ falla en el runner **aunque el tag exista y sea ancestro de HEAD**. Sin
 `fetch-depth: 0` en los dos jobs, esta regla no verifica el repositorio:
 verifica la configuración del workflow, y lo hace diciendo otra cosa. R56.
 
-Cicatriz: hay seis tags (`v1.0.0` … `v2.0.0`, más dos `ia-*`) y **ninguno es
-ancestro de HEAD**. Apuntan a la historia pre-squash, que fue abandonada.
+Cicatriz: había seis tags y `git describe --tags --match 'v*'` no resolvía.
+Cinco apuntaban a la historia pre-squash, abandonada. El sexto, `ia-v1.0.0`,
+**sí era ancestro de `trunk`** —a 91 commits— pero su prefijo lo dejaba fuera
+del filtro, así que el efecto práctico era el mismo que no tener ninguno.
 
 ```
 $ git describe --tags --match 'v*'
 fatal: No tags can describe '6dbb25e'.
 ```
 
-R35 se apoya en «el último tag desplegado» y hoy esa referencia está rota. El
-último tag es del 9 de marzo; hay **50 commits sin versionar** y cinco meses
-sin cerrar versión — y R35 dice que el boilerplate consolida *al cerrar
-versión*. Si nunca cierra, nunca consolida.
+R35 se apoya en «el último tag desplegado» y esa referencia estuvo rota cinco
+meses — y R35 dice que el boilerplate consolida *al cerrar versión*. Si nunca
+cierra, nunca consolida.
 
-Los tags `ia-*` son de `feature/ia`, la rama que `CLAUDE.md` marca como *stale
-pre-squash history*. Son ruido con forma de versión.
+Resuelto en `v3.0.0`, el primer tag que cumple esta regla. Los cinco huérfanos
+se renombraron a `archive/*` en lugar de borrarse: no estaban contenidos en
+ninguna rama, así que eran lo único que mantenía viva esa historia y borrarlos
+la habría perdido en el siguiente `gc`. El prefijo los saca del filtro `v*` sin
+destruir nada, y `git tag` deja claro cuáles son versiones y cuáles archivo.
 
 Esta regla también fija el momento en que **la numeración de este documento se
 congela**.
@@ -1914,20 +1918,13 @@ Cinco cosas que este análisis encontró y que no son arquitectura:
 
 - `config/scramble.php` está publicado y `dedoc/scramble` **no está instalado**.
   Un config de un paquete inexistente es contexto falso para un agente.
-- `CLAUDE.md` declara versiones equivocadas: «Laravel 12» (es 13),
-  `spatie/laravel-permission v7` (es `^8.0`), y Scramble como parte del stack.
-- **`CLAUDE.md` enseña la arquitectura que este documento deroga**, y es el
-  archivo que un agente carga siempre: habla de «domains», documenta
-  `app/Livewire/App/{Domain}/{Module}/Index.php` y manda declarar permisos en
-  `config/roles.php`. Nada referencia a este documento. Mientras siga así, un
-  agente escribe la estructura anterior con las instrucciones que sí tiene
-  cargadas y ningún verificador se lo impide, porque tampoco existen todavía.
-  O `CLAUDE.md` apunta aquí y borra su tabla de convenciones, o estas 56 reglas
-  no gobiernan nada. Es el paso cero de la implementación.
+- **`CLAUDE.md` sigue documentando `{Domain}/{Module}`**, y debe hacerlo:
+  es la estructura vigente y un agente necesita saber cómo escribir código en
+  el proyecto que existe. Ya apunta aquí y avisa de que estas reglas describen
+  el destino. Esa tabla se borra el día que la migración a `app/Modules/` esté
+  hecha, no antes.
 - Sentry está instalado y publicado **sin `SENTRY_DSN`**. O se configura o se
   desinstala: un paquete de observabilidad a medio instalar es peor que ninguno.
-- Los seis tags existentes están huérfanos tras el squash (R36). Hay que crear
-  uno alcanzable desde `trunk` y decidir si se borran los `ia-*`.
 - `rector.php` declara `withPhpSets(php84: true)` con un `require` de `^8.5`.
 - **TallStackUI estuvo roto entero** desde `6f1ccd5` (actualización de
   dependencias): las vistas Blade compiladas conservaban los hashes de los

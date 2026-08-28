@@ -1,6 +1,6 @@
-# Laravel 12 Boilerplate
+# Laravel 13 Boilerplate
 
-> **TALL Stack:** Laravel 12 · Livewire 4 · TallStackUI v2 · Alpine.js 3 · Tailwind CSS 4
+> **TALL Stack:** Laravel 13 · Livewire 4 · TallStackUI v3 · Alpine.js 3 · Tailwind CSS 4
 >
 > **Entorno:** PHP 8.5 · PostgreSQL 16 · Bun · Vite HMR · DDEV
 
@@ -176,7 +176,7 @@ bash setup.sh
 El script te pedirá el nombre del proyecto y configurará todo: DDEV, `.env`, dependencias, migraciones, seeders y apertura del navegador.
 
 ```
-  Laravel 12 Boilerplate — Project Setup
+  Laravel 13 Boilerplate — Project Setup
   PHP 8.5 · PostgreSQL · Bun · Alpine.js · Tailwind v4
 
   Project name (becomes the DDEV subdomain)
