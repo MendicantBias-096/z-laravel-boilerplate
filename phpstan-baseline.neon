@@ -132,11 +132,6 @@ parameters:
 			count: 1
 			path: app/Modules/Access/Actions/Fortify/UpdateUserProfileInformation.php
 
-		-
-			message: '#^Access to an undefined property App\\Modules\\Access\\Models\\Role\:\:\$display_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Access/Console/SyncRolesAndPermissions.php
 
 		-
 			message: '#^Access to an undefined property App\\Modules\\Access\\Models\\User\:\:\$email\.$#'
@@ -198,11 +193,6 @@ parameters:
 			count: 1
 			path: app/Modules/Access/Database/Factories/UserFactory.php
 
-		-
-			message: '#^Access to an undefined property App\\Modules\\Access\\Models\\Role\:\:\$display_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Modules/Access/Database/Seeders/RolesAndPermissionsSeeder.php
 
 		-
 			message: '#^App\\Modules\\Access\\Database\\Seeders\\RolesAndPermissionsSeeder should be final$#'
@@ -282,11 +272,6 @@ parameters:
 			count: 1
 			path: app/Modules/Access/Livewire/Roles/Form.php
 
-		-
-			message: '#^Access to an undefined property App\\Modules\\Access\\Models\\Role\:\:\$display_name\.$#'
-			identifier: property.notFound
-			count: 3
-			path: app/Modules/Access/Livewire/Roles/Table.php
 
 		-
 			message: '#^Method App\\Modules\\Access\\Livewire\\Roles\\Table\:\:applyTableQuery\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'

@@ -31,6 +31,12 @@ class Table extends Component
 
         $role = Role::findOrFail($id);
 
+        if ($role->is_protected) {
+            $this->toast()->error(__('platform::app.role_delete_error'), __('platform::app.role_delete_protected', ['name' => $role->display_name]))->send();
+
+            return;
+        }
+
         if ($role->users()->count() > 0) {
             $this->toast()->error(__('platform::app.role_delete_error'), __('platform::app.role_delete_has_users', ['name' => $role->display_name]))->send();
 
@@ -56,6 +62,12 @@ class Table extends Component
         // hubiera funcionado.
         if ($role === null) {
             $this->toast()->error(__('platform::app.error'), __('platform::app.not_found', ['model' => 'Rol']))->send();
+
+            return;
+        }
+
+        if ($role->is_protected) {
+            $this->toast()->error(__('platform::app.role_delete_error'), __('platform::app.role_delete_protected', ['name' => $role->display_name]))->send();
 
             return;
         }

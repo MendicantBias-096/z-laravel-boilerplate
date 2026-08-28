@@ -3,6 +3,7 @@
 namespace App\Modules\Access\Tests\Feature\Users;
 
 use App\Modules\Access\Livewire\Roles\Form as RoleForm;
+use App\Modules\Access\Livewire\Roles\Table as RoleTable;
 use App\Modules\Access\Models\Role as AccessRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -61,17 +62,16 @@ class RoleCrudTest extends TestCase
     public function test_renaming_a_role_keeps_its_slug(): void
     {
         $this->actingAs($this->createAdmin());
-        $role = AccessRole::findByName('admin');
-        $role->update(['display_name' => 'Administrador']);
+        $role = AccessRole::create(['name' => 'almacen', 'display_name' => 'Almacén']);
 
         Livewire::test(RoleForm::class, ['record' => $role])
-            ->set('display_name', 'Administrador General')
+            ->set('display_name', 'Jefe de Almacén')
             ->call('save');
 
         $this->assertDatabaseHas('roles', [
             'id' => $role->id,
-            'name' => 'admin',
-            'display_name' => 'Administrador General',
+            'name' => 'almacen',
+            'display_name' => 'Jefe de Almacén',
         ]);
     }
 
@@ -88,6 +88,49 @@ class RoleCrudTest extends TestCase
             'name' => 'jefe-de-almacen',
             'display_name' => 'Jefe de Almacén',
         ]);
+    }
+
+    /**
+     * Un rol de plataforma se ve, pero no se guarda.
+     *
+     * El `disabled` de la vista es una cortesía: lo que decide es el guard del
+     * componente, porque quitar el atributo desde el navegador es trivial.
+     */
+    public function test_a_protected_role_cannot_be_edited(): void
+    {
+        $this->actingAs($this->createAdmin());
+        $this->seedRoles();
+        $role = AccessRole::findByName('admin');
+
+        Livewire::test(RoleForm::class, ['record' => $role])
+            ->set('display_name', 'Otro nombre')
+            ->call('save');
+
+        $this->assertDatabaseHas('roles', ['id' => $role->id, 'display_name' => 'Administrador']);
+    }
+
+    /** Ni se borra: el seeder lo recrearía en la próxima instalación. */
+    public function test_a_protected_role_cannot_be_deleted(): void
+    {
+        $this->actingAs($this->createAdmin());
+        $this->seedRoles();
+        $role = AccessRole::findByName('user');
+
+        Livewire::test(RoleTable::class)->call('delete', $role->id);
+
+        $this->assertDatabaseHas('roles', ['id' => $role->id]);
+    }
+
+    /** Y el rol que crea el cliente no hereda la marca: manda él. */
+    public function test_a_role_created_from_the_interface_is_not_protected(): void
+    {
+        $this->actingAs($this->createAdmin());
+
+        Livewire::test(RoleForm::class)
+            ->set('display_name', 'Jefe de Almacén')
+            ->call('save');
+
+        $this->assertDatabaseHas('roles', ['name' => 'jefe-de-almacen', 'is_protected' => false]);
     }
 
     public function test_role_exists_in_database_after_seeding(): void

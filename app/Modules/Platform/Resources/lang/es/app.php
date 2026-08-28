@@ -44,6 +44,9 @@ return [
     'role_permissions' => 'Permisos del rol',
     'role_permissions_desc' => 'Selecciona los accesos que tendrá este rol.',
     'role_btn_save' => 'Guardar',
+    'role_protected' => 'Rol de plataforma',
+    'role_protected_desc' => 'Este rol lo define el código de la aplicación. Sus permisos y su nombre se restablecen en cada instalación, así que aquí solo se consultan.',
+    'role_protected_error' => 'No se puede editar',
 
     // Toasts de usuario
     'user_perms_restored' => 'Permisos restaurados',
@@ -75,6 +78,7 @@ return [
     'role_delete_cancel' => 'Cancelar',
     'role_delete_error' => 'No se puede eliminar',
     'role_delete_has_users' => 'El rol ":name" tiene usuarios asignados.',
+    'role_delete_protected' => 'El rol ":name" lo define la plataforma y volvería a crearse en la próxima instalación.',
     'role_deleted' => 'Rol eliminado',
     'role_deleted_desc' => 'El rol fue eliminado correctamente.',
 
