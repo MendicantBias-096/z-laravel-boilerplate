@@ -42,17 +42,14 @@ Route::middleware(['web', 'auth', 'verified'])->name('access.')->group(function 
             ->middleware('permission:crear usuarios')
             ->name('create');
 
-        Route::middleware('permission:editar usuarios')
-            ->get('/{user}/edit', function (User $user): Factory|View {
-                // Deuda declarada: estas dos son decisiones de autorización y
-                // R39 las quiere en una Policy. Mudarlas exige antes resolver
-                // que `Gate::before` corta para el rol admin, que es justo el
-                // actor al que estas guardas también atan.
-                abort_if($user->id === auth()->id(), 403);
-                abort_if($user->is_protected, 404);
-
-                return view('access::users.edit', ['user' => $user]);
-            })
+        // `permission:` es la puerta gruesa —quién puede editar usuarios— y
+        // `can:` la decisión sobre este usuario concreto, que vive en
+        // `UserPolicy::update()` (R39).
+        Route::middleware(['permission:editar usuarios', 'can:update,user'])
+            ->get('/{user}/edit', fn (User $user): Factory|View => view(
+                'access::users.edit',
+                ['user' => $user]
+            ))
             ->name('edit');
     });
 });

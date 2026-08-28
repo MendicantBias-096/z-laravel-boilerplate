@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Modules\Access\Enums\Roles;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -28,7 +26,13 @@ class AppServiceProvider extends ServiceProvider
     {
         Password::defaults(fn () => Password::min(8));
 
-        Gate::before(fn ($user, $ability) => $user->hasRole(Roles::ADMIN->value) ? true : null);
+        // Aquí vivía un `Gate::before` que devolvía true para el rol admin.
+        // Un `before` que devuelve true corta antes de toda Policy y no se
+        // puede sobrescribir desde ella, así que R39 —«la autorización se
+        // decide en la Policy»— era falsa justo para el actor capaz del daño
+        // irreversible. No daba acceso a nada: el seeder ya le asigna al admin
+        // todos los permisos, y `AdminTienePermisosTest` lo mantiene cierto.
+        // Lo que hacía era esconder el día que una Policy dejara de correr.
 
         if (config('app.debug')) {
             $this->app->booted(fn () => $this->validateMenuRoutes());
