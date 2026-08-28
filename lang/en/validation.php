@@ -195,7 +195,7 @@ return [
     |
     */
 
-    // Custom rules (App\Rules)
+    // Custom rules (App\Modules\Platform\Rules)
     'rfc' => 'The RFC does not have a valid format.',
     'nss' => 'The NSS must be 11 digits with a valid IMSS format.',
     'currency' => 'The amount must be a valid number with at most two decimals.',

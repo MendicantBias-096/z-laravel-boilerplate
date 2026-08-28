@@ -298,10 +298,14 @@ app/Modules/Billing/
 ├── Models/
 ├── Actions/
 ├── Data/                   ← DTOs internos, no publicados
+├── Enums/
 ├── Exceptions/             ← las que no salen por un contrato
+├── Http/                   ← middleware y responses propios del módulo
 ├── Listeners/
 ├── Observers/
 ├── Rules/
+├── Services/               ← lo que aún no se ha partido en Actions
+├── Traits/
 ├── Notifications/
 ├── Policies/
 ├── Jobs/

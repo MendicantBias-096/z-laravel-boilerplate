@@ -37,14 +37,14 @@
 
 {{-- Controles flotantes: tema + idioma --}}
 <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
-    @include('public._partials.locale-switcher')
+    @include('platform::public._partials.locale-switcher')
     <button type="button" onclick="toggleTheme()"
             class="inline-flex items-center justify-center w-9 h-9 rounded-xl
                    cursor-pointer transition-all duration-200"
             style="color: var(--ui-content-muted); background: var(--auth-link-bg); border: 1px solid var(--auth-link-border);"
             onmouseover="this.style.background='var(--auth-link-bg-hover)';this.style.color='var(--ui-content)';"
             onmouseout="this.style.background='var(--auth-link-bg)';this.style.color='var(--ui-content-muted)';"
-            title="{{ __('public.toggle_theme') }}">
+            title="{{ __('platform::public.toggle_theme') }}">
         <svg class="theme-icon-sun w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
                   d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
@@ -111,7 +111,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
-                {{ __('public.back_home') }}
+                {{ __('platform::public.back_home') }}
             </a>
         </div>
     </div>
@@ -137,7 +137,7 @@
 
             <p class="text-sm leading-relaxed max-w-xs"
                style="color: var(--ui-content-muted);">
-                {!! __('public.platform_desc') !!}
+                {!! __('platform::public.platform_desc') !!}
             </p>
 
             {{-- Separador --}}

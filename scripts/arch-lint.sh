@@ -108,6 +108,94 @@ check_R38() {
     (( found )) || pass R38 "ninguna migración transforma datos"
 }
 
+# R2 · un módulo es una carpeta bajo app/Modules/
+check_R2() {
+    local stray
+    stray=$(find app/Modules -maxdepth 1 -type f 2>/dev/null)
+
+    if [[ -n "$stray" ]]; then
+        report R2 error "hay archivos sueltos en app/Modules/, que solo contiene módulos:"
+        sed 's/^/      /' <<<"$stray"
+        return
+    fi
+    pass R2 "$(find app/Modules -maxdepth 1 -mindepth 1 -type d | wc -l) módulos, sin archivos sueltos"
+}
+
+# R3 · el mínimo de un módulo es su ServiceProvider y su README
+check_R3() {
+    local found=0 m name
+    while read -r m; do
+        [[ -n "$m" ]] || continue
+        name=$(basename "$m")
+        [[ -f "$m/${name}ServiceProvider.php" ]] || { report R3 error "$m no tiene ${name}ServiceProvider.php"; found=1; }
+        [[ -f "$m/README.md" ]] || { report R3 error "$m no tiene README.md"; found=1; }
+    done < <(find app/Modules -maxdepth 1 -mindepth 1 -type d)
+
+    (( found )) || pass R3 "todos los módulos declaran ServiceProvider y README"
+}
+
+# R5 · la plataforma son exactamente Access y Platform
+check_R5() {
+    local found=0 m
+    for m in Access Platform; do
+        [[ -d "app/Modules/$m" ]] || { report R5 error "falta el módulo de plataforma $m"; found=1; }
+    done
+    # Un módulo de negocio no puede llamarse como uno de plataforma; con dos
+    # nombres reservados el check es la comprobación de existencia de arriba.
+    (( found )) || pass R5 "la plataforma son Access y Platform"
+}
+
+# R6 · dentro de un módulo, las carpetas son por tipo
+# Lista cerrada: si hace falta un tipo nuevo, se añade aquí y al árbol de R6,
+# que es donde se discute. Inventar una carpeta en un módulo y que nadie se
+# entere es como «dominio» acabó significando dos cosas.
+check_R6() {
+    local allowed=" Actions Config Console Contracts Data Database Enums Events Exceptions Http Jobs Listeners Livewire Models Notifications Observers Policies Resources Routes Rules Services Tests Traits "
+    local found=0 d name
+    while read -r d; do
+        [[ -n "$d" ]] || continue
+        name=$(basename "$d")
+        [[ "$allowed" == *" $name "* ]] && continue
+        report R6 error "$d no es un tipo de la lista de R6"
+        found=1
+    done < <(find app/Modules -mindepth 2 -maxdepth 2 -type d)
+
+    (( found )) || pass R6 "las carpetas de los módulos son tipos conocidos"
+}
+
+# R26 · las migraciones de un módulo viven dentro del módulo
+# Lo que queda en database/migrations/ es infraestructura sin dueño: cache,
+# jobs y tokens. Cualquier otra cosa ahí pertenece a algún módulo.
+check_R26() {
+    local infra=" 0001_01_01_000001_create_cache_table.php 0001_01_01_000002_create_jobs_table.php 2026_02_19_210632_create_personal_access_tokens_table.php "
+    local found=0 f name
+    while read -r f; do
+        [[ -n "$f" ]] || continue
+        name=$(basename "$f")
+        [[ "$infra" == *" $name "* ]] && continue
+        report R26 error "$f está fuera de su módulo"
+        found=1
+    done < <(find database/migrations -name '*.php' 2>/dev/null)
+
+    (( found )) || pass R26 "solo quedan migraciones de infraestructura en database/"
+}
+
+# R44 · toda clave de cache lleva el prefijo de su módulo
+check_R44() {
+    local hits
+    hits=$(targets .php "${CODE_DIRS[@]}" \
+        | xargs -r grep -nE "(Cache::(get|put|remember|rememberForever|forget|has)|cache\(\)->(get|put|remember|forget))\(\s*['\"][a-z_-]+['\"]" 2>/dev/null \
+        | grep -vE "['\"](access|platform):")
+
+    if [[ -z "$hits" ]]; then
+        pass R44 "ninguna clave de cache sin prefijo de módulo"
+        return
+    fi
+
+    report R44 error "$(wc -l <<<"$hits") claves de cache sin prefijo:"
+    head -5 <<<"$hits" | sed 's/^/      /' | cut -c1-100
+}
+
 # R37 · toda migración declara down()
 # La otra mitad de R37 es el test de ida y vuelta. Son dos afirmaciones y por
 # eso son dos checks: si solo estuviera el test, una migración sin `down()`
@@ -215,23 +303,23 @@ check_EXC() {
     (( bad )) || pass EXC "las válvulas de escape tienen formato válido y ninguna venció"
 }
 
-# reglas que esperan a la migración a app/Modules/
-# Se declaran omitidas en vez de pasar en silencio: un check que da verde
-# porque no encontró nada que mirar enseña a no creerle (R56).
-PENDING='R2 R3 R5 R6 R25 R26 R33 R40 R44'
+# Reglas que este script todavía no comprueba, y por qué. Se declaran en vez de
+# callar: un check que da verde porque no encontró nada que mirar enseña a no
+# creerle (R56).
+PENDING='R25,R33 (las tablas aún no llevan prefijo de módulo) · R40 (los permisos siguen en español)'
 
 main() {
     echo "arch-lint · docs/ARCHITECTURE_RULES.md"
     echo
 
     local rule
-    for rule in R36 R37 R38 R48 R52 R55 EXC; do
+    for rule in R2 R3 R5 R6 R26 R36 R37 R38 R44 R48 R52 R55 EXC; do
         wants "$rule" && "check_$rule"
     done
 
-    if [[ -z "$ONLY_RULE" && ! -d app/Modules ]]; then
+    if [[ -z "$ONLY_RULE" ]]; then
         echo
-        skip "$(echo $PENDING | tr ' ' ',')" "omitidas: requieren app/Modules/, que aún no existe"
+        skip "sin verificar:" "$PENDING"
     fi
 
     echo

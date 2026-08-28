@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
-use App\Rules\CurrencyFormat;
-use App\Rules\NSSFormat;
-use App\Rules\PasswordStrength;
-use App\Rules\RFCFormat;
+use App\Modules\Platform\Rules\CurrencyFormat;
+use App\Modules\Platform\Rules\NSSFormat;
+use App\Modules\Platform\Rules\PasswordStrength;
+use App\Modules\Platform\Rules\RFCFormat;
 use Illuminate\Contracts\Validation\ValidationRule;
 use PHPUnit\Framework\TestCase;
 

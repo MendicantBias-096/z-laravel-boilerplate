@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use App\Models\User;
-use Database\Seeders\RolesAndPermissionsSeeder;
+use App\Modules\Access\Database\Seeders\RolesAndPermissionsSeeder;
+use App\Modules\Access\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Spatie\Permission\PermissionRegistrar;
 

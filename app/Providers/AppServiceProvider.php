@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Enums\Roles;
+use App\Modules\Access\Enums\Roles;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;

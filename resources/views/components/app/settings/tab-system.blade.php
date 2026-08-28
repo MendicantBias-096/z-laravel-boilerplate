@@ -6,11 +6,11 @@
     @can('administrar sistema')
     <div class="pb-8 md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">{{ __('settings.system_identity') }}</h3>
-            <p class="mt-1 text-sm text-content-muted">{{ __('settings.system_identity_desc') }}</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('platform::settings.system_identity') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.system_identity_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('app.general.settings.system-form')
+            @livewire('platform::settings.system-form')
         </div>
     </div>
     @endcan
@@ -18,11 +18,11 @@
     {{-- ── Idioma ──────────────────────────────────────────────────────── --}}
     <div class="py-8 md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">{{ __('settings.system_language') }}</h3>
-            <p class="mt-1 text-sm text-content-muted">{{ __('settings.system_language_desc') }}</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('platform::settings.system_language') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.system_language_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('app.general.settings.language-form')
+            @livewire('platform::settings.language-form')
         </div>
     </div>
 
@@ -30,8 +30,8 @@
     @can('administrar sistema')
     <div class="pt-8 md:grid md:grid-cols-3 md:gap-8">
         <div class="md:col-span-1">
-            <h3 class="text-sm font-semibold text-content">{{ __('settings.system_info') }}</h3>
-            <p class="mt-1 text-sm text-content-muted">{{ __('settings.system_info_desc') }}</p>
+            <h3 class="text-sm font-semibold text-content">{{ __('platform::settings.system_info') }}</h3>
+            <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.system_info_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
             <div class="space-y-3">

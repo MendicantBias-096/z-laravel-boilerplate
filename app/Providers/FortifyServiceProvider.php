@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
-use App\Actions\Fortify\ResetUserPassword;
-use App\Auth\Responses\LoginResponse;
-use App\Auth\Responses\LogoutResponse;
-use App\Auth\Responses\RegisterResponse;
-use App\Auth\Responses\VerifyEmailResponse;
-use App\Models\User;
+use App\Modules\Access\Actions\Fortify\CreateNewUser;
+use App\Modules\Access\Actions\Fortify\ResetUserPassword;
+use App\Modules\Access\Http\Responses\LoginResponse;
+use App\Modules\Access\Http\Responses\LogoutResponse;
+use App\Modules\Access\Http\Responses\RegisterResponse;
+use App\Modules\Access\Http\Responses\VerifyEmailResponse;
+use App\Modules\Access\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -56,21 +56,21 @@ class FortifyServiceProvider extends ServiceProvider
 
             if ($user->trashed()) {
                 throw ValidationException::withMessages([
-                    Fortify::username() => [__('auth.account_deleted')],
+                    Fortify::username() => [__('access::auth.account_deleted')],
                 ]);
             }
 
             if (! $user->is_active) {
                 throw ValidationException::withMessages([
-                    Fortify::username() => [__('auth.account_deactivated')],
+                    Fortify::username() => [__('access::auth.account_deactivated')],
                 ]);
             }
 
             return $user;
         });
 
-        Fortify::verifyEmailView(fn (): Factory|\Illuminate\Contracts\View\View => view('auth.verify-email'));
-        Fortify::twoFactorChallengeView(fn (): Factory|\Illuminate\Contracts\View\View => view('auth.two-factor-challenge'));
+        Fortify::verifyEmailView(fn (): Factory|\Illuminate\Contracts\View\View => view('access::auth.verify-email'));
+        Fortify::twoFactorChallengeView(fn (): Factory|\Illuminate\Contracts\View\View => view('access::auth.two-factor-challenge'));
 
         RateLimiter::for('login', function (Request $request) {
             $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());

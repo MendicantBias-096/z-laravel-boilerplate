@@ -18,6 +18,12 @@ parameters:
     paths:
         - app/
         - tests/Arch/
+
+    # Los tests de un módulo viven dentro de él (R6), así que caen bajo `app/`.
+    # No se analizan: exigirles el nivel del código de producción mete deuda
+    # que no dice nada — 66 entradas de baseline la primera vez que se probó.
+    excludePaths:
+        - app/Modules/*/Tests/*
     level: 6
 
     # Un error dentro de un trait se atribuye al trait o a la clase que lo usa

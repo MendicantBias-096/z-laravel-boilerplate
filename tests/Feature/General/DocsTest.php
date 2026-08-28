@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\General;
 
-use App\Livewire\App\General\Docs\Index;
+use App\Modules\Platform\Livewire\Docs\Index;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -15,13 +15,13 @@ class DocsTest extends TestCase
 
     public function test_guest_cannot_view_docs(): void
     {
-        $this->get(route('general.docs.index'))->assertRedirect(route('login'));
+        $this->get(route('platform.docs.index'))->assertRedirect(route('login'));
     }
 
     public function test_authenticated_user_can_view_docs(): void
     {
         $this->actingAs($this->createUser())
-            ->get(route('general.docs.index'))
+            ->get(route('platform.docs.index'))
             ->assertStatus(200);
     }
 
@@ -110,7 +110,7 @@ class DocsTest extends TestCase
         Livewire::actingAs($this->createUser())
             ->test(Index::class)
             ->set('doc', '../../.env')
-            ->assertSee(__('docs.not_found'))
+            ->assertSee(__('platform::docs.not_found'))
             ->assertDontSee('APP_KEY');
     }
 }

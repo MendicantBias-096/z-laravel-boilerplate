@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use App\Models\Role;
+use App\Modules\Access\Models\Role;
 use Spatie\Permission\DefaultTeamResolver;
 use Spatie\Permission\Models\Permission;
 

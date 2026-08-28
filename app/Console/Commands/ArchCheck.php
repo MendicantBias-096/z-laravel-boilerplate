@@ -15,9 +15,8 @@ use Symfony\Component\Finder\Finder;
  * el grafo de imports, va aquí y paga el segundo de arranque de Laravel.
  *
  * Hoy implementa R46 y R53, las dos que necesitan el lexer para no confundir
- * una variable o un comentario con su mención dentro de otra cosa. Las demás
- * de esta capa —R4, R7, R10, R12, R20, R27, R30, R32, R41, R45— esperan a que
- * exista `app/Modules/`, y se declaran omitidas al final en vez de callar.
+ * una variable o un comentario con su mención dentro de otra cosa. El resto
+ * está en `PENDING`, con lo que haría falta para cada una.
  */
 class ArchCheck extends Command
 {
@@ -25,8 +24,24 @@ class ArchCheck extends Command
 
     protected $description = 'Comprueba las reglas de arquitectura que necesitan entender el código';
 
-    /** Reglas de esta capa que dependen de la migración a app/Modules/. */
-    private const PENDING = ['R4', 'R7', 'R10', 'R12', 'R20', 'R27', 'R30', 'R32', 'R41', 'R45'];
+    /**
+     * Reglas de esta capa que todavía no se comprueban, y qué haría falta.
+     *
+     * Se declaran en vez de callar: un comando que solo imprime lo que sí
+     * mira deja creer que lo demás está cubierto (R56).
+     */
+    private const PENDING = [
+        'R4' => 'exige generar la zona del README desde el código',
+        'R7' => 'contar consumidores por clase',
+        'R10' => 'construir el grafo de imports y buscar ciclos',
+        'R12' => 'inspeccionar firmas de Contracts/',
+        'R20' => 'AST sobre los métodos de Observers/',
+        'R27' => 'preguntar a pg_constraint tras migrate',
+        'R30' => 'preguntar a information_schema tras migrate',
+        'R32' => 'ídem, con el mapa tabla→módulo',
+        'R41' => 'comprobar el paso remoto del menú',
+        'R45' => 'comparar globs de Actions y de sus tests',
+    ];
 
     private bool $failed = false;
 
@@ -45,12 +60,9 @@ class ArchCheck extends Command
             $this->checkShortNames();
         }
 
-        if ($only === null && ! is_dir(base_path('app/Modules'))) {
+        if ($only === null) {
             $this->newLine();
-            $this->line(sprintf(
-                '<fg=gray>· %s   omitidas: requieren app/Modules/, que aún no existe</>',
-                implode(',', self::PENDING)
-            ));
+            $this->line('<fg=gray>· sin verificar:   '.implode(', ', array_keys(self::PENDING)).'</>');
         }
 
         $this->newLine();
