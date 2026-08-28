@@ -2,16 +2,16 @@
 
 namespace App\Modules\Access\Livewire\Settings;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use App\Modules\Platform\Enums\Language;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
-use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 
 class LanguageForm extends Component
 {
-    use InteractsWithCurrentUser, Interactions;
+    use Interactions, InteractsWithCurrentUser;
 
     public string $locale = '';
 

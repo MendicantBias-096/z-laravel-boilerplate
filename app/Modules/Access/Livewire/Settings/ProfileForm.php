@@ -2,17 +2,17 @@
 
 namespace App\Modules\Access\Livewire\Settings;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use TallStackUi\Traits\Interactions;
-use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 
 class ProfileForm extends Component
 {
-    use InteractsWithCurrentUser, Interactions, WithFileUploads;
+    use Interactions, InteractsWithCurrentUser, WithFileUploads;
 
     public string $first_name = '';
 

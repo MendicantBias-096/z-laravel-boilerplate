@@ -264,8 +264,10 @@ Two traps worth knowing, both silent:
 
 ## Still pending
 
-R33 — that no foreign key crosses a module boundary — has no check yet: it
-needs the table→module map that R25's prefix now makes possible.
+Five rules have no automatic check, declared in `ArchCheck::PENDING`: R4 (asks
+to *generate* the README section, not verify it), R7, R10, R12 and R20 — all of
+which need an AST or an import graph. Everything else is enforced by
+`scripts/arch-lint.sh`, `php artisan arch:check`, PHPat or PHPStan level 8.
 
 Use the `create-module` skill for full instructions on creating new domains and modules.
 

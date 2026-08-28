@@ -2,9 +2,9 @@
 
 namespace App\Modules\Access\Livewire\Settings;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
@@ -12,11 +12,10 @@ use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
-use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 
 class TwoFactorForm extends Component
 {
-    use InteractsWithCurrentUser, Interactions;
+    use Interactions, InteractsWithCurrentUser;
 
     public bool $showingQr = false;
 

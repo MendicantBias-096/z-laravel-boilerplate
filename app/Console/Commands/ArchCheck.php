@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\Arch\SchemaChecks;
+use App\Console\Commands\Arch\StructureChecks;
 use Illuminate\Console\Command;
 use Symfony\Component\Finder\Finder;
 
@@ -31,16 +33,11 @@ class ArchCheck extends Command
      * mira deja creer que lo demás está cubierto (R56).
      */
     private const PENDING = [
-        'R4' => 'exige generar la zona del README desde el código',
+        'R4' => 'exige generar la zona del README desde el código, no comprobarla',
         'R7' => 'contar consumidores por clase',
         'R10' => 'construir el grafo de imports y buscar ciclos',
-        'R12' => 'inspeccionar firmas de Contracts/',
+        'R12' => 'inspeccionar las firmas de Contracts/ con un AST',
         'R20' => 'AST sobre los métodos de Observers/',
-        'R27' => 'preguntar a pg_constraint tras migrate',
-        'R30' => 'preguntar a information_schema tras migrate',
-        'R32' => 'ídem, con el mapa tabla→módulo',
-        'R41' => 'comprobar el paso remoto del menú',
-        'R45' => 'comparar globs de Actions y de sus tests',
     ];
 
     private bool $failed = false;
@@ -58,6 +55,16 @@ class ArchCheck extends Command
 
         if ($only === null || $only === 'R53') {
             $this->checkShortNames();
+        }
+
+        if ($only === null || in_array($only, ['R45', 'R41'], true)) {
+            $this->failed = (new StructureChecks($this))->run($only) || $this->failed;
+        }
+
+        // Los tres de esquema comparten conexión, así que viven juntos en su
+        // propia clase: aquí solo se delega.
+        if ($only === null || in_array($only, ['R27', 'R30', 'R32'], true)) {
+            $this->failed = (new SchemaChecks($this))->run($only) || $this->failed;
         }
 
         if ($only === null) {
@@ -199,10 +206,14 @@ class ArchCheck extends Command
         }
     }
 
-    /** Una anotación de tipo queda exenta: partirla rompe lo que PHPDoc lee. */
+    /**
+     * Una anotación queda exenta: partirla rompe lo que PHPDoc lee. Cubre
+     * las dos formas; solo miraba la de varias líneas, y el docblock de una
+     * sola es donde caben los genéricos que no se pueden partir.
+     */
     private function isAnnotation(string $text): bool
     {
-        return preg_match('/^\s*\*?\s*@[a-zA-Z-]+/', $text) === 1;
+        return preg_match('/^\s*(\/\*\*)?\s*\*?\s*@[a-zA-Z-]+/', $text) === 1;
     }
 
     /** @return list<string> */

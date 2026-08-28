@@ -2,15 +2,15 @@
 
 namespace App\Modules\Access\Livewire\Settings;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
-use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 
 class EmailVerificationForm extends Component
 {
-    use InteractsWithCurrentUser, Interactions;
+    use Interactions, InteractsWithCurrentUser;
 
     public bool $sent = false;
 

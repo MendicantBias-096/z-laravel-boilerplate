@@ -37,6 +37,34 @@ return [
         'migrations',
     ],
 
-    /** Prefijo válido por módulo, derivado de app/Modules/. */
-    'module_prefixes' => ['access', 'platform'],
+    /**
+     * Tablas propias que además llevan clave entera (solo R30).
+     *
+     * Lista aparte y no dentro de `exempt_tables` porque las dos exenciones
+     * dicen cosas distintas: aquella es «no es de ningún módulo», esta es «es
+     * mía y no necesita UUID». Mezclarlas hacía que R32 dejara de mirar las FK
+     * hacia estas tablas, que es justo lo que R32 existe para vigilar.
+     *
+     * `access_profiles` es una extensión 1:1 de `users`: se alcanza por el
+     * usuario, nunca por su propio id. `platform_settings` es clave-valor
+     * interna y no aparece en ninguna URL. Lo que R30 compra —que nadie
+     * recorra los ids desde el navegador— no se cobra donde no hay ruta que
+     * los exponga.
+     */
+    'integer_key_tables' => [
+        'access_profiles',
+        'platform_settings',
+    ],
+
+    /**
+     * Prefijo válido por módulo, derivado de `app/Modules/`.
+     *
+     * Se calcula y no se escribe: una lista a mano se queda corta en cuanto
+     * alguien crea un módulo, y los checks que la leen dejarían de mirar sus
+     * tablas sin decir nada.
+     */
+    'module_prefixes' => array_map(
+        'strtolower',
+        array_map('basename', glob(dirname(__DIR__).'/app/Modules/*', GLOB_ONLYDIR) ?: [])
+    ),
 ];

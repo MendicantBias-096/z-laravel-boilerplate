@@ -169,7 +169,10 @@ check_R6() {
 check_R25() {
     local exempt prefixes found=0 table file renamed
     exempt=$(sed -n "s/^        '\([a-z_]*\)',$/\1/p" config/arch.php | tr '\n' ' ')
-    prefixes=$(sed -n "s/.*'module_prefixes' => \[\(.*\)\].*/\1/p" config/arch.php | tr -d "' " | tr ',' '|')
+    # Derivado de las carpetas, como config/arch.php: una lista a mano se
+    # queda corta en cuanto alguien crea un módulo.
+    prefixes=$(find app/Modules -mindepth 1 -maxdepth 1 -type d -exec basename {} \; \
+        | tr '[:upper:]' '[:lower:]' | paste -sd '|' -)
 
     # Lo que cuenta es el nombre final, no el de la migración que la creó: una
     # tabla renombrada después cumple la regla aunque naciera sin prefijo.
@@ -197,7 +200,10 @@ check_R25() {
 # módulos que usen la misma palabra comparten permiso sin darse cuenta.
 check_R40() {
     local prefixes hits
-    prefixes=$(sed -n "s/.*'module_prefixes' => \[\(.*\)\].*/\1/p" config/arch.php | tr -d "' " | tr ',' '|')
+    # Derivado de las carpetas, como config/arch.php: una lista a mano se
+    # queda corta en cuanto alguien crea un módulo.
+    prefixes=$(find app/Modules -mindepth 1 -maxdepth 1 -type d -exec basename {} \; \
+        | tr '[:upper:]' '[:lower:]' | paste -sd '|' -)
 
     hits=$(targets .php .blade.php "${CODE_DIRS[@]}" config \
         | xargs -r grep -nE "(@can\(|->authorize\(|can\(|permission:|Permission::[a-z]+\(\[?'name')[^)]*['\"](permission:)?[a-záéíóúñ]+ [a-záéíóúñ ]+['\"]" 2>/dev/null \
@@ -370,7 +376,7 @@ check_EXC() {
 # Reglas que este script todavía no comprueba, y por qué. Se declaran en vez de
 # callar: un check que da verde porque no encontró nada que mirar enseña a no
 # creerle (R56).
-PENDING='R33 (una FK que cruce módulos aún no se comprueba)'
+PENDING='ninguna: lo que este script no mira lo mira `php artisan arch:check`'
 
 main() {
     echo "arch-lint · docs/ARCHITECTURE_RULES.md"
