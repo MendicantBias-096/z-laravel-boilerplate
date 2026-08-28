@@ -2,21 +2,21 @@
 
 namespace App\Modules\Access\Livewire\Auth;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
 
 class VerifyEmail extends Component
 {
-    use Interactions;
+    use Interactions, InteractsWithCurrentUser;
 
     public bool $sent = false;
 
     public function resend(): void
     {
-        $user = Auth::user();
+        $user = $this->currentUser();
 
         if ($user->hasVerifiedEmail()) {
             $this->redirect(route('dashboard'), navigate: true);

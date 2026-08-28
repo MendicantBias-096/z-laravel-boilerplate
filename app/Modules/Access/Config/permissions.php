@@ -39,34 +39,34 @@ return [
      */
     'permissions' => [
         'usuarios' => [
-            'ver usuarios',
-            'crear usuarios',
-            'editar usuarios',
-            'eliminar usuarios',
-            'restaurar usuarios',
+            'access.users.view',
+            'access.users.create',
+            'access.users.update',
+            'access.users.delete',
+            'access.users.restore',
         ],
 
         'roles' => [
-            'ver roles',
-            'crear roles',
-            'editar roles',
-            'eliminar roles',
+            'access.roles.view',
+            'access.roles.create',
+            'access.roles.update',
+            'access.roles.delete',
         ],
 
         'sistema' => [
-            'administrar sistema',
+            'platform.settings.manage',
         ],
 
         'notif_usuarios' => [
-            'notificacion usuario creado',
-            'notificacion usuario editado',
-            'notificacion usuario eliminado',
+            'access.notifications.user-created',
+            'access.notifications.user-updated',
+            'access.notifications.user-deleted',
         ],
 
         'notif_roles' => [
-            'notificacion rol creado',
-            'notificacion rol actualizado',
-            'notificacion rol eliminado',
+            'access.notifications.role-created',
+            'access.notifications.role-updated',
+            'access.notifications.role-deleted',
         ],
     ],
 

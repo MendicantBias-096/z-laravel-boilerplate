@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Modules\Access\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -19,6 +20,14 @@ use Tests\TestCase;
  */
 class CleanInstallTest extends TestCase
 {
+    /**
+     * Este test corre `migrate:fresh` a propósito, lo que deja la base fuera
+     * del estado que `RefreshDatabase` da por hecho en los tests siguientes.
+     * El trait la devuelve a su sitio al terminar: sin él, la suite pasa por
+     * separado y falla junta, según el orden.
+     */
+    use RefreshDatabase;
+
     public function test_a_clean_install_seeds_roles_and_users(): void
     {
         $this->artisan('migrate:fresh')->assertSuccessful();

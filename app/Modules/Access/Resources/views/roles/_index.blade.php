@@ -16,7 +16,7 @@
 
         <div class="flex-1"></div>
 
-        @can('crear roles')
+        @can('access.roles.create')
             <a href="{{ route('access.roles.create') }}" wire:navigate
                class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
                style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
@@ -56,8 +56,8 @@
             <x-ui.ts-table.actions
                 :row="$row"
                 edit-route="access.roles.edit"
-                edit-permission="editar roles"
-                delete-permission="eliminar roles"
+                edit-permission="access.roles.update"
+                delete-permission="access.roles.delete"
                 model="rol"
                 :soft-deletes="false"
             />

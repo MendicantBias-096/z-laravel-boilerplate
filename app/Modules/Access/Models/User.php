@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Passkeys\Contracts\PasskeyUser;
 use Laravel\Passkeys\PasskeyAuthenticatable;
@@ -19,6 +20,21 @@ use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * PHPStan no conoce las columnas de Eloquent: sin esto, cada lectura desde una
+ * Policy o una vista es un error de propiedad indefinida.
+ *
+ * @property int $id
+ * @property string $username
+ * @property string $email
+ * @property bool $is_active
+ * @property bool $is_protected
+ * @property Carbon|null $email_verified_at
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property Carbon|null $two_factor_confirmed_at
+ * @property-read Profile|null $profile
+ */
 class User extends Authenticatable implements AuditableContract, MustVerifyEmail, PasskeyUser
 {
     /**
@@ -74,6 +90,7 @@ class User extends Authenticatable implements AuditableContract, MustVerifyEmail
         return parent::delete();
     }
 
+    /** @return HasOne<Profile, $this> */
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);

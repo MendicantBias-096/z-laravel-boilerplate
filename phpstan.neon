@@ -24,7 +24,7 @@ parameters:
     # que no dice nada — 66 entradas de baseline la primera vez que se probó.
     excludePaths:
         - app/Modules/*/Tests/*
-    level: 6
+    level: 8
 
     # Un error dentro de un trait se atribuye al trait o a la clase que lo usa
     # segun como reparta PHPStan el trabajo entre workers, y esa cuenta cambia

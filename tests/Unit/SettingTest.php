@@ -32,7 +32,7 @@ class SettingTest extends TestCase
     {
         Setting::set('site_url', 'https://example.com');
 
-        $this->assertDatabaseHas('settings', [
+        $this->assertDatabaseHas('platform_settings', [
             'key' => 'site_url',
             'value' => 'https://example.com',
         ]);
@@ -43,8 +43,8 @@ class SettingTest extends TestCase
         Setting::create(['key' => 'app_name', 'value' => 'Antiguo']);
         Setting::set('app_name', 'Nuevo');
 
-        $this->assertDatabaseHas('settings', ['key' => 'app_name', 'value' => 'Nuevo']);
-        $this->assertDatabaseMissing('settings', ['key' => 'app_name', 'value' => 'Antiguo']);
+        $this->assertDatabaseHas('platform_settings', ['key' => 'app_name', 'value' => 'Nuevo']);
+        $this->assertDatabaseMissing('platform_settings', ['key' => 'app_name', 'value' => 'Antiguo']);
     }
 
     public function test_cache_is_invalidated_after_set(): void

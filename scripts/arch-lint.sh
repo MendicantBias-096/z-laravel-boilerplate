@@ -163,6 +163,76 @@ check_R6() {
     (( found )) || pass R6 "las carpetas de los módulos son tipos conocidos"
 }
 
+# R25 · toda tabla de un módulo lleva el prefijo de su módulo
+# La lista de exentas vive en config/arch.php, que R30 lee también: dos copias
+# es lo que hace que una se quede corta.
+check_R25() {
+    local exempt prefixes found=0 table file renamed
+    exempt=$(sed -n "s/^        '\([a-z_]*\)',$/\1/p" config/arch.php | tr '\n' ' ')
+    # Derivado de las carpetas, como config/arch.php: una lista a mano se
+    # queda corta en cuanto alguien crea un módulo.
+    prefixes=$(find app/Modules -mindepth 1 -maxdepth 1 -type d -exec basename {} \; \
+        | tr '[:upper:]' '[:lower:]' | paste -sd '|' -)
+
+    # Lo que cuenta es el nombre final, no el de la migración que la creó: una
+    # tabla renombrada después cumple la regla aunque naciera sin prefijo.
+    renamed=" $(find app/Modules database/migrations -name '*.php' 2>/dev/null \
+        | xargs -r grep -hoE "Schema::rename\('[a-z_]+'" 2>/dev/null \
+        | sed "s/.*'\(.*\)'/\1/" | tr '\n' ' ')"
+
+    while read -r file; do
+        [[ -n "$file" ]] || continue
+        while read -r table; do
+            [[ -n "$table" ]] || continue
+            [[ " $exempt " == *" $table "* ]] && continue
+            [[ "$renamed" == *" $table "* ]] && continue
+            [[ "$table" =~ ^(${prefixes})_ ]] && continue
+            report R25 error "$(basename "$file") crea «$table» sin prefijo de módulo"
+            found=1
+        done < <(grep -oE "Schema::create\('[a-z_]+'" "$file" | sed "s/.*'\(.*\)'/\1/")
+    done < <(find app/Modules database/migrations -name '*.php' -not -path '*/Tests/*' 2>/dev/null)
+
+    (( found )) || pass R25 "toda tabla propia lleva el prefijo de su módulo"
+}
+
+# R40 · un permiso se llama {modulo}.{recurso}.{accion}, en inglés
+# Los permisos de Spatie son globales y únicos: sin el prefijo del módulo, dos
+# módulos que usen la misma palabra comparten permiso sin darse cuenta.
+check_R40() {
+    local prefixes hits
+    # Derivado de las carpetas, como config/arch.php: una lista a mano se
+    # queda corta en cuanto alguien crea un módulo.
+    prefixes=$(find app/Modules -mindepth 1 -maxdepth 1 -type d -exec basename {} \; \
+        | tr '[:upper:]' '[:lower:]' | paste -sd '|' -)
+
+    hits=$(targets .php .blade.php "${CODE_DIRS[@]}" config \
+        | xargs -r grep -nE "(@can\(|->authorize\(|can\(|permission:|Permission::[a-z]+\(\[?'name')[^)]*['\"](permission:)?[a-záéíóúñ]+ [a-záéíóúñ ]+['\"]" 2>/dev/null \
+        | grep -vE "['\"](${prefixes})\.")
+
+    if [[ -z "$hits" ]]; then
+        pass R40 "los permisos llevan módulo, recurso y acción en inglés"
+        return
+    fi
+
+    report R40 error "$(wc -l <<<"$hits") permisos con nombre en español:"
+    head -5 <<<"$hits" | sed 's/^/      /' | cut -c1-110
+}
+
+# R54 · el análisis estático corre en level 8 o superior
+# Se comprueba por grep sobre phpstan.neon: PHPStan no puede fallar por su
+# propio nivel, así que la regla no se puede autoverificar desde dentro.
+check_R54() {
+    local level
+    level=$(sed -n 's/^ *level: *\([0-9]*\).*/\1/p' phpstan.neon | head -1)
+
+    if [[ -z "$level" ]] || (( level < 8 )); then
+        report R54 error "phpstan.neon declara level ${level:-?}; R54 exige 8 o superior"
+        return
+    fi
+
+    pass R54 "el análisis estático corre en level $level"
+}
+
 # R26 · las migraciones de un módulo viven dentro del módulo
 # Lo que queda en database/migrations/ es infraestructura sin dueño: cache,
 # jobs y tokens. Cualquier otra cosa ahí pertenece a algún módulo.
@@ -306,14 +376,14 @@ check_EXC() {
 # Reglas que este script todavía no comprueba, y por qué. Se declaran en vez de
 # callar: un check que da verde porque no encontró nada que mirar enseña a no
 # creerle (R56).
-PENDING='R25,R33 (las tablas aún no llevan prefijo de módulo) · R40 (los permisos siguen en español)'
+PENDING='ninguna: lo que este script no mira lo mira `php artisan arch:check`'
 
 main() {
     echo "arch-lint · docs/ARCHITECTURE_RULES.md"
     echo
 
     local rule
-    for rule in R2 R3 R5 R6 R26 R36 R37 R38 R44 R48 R52 R55 EXC; do
+    for rule in R2 R3 R5 R6 R25 R26 R40 R54 R36 R37 R38 R44 R48 R52 R55 EXC; do
         wants "$rule" && "check_$rule"
     done
 

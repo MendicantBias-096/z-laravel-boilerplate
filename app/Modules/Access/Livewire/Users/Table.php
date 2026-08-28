@@ -2,6 +2,7 @@
 
 namespace App\Modules\Access\Livewire\Users;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use App\Modules\Access\Models\User;
 use App\Modules\Access\Notifications\UserDeletedNotification;
 use App\Modules\Platform\Services\NotificationsService;
@@ -14,13 +15,13 @@ use TallStackUi\Traits\Interactions;
 
 class Table extends Component
 {
-    use HasSoftDeletes, HasTable, Interactions;
+    use HasSoftDeletes, HasTable, Interactions, InteractsWithCurrentUser;
 
     protected string $modelClass = User::class;
 
-    protected string $deletePermission = 'eliminar usuarios';
+    protected string $deletePermission = 'access.users.delete';
 
-    protected string $restorePermission = 'restaurar usuarios';
+    protected string $restorePermission = 'access.users.restore';
 
     protected string $modelLabel = 'Usuario';
 
@@ -78,7 +79,7 @@ class Table extends Component
             ['index' => 'action',      'label' => __('platform::table.users.headers.actions'),         'sortable' => false],
         ];
 
-        $canRestore = auth()->user()->can('restaurar usuarios');
+        $canRestore = $this->currentUser()->can('access.users.restore');
 
         $query = $canRestore
             ? User::withTrashed()->where('id', '!=', auth()->id())->where('is_protected', false)

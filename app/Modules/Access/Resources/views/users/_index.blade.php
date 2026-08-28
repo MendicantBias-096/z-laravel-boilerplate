@@ -34,7 +34,7 @@
         <div class="flex-1"></div>
 
         {{-- Botón nueva acción --}}
-        @can('crear usuarios')
+        @can('access.users.create')
             <a href="{{ route('access.users.create') }}" wire:navigate
                class="inline-flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white"
                style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);">
@@ -140,9 +140,9 @@
             <x-ui.ts-table.actions
                 :row="$row"
                 edit-route="access.users.edit"
-                edit-permission="editar usuarios"
-                delete-permission="eliminar usuarios"
-                restore-permission="restaurar usuarios"
+                edit-permission="access.users.update"
+                delete-permission="access.users.delete"
+                restore-permission="access.users.restore"
                 model="usuario"
             />
         @endinteract

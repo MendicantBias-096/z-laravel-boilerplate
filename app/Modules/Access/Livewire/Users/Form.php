@@ -10,7 +10,9 @@ use App\Modules\Access\Notifications\UserUpdatedNotification;
 use App\Modules\Platform\Services\NotificationsService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -20,6 +22,7 @@ class Form extends Component
 {
     use Interactions, WithFileUploads;
 
+    #[Locked]
     public ?User $record = null;
 
     public UserForm $form;
@@ -137,13 +140,24 @@ class Form extends Component
 
     public function save(): void
     {
+        // La ruta ya decidió quién entra, pero la petición de Livewire no pasa
+        // por ella: va a /livewire/update. La puerta tiene que estar también
+        // aquí, y sobre el registro, no solo sobre el permiso.
+        if ($this->record instanceof User) {
+            $this->authorize('access.users.update');
+            $this->authorize('update', $this->record);
+        } else {
+            $this->authorize('access.users.create');
+        }
+
         $this->validate(['photo' => ['nullable', 'image', 'max:2048']]);
 
         $this->form->validate();
 
         $this->validate([
             'permissionList' => ['array'],
-            'permissionList.*' => ['string', 'exists:permissions,name'],
+            'permissionList.*' => ['string', Rule::in($this->grantablePermissions())],
+            'form.role' => ['nullable', Rule::in($this->grantableRoles())],
         ]);
 
         $isEdit = $this->form->id !== null;
@@ -151,7 +165,10 @@ class Form extends Component
         $user = $this->form->store();
 
         if ($this->photo) {
-            $user->profile->addMedia($this->photo->getRealPath())
+            // `store()` acaba de crear el perfil, pero `$user->profile` lee la
+            // relación cacheada: consultarla es lo que garantiza que existe, y
+            // si no existiera falla diciéndolo en vez de sobre un null.
+            $user->profile()->firstOrFail()->addMedia($this->photo->getRealPath())
                 ->usingFileName($this->photo->getClientOriginalName())
                 ->toMediaCollection('photo');
         }
@@ -173,6 +190,41 @@ class Form extends Component
             ->send();
 
         $this->redirect(route('access.users.index'), navigate: true);
+    }
+
+    /**
+     * Los permisos que el actor puede delegar: solo los que ya tiene.
+     *
+     * `exists:permissions,name` comprueba que el permiso exista, no que quien
+     * lo concede pueda concederlo. Sin esta lista, cualquiera que alcance el
+     * formulario se firma a sí mismo el permiso que le falte.
+     *
+     * @return list<string>
+     */
+    private function grantablePermissions(): array
+    {
+        /** @var User $actor */
+        $actor = auth()->user();
+
+        return array_values($actor->getAllPermissions()->pluck('name')->all());
+    }
+
+    /**
+     * Un rol es delegable cuando el actor tiene todos sus permisos. Asignarlo
+     * concede el paquete entero, así que la regla es la misma de arriba.
+     *
+     * @return list<string>
+     */
+    private function grantableRoles(): array
+    {
+        $mine = $this->grantablePermissions();
+
+        // `filter` deja huecos en las claves, así que `all()` no produce una
+        // list; `values()` los cierra antes de salir.
+        return array_values(Role::with('permissions')->get()
+            ->filter(fn (Role $role): bool => $role->permissions->pluck('name')->diff($mine)->isEmpty())
+            ->pluck('name')
+            ->all());
     }
 
     public function render(): Factory|View

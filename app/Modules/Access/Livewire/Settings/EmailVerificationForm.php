@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Modules\Platform\Livewire\Settings;
+namespace App\Modules\Access\Livewire\Settings;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -9,13 +10,13 @@ use TallStackUi\Traits\Interactions;
 
 class EmailVerificationForm extends Component
 {
-    use Interactions;
+    use Interactions, InteractsWithCurrentUser;
 
     public bool $sent = false;
 
     public function resend(): void
     {
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         if ($user->hasVerifiedEmail()) {
             return;
@@ -29,6 +30,6 @@ class EmailVerificationForm extends Component
 
     public function render(): Factory|View
     {
-        return view('platform::settings._email-verification-form');
+        return view('access::settings._email-verification-form');
     }
 }

@@ -52,13 +52,10 @@ parameters:
                 # Una guarda de entorno no es una autorización de dominio: no
                 # pregunta quién eres, pregunta dónde corre el código.
                 - app/Modules/Access/Livewire/Auth/*
-                # DEUDA, no exención: las dos guardas de
-                # `Access/Routes/web.php` son autorización y R39 las quiere en
-                # una Policy. Mudarlas exige antes resolver que `Gate::before`
-                # corta para el rol admin, que es justo el actor al que esas
-                # guardas también atan — y eso es un cambio de seguridad que
-                # no cabe dentro de una migración de estructura.
-                - app/Modules/*/Routes/*
+                # `Access/Routes/web.php` ya no necesita excepción: sus dos
+                # guardas viven en UserPolicy desde que se retiró
+                # `Gate::before`. Una ruta que vuelva a decidir con `abort_if`
+                # falla aquí, que es el punto.
 
     disallowedStaticCalls:
         # R29 · Ningún módulo consulta las tablas de otro.

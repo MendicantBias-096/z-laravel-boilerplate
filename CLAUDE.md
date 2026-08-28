@@ -240,8 +240,8 @@ Livewire     →  Livewire/Users/Table.php                       returns view('a
 | Route name | `{context}.{resource}.{action}` | `access.users.index` |
 | Route file | `app/Modules/{Context}/Routes/web.php` | — |
 | URL | kebab-case, no prefix for platform | `/users` |
-| Table | `{context}_{plural}` | `access_profiles` *(pending)* |
-| Permission | `{context}.{resource}.{action}` in English | `access.users.view` *(pending)* |
+| Table | `{context}_{plural}` | `access_profiles` |
+| Permission | `{context}.{resource}.{action}` in English | `access.users.view` |
 
 ## What a module ServiceProvider must register
 
@@ -264,8 +264,10 @@ Two traps worth knowing, both silent:
 
 ## Still pending
 
-The tables have no module prefix yet (R25, R33) and permissions are still in
-Spanish (R40). Both need a data migration, so they are their own step.
+Five rules have no automatic check, declared in `ArchCheck::PENDING`: R4 (asks
+to *generate* the README section, not verify it), R7, R10, R12 and R20 — all of
+which need an AST or an import graph. Everything else is enforced by
+`scripts/arch-lint.sh`, `php artisan arch:check`, PHPat or PHPStan level 8.
 
 Use the `create-module` skill for full instructions on creating new domains and modules.
 

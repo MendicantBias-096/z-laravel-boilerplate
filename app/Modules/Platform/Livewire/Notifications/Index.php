@@ -2,6 +2,7 @@
 
 namespace App\Modules\Platform\Livewire\Notifications;
 
+use App\Modules\Platform\Livewire\Concerns\InteractsWithOwnNotifications;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -10,7 +11,7 @@ use TallStackUi\Traits\Interactions;
 
 class Index extends Component
 {
-    use Interactions, WithPagination;
+    use Interactions, InteractsWithOwnNotifications, WithPagination;
 
     public string $tab = 'unread';
 
@@ -28,7 +29,7 @@ class Index extends Component
 
     public function markAsRead(string $id): void
     {
-        auth()->user()->unreadNotifications()
+        $this->ownUnreadNotifications()
             ->where('id', $id)
             ->update(['read_at' => now()]);
 
@@ -37,7 +38,7 @@ class Index extends Component
 
     public function markAsUnread(string $id): void
     {
-        auth()->user()->notifications()
+        $this->ownNotifications()
             ->where('id', $id)
             ->update(['read_at' => null]);
 
@@ -46,7 +47,7 @@ class Index extends Component
 
     public function markAllAsRead(): void
     {
-        auth()->user()->unreadNotifications()->update(['read_at' => now()]);
+        $this->ownUnreadNotifications()->update(['read_at' => now()]);
 
         $this->dispatch('notifications:refresh');
         $this->toast()->success(__('platform::notifications.all_read'), __('platform::notifications.all_read_desc'))->send();
@@ -54,14 +55,14 @@ class Index extends Component
 
     public function deleteNotification(string $id): void
     {
-        auth()->user()->notifications()->where('id', $id)->update(['deleted_at' => now()]);
+        $this->ownNotifications()->where('id', $id)->update(['deleted_at' => now()]);
 
         $this->dispatch('notifications:refresh');
     }
 
     public function goToNotification(string $id): void
     {
-        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification = $this->ownNotifications()->findOrFail($id);
         $notification->markAsRead();
 
         $this->dispatch('notifications:refresh');
@@ -72,11 +73,9 @@ class Index extends Component
 
     public function render(): Factory|View
     {
-        $user = auth()->user();
-
         $query = $this->tab === 'unread'
-            ? $user->unreadNotifications()
-            : $user->notifications();
+            ? $this->ownUnreadNotifications()
+            : $this->ownNotifications();
 
         $notifications = $query->latest()->paginate($this->quantity);
 

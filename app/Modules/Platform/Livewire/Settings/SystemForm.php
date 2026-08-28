@@ -27,7 +27,7 @@ class SystemForm extends Component
 
     public function mount(): void
     {
-        $this->authorize('administrar sistema');
+        $this->authorize('platform.settings.manage');
 
         $this->app_name = Setting::get('app_name', config('app.name'));
         $this->app_short_name = Setting::get('app_short_name', '');

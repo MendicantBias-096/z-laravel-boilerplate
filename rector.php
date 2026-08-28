@@ -16,7 +16,7 @@ return RectorConfig::configure()
     ->withSkip([
         __DIR__.'/app/Mcp',
     ])
-    ->withPhpSets(php84: true)
+    ->withPhpSets(php85: true)
     ->withRules([
         InlineConstructorDefaultToPropertyRector::class,
     ])

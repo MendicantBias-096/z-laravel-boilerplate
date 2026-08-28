@@ -7,7 +7,7 @@
             <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.profile_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('platform::settings.profile-form')
+            @livewire('access::settings.profile-form')
         </div>
     </div>
 
@@ -18,7 +18,7 @@
             <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.account_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('platform::settings.account-form')
+            @livewire('access::settings.account-form')
         </div>
     </div>
 
@@ -29,7 +29,7 @@
             <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.security_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('platform::settings.password-form')
+            @livewire('access::settings.password-form')
         </div>
     </div>
 
@@ -40,7 +40,7 @@
             <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.email_verification_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('platform::settings.email-verification-form')
+            @livewire('access::settings.email-verification-form')
         </div>
     </div>
 
@@ -51,7 +51,7 @@
             <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.two_factor_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('platform::settings.two-factor-form')
+            @livewire('access::settings.two-factor-form')
         </div>
     </div>
 

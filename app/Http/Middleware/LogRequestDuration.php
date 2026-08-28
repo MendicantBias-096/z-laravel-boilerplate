@@ -32,7 +32,10 @@ class LogRequestDuration
             Log::info('request.duration', [
                 'ms' => $durationMs,
                 'method' => $request->method(),
-                'url' => $request->fullUrl(),
+                // El patrón, no la URL: `/reset-password/{token}` en vez del
+                // token real. `fullUrl()` dejaba una credencial de un solo uso
+                // escrita en storage/logs, y de paso agrupa mejor por ruta.
+                'route' => $request->route()?->uri() ?? $request->path(),
                 'status' => $response->getStatusCode(),
             ]);
         }

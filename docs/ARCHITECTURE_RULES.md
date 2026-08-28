@@ -443,6 +443,29 @@ la registra.
 Son ~25 líneas, y son el ejemplo canónico de inversión de dependencia que cada
 módulo de negocio va a copiar.
 
+**Segunda cicatriz, y la que enseña por qué PHPat no basta.** Seis de los ocho
+componentes de `Settings` —perfil, cuenta, contraseña, 2FA, verificación,
+idioma— vivían en `Platform` y leían `auth()->user()->profile`. Es la misma
+violación: la base preguntándole a la capa de encima. PHPat no la veía porque
+**no había ningún import**: la dependencia viajaba dentro de una relación de
+Eloquent, resuelta por nombre en tiempo de ejecución.
+
+La destapó subir PHPStan a level 8. Al exigir que `auth()->user()` no fuera
+nulo hubo que tiparlo, y tiparlo obligaba a nombrar `Access\Models\User` desde
+`Platform` — que es cuando la dependencia se vuelve visible y PHPat la habría
+cazado. Los seis componentes se movieron a `Access`; en `Platform` queda
+`SystemForm`, que administra `platform_settings` y es suyo.
+
+Lo mismo con las notificaciones: `Platform` las leía con
+`auth()->user()->notifications()`. Ahora consulta su propia tabla por el id del
+actor, que además es lo que pide R29.
+
+La lección para el enforcement: **un análisis de tipos solo ve las dependencias
+que alguien escribió como tipo.** Las que viajan por una relación, un string de
+vista o una clave de configuración son invisibles hasta que algo obliga a
+nombrarlas. Subir el nivel del analizador es una de las pocas cosas que lo
+obliga.
+
 ## R10 — El grafo de `Contracts/` es acíclico; los eventos están exentos.
 
 > Enforcement: script propio · `php artisan arch:check` · Severidad: error
@@ -1415,25 +1438,33 @@ Eso no es duplicación: la UI oculta el botón, el Action bloquea la operación
 aunque el botón se haya saltado. El error sería que cada capa tuviera su propia
 lógica — que es lo que había.
 
-**`Gate::before` es la excepción, y hoy está activa.**
-`AppServiceProvider` registra `Gate::before(fn ($user, $ability) =>
+**`Gate::before` era la excepción, y está retirada.**
+`AppServiceProvider` registraba `Gate::before(fn ($user, $ability) =>
 $user->hasRole(ADMIN) ? true : null)`. Un `before` que devuelve `true` corta
 antes que toda Policy y **no se puede sobrescribir desde ella**, así que
-mientras exista, «la Policy es el único punto donde se decide» es falso para el
-rol admin — que es justamente el actor capaz de hacer el daño irreversible que
-R20 quiere frenar. La guarda de `is_protected` no llegaría a ejecutarse.
+mientras existió, «la Policy es el único punto donde se decide» fue falso para
+el rol admin — justamente el actor capaz del daño irreversible que R20 quiere
+frenar.
 
-Se queda, porque quitarlo obliga a escribir el permiso de admin en cada Policy,
-pero se declara aquí y la guarda de invariante de R20 vive en el Observer —que
-`before` no alcanza— y no en la Policy. Esa es la razón estructural de R20, más
-allá de la irreversibilidad.
+Se temía que quitarlo obligara a escribir el permiso de admin en cada Policy.
+No era así: el atajo no daba acceso a nada, porque el seeder ya asigna al rol
+admin todos los permisos declarados. Solo escondía el día que una Policy dejara
+de ejecutarse. Lo que sostiene ahora al admin es esa asignación, y
+`AdminTienePermisosTest` la mantiene cierta: un módulo que cree permisos y no se
+los dé pone el test en rojo, que es el mismo fallo que antes solo veía un
+usuario no-admin.
+
+La guarda de invariante de R20 sigue en el Observer y no en la Policy. Esa
+decisión no depende ya de `before`: un Observer cubre también las escrituras que
+no pasan por una pantalla —un seeder, un job, una consola—, donde no hay Gate
+que consultar.
 
 Para índices, el ejemplo de la tabla es `->can('viewAny', Invoice::class)`: el
 middleware resuelve el parámetro de ruta por nombre y en un listado no hay
 ninguno, así que la forma con instancia falla siempre para quien no sea admin.
 
-Cicatriz: `app/Policies/` estaba **vacío**, y dos reglas de autorización vivían
-dentro de un closure de ruta:
+Cicatriz, ya cerrada: `app/Policies/` estaba **vacío**, y dos reglas de
+autorización vivían dentro de un closure de ruta:
 
 ```php
 abort_if($user->id === auth()->id(), 403);   // no puedes editarte a ti mismo
@@ -1443,6 +1474,13 @@ abort_if($user->is_protected, 404);          // 404 deliberado, se documenta
 No eran testeables en aislamiento, no eran reutilizables desde el componente, y
 la primera estaba **también** en `Table::render()` como
 `where('id', '!=', auth()->id())`.
+
+Hoy viven en `Access\Policies\UserPolicy::update()`, y la ruta encadena
+`['permission:editar usuarios', 'can:update,user']`: el permiso es la puerta
+gruesa, la Policy la decisión sobre ese usuario concreto. Los tres casos
+—editar a otro, editarse, y el protegido— están en
+`EditarUsuarioPolicyTest`, y corren para el admin porque ya no hay `before` que
+los salte.
 
 Los permisos de Spatie no desaparecen: pasan a ser el **dato** que la Policy
 consulta, no el mecanismo de decisión. Toda entidad autorizable tiene Policy,

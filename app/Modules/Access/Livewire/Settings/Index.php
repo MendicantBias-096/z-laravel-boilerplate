@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Platform\Livewire\Settings;
+namespace App\Modules\Access\Livewire\Settings;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -21,6 +21,6 @@ class Index extends Component
             ['label' => 'PHP',      'value' => PHP_VERSION],
         ];
 
-        return view('platform::settings._index', ['system' => $system]);
+        return view('access::settings._index', ['system' => $system]);
     }
 }

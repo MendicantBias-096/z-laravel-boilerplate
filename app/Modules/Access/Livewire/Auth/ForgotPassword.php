@@ -19,13 +19,13 @@ class ForgotPassword extends Component
     {
         $this->validate();
 
-        $status = Password::sendResetLink(['email' => $this->email]);
+        Password::sendResetLink(['email' => $this->email]);
 
-        if ($status === Password::RESET_LINK_SENT) {
-            $this->linkSent = true;
-        } else {
-            $this->addError('email', __($status));
-        }
+        // Siempre el mismo desenlace, exista el correo o no. Mostrar «no
+        // encontramos ningún usuario con ese correo» convierte esta pantalla
+        // en un oráculo: se prueba una lista y se sabe quién tiene cuenta.
+        // También se calla el throttle, que filtra lo mismo por otra vía.
+        $this->linkSent = true;
     }
 
     public function render(): Factory|View

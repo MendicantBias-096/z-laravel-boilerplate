@@ -61,6 +61,7 @@ return [
     'cancel' => 'Cancel',
     'success' => 'Success',
     'error' => 'Error',
+    'no_self_edit' => 'You cannot edit yourself from here. Use your profile.',
     'user_protected' => 'This user is protected and cannot be deleted.',
     'not_found' => 'The :model was not found. Someone else may have deleted it.',
     'soft_deleted' => ':model deleted successfully.',

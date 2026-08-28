@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Modules\Platform\Livewire\Settings;
+namespace App\Modules\Access\Livewire\Settings;
 
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
@@ -9,7 +10,7 @@ use TallStackUi\Traits\Interactions;
 
 class AccountForm extends Component
 {
-    use Interactions;
+    use Interactions, InteractsWithCurrentUser;
 
     public string $username = '';
 
@@ -17,7 +18,7 @@ class AccountForm extends Component
 
     public function mount(): void
     {
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->username = $user->username;
         $this->email = $user->email;
@@ -26,7 +27,7 @@ class AccountForm extends Component
     public function save(): void
     {
         $userId = auth()->id();
-        $user = auth()->user();
+        $user = $this->currentUser();
 
         $this->validate([
             'username' => ['required', 'string', 'max:255', 'alpha_dash', "unique:users,username,{$userId}"],
@@ -52,6 +53,6 @@ class AccountForm extends Component
 
     public function render(): Factory|View
     {
-        return view('platform::settings._account-form');
+        return view('access::settings._account-form');
     }
 }
