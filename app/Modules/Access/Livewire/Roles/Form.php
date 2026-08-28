@@ -22,7 +22,7 @@ class Form extends Component
 
     public string $display_name = '';
 
-    public string $name = '';   // slug — generado automáticamente
+    public string $name = '';   // slug — identificador, se fija al crear
 
     public array $permissionList = [];
 
@@ -35,8 +35,22 @@ class Form extends Component
         }
     }
 
+    /**
+     * El slug se calcula al crear y ya no se vuelve a tocar.
+     *
+     * `name` es con lo que el código pregunta por el rol —`Roles::ADMIN`, el
+     * seeder, un middleware— y `model_has_roles` guarda `role_id`, así que
+     * renombrar no desasigna a nadie: rompe el otro lado. Renombrar
+     * «Administrador» dejaría a `Gate::before` buscando un `admin` que ya no
+     * existe, y todos los administradores perderían sus privilegios sin un
+     * error. La etiqueta se edita libremente; el identificador no.
+     */
     public function updatedDisplayName(string $value): void
     {
+        if ($this->record instanceof Role) {
+            return;
+        }
+
         $this->name = Str::slug($value);
     }
 
