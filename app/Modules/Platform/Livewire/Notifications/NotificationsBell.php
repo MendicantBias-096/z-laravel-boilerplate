@@ -2,6 +2,7 @@
 
 namespace App\Modules\Platform\Livewire\Notifications;
 
+use App\Modules\Platform\Livewire\Concerns\InteractsWithOwnNotifications;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -11,7 +12,7 @@ use TallStackUi\Traits\Interactions;
 
 class NotificationsBell extends Component
 {
-    use Interactions;
+    use Interactions, InteractsWithOwnNotifications;
 
     public int $unreadCount = 0;
 
@@ -23,12 +24,12 @@ class NotificationsBell extends Component
     #[On('notifications:refresh')]
     public function refreshCount(): void
     {
-        $this->unreadCount = auth()->user()->unreadNotifications()->count();
+        $this->unreadCount = $this->ownUnreadNotifications()->count();
     }
 
     public function markAsRead(string $id): void
     {
-        auth()->user()->unreadNotifications()
+        $this->ownUnreadNotifications()
             ->where('id', $id)
             ->update(['read_at' => now()]);
 
@@ -37,7 +38,7 @@ class NotificationsBell extends Component
 
     public function markAsUnread(string $id): void
     {
-        auth()->user()->notifications()
+        $this->ownNotifications()
             ->where('id', $id)
             ->update(['read_at' => null]);
 
@@ -46,7 +47,7 @@ class NotificationsBell extends Component
 
     public function markAllAsRead(): void
     {
-        auth()->user()->unreadNotifications()->update(['read_at' => now()]);
+        $this->ownUnreadNotifications()->update(['read_at' => now()]);
 
         $this->dispatch('notifications:refresh');
         $this->toast()->success(__('platform::notifications.all_read'), __('platform::notifications.all_read_desc'))->send();
@@ -54,14 +55,14 @@ class NotificationsBell extends Component
 
     public function deleteNotification(string $id): void
     {
-        auth()->user()->notifications()->where('id', $id)->update(['deleted_at' => now()]);
+        $this->ownNotifications()->where('id', $id)->update(['deleted_at' => now()]);
 
         $this->dispatch('notifications:refresh');
     }
 
     public function goToNotification(string $id): void
     {
-        $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification = $this->ownNotifications()->findOrFail($id);
         $notification->markAsRead();
 
         $this->dispatch('notifications:refresh');
@@ -72,7 +73,7 @@ class NotificationsBell extends Component
 
     protected function getGroupedNotifications(): Collection
     {
-        $notifications = auth()->user()->notifications()->take(6)->get();
+        $notifications = $this->ownNotifications()->take(6)->get();
 
         $today = now()->startOfDay();
         $yesterday = now()->subDay()->startOfDay();

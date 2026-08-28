@@ -443,6 +443,29 @@ la registra.
 Son ~25 líneas, y son el ejemplo canónico de inversión de dependencia que cada
 módulo de negocio va a copiar.
 
+**Segunda cicatriz, y la que enseña por qué PHPat no basta.** Seis de los ocho
+componentes de `Settings` —perfil, cuenta, contraseña, 2FA, verificación,
+idioma— vivían en `Platform` y leían `auth()->user()->profile`. Es la misma
+violación: la base preguntándole a la capa de encima. PHPat no la veía porque
+**no había ningún import**: la dependencia viajaba dentro de una relación de
+Eloquent, resuelta por nombre en tiempo de ejecución.
+
+La destapó subir PHPStan a level 8. Al exigir que `auth()->user()` no fuera
+nulo hubo que tiparlo, y tiparlo obligaba a nombrar `Access\Models\User` desde
+`Platform` — que es cuando la dependencia se vuelve visible y PHPat la habría
+cazado. Los seis componentes se movieron a `Access`; en `Platform` queda
+`SystemForm`, que administra `platform_settings` y es suyo.
+
+Lo mismo con las notificaciones: `Platform` las leía con
+`auth()->user()->notifications()`. Ahora consulta su propia tabla por el id del
+actor, que además es lo que pide R29.
+
+La lección para el enforcement: **un análisis de tipos solo ve las dependencias
+que alguien escribió como tipo.** Las que viajan por una relación, un string de
+vista o una clave de configuración son invisibles hasta que algo obliga a
+nombrarlas. Subir el nivel del analizador es una de las pocas cosas que lo
+obliga.
+
 ## R10 — El grafo de `Contracts/` es acíclico; los eventos están exentos.
 
 > Enforcement: script propio · `php artisan arch:check` · Severidad: error

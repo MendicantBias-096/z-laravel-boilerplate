@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Platform\Livewire\Settings;
+namespace App\Modules\Access\Livewire\Settings;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -8,10 +8,11 @@ use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use TallStackUi\Traits\Interactions;
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 
 class ProfileForm extends Component
 {
-    use Interactions, WithFileUploads;
+    use InteractsWithCurrentUser, Interactions, WithFileUploads;
 
     public string $first_name = '';
 
@@ -22,10 +23,12 @@ class ProfileForm extends Component
 
     public function mount(): void
     {
-        $profile = auth()->user()->profile;
+        $profile = $this->currentUser()->profile;
 
-        $this->first_name = $profile?->first_name ?? '';
-        $this->last_name = $profile?->last_name ?? '';
+        // `??` ya cubre el caso de que no haya perfil; el `?->` encima era
+        // redundante y PHPStan lo señala como tal.
+        $this->first_name = $profile->first_name ?? '';
+        $this->last_name = $profile->last_name ?? '';
     }
 
     public function save(): void
@@ -36,7 +39,7 @@ class ProfileForm extends Component
             'photo' => ['nullable', 'image', 'max:2048'],
         ]);
 
-        $profile = auth()->user()->profile()->updateOrCreate(
+        $profile = $this->currentUser()->profile()->updateOrCreate(
             ['user_id' => auth()->id()],
             ['first_name' => $this->first_name, 'last_name' => $this->last_name]
         );
@@ -56,6 +59,6 @@ class ProfileForm extends Component
 
     public function render(): Factory|View
     {
-        return view('platform::settings._profile-form');
+        return view('access::settings._profile-form');
     }
 }

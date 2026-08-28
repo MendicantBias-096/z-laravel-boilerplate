@@ -30,6 +30,12 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
+      # Un aviso de seguridad en una dependencia no aparece solo: hay que
+      # preguntar. Bloquea porque hoy sale limpio, y el día que deje de
+      # estarlo es justo cuando hay que enterarse.
+      - name: Composer audit
+        run: composer audit
+
       - name: Pint (format check)
         run: vendor/bin/pint --test
 
@@ -110,6 +116,14 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      # Informativo y no bloqueante: los avisos vivos están todos en
+      # dependencias de build (vite, tailwind, blade-formatter) que no llegan
+      # al navegador. Ponerlo en rojo de forma permanente es como se enseña a
+      # ignorar un check.
+      - name: Bun audit
+        run: bun audit
+        continue-on-error: true
 
       - name: Build
         run: bun run build

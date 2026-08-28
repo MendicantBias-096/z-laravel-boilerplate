@@ -12,6 +12,11 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+/**
+ * @property string|null $first_name
+ * @property string|null $last_name
+ * @property string|null $locale
+ */
 class Profile extends Model implements AuditableContract, HasMedia
 {
     protected $table = 'access_profiles';

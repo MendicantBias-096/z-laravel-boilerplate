@@ -212,6 +212,21 @@ check_R40() {
     head -5 <<<"$hits" | sed 's/^/      /' | cut -c1-110
 }
 
+# R54 · el análisis estático corre en level 8 o superior
+# Se comprueba por grep sobre phpstan.neon: PHPStan no puede fallar por su
+# propio nivel, así que la regla no se puede autoverificar desde dentro.
+check_R54() {
+    local level
+    level=$(sed -n 's/^ *level: *\([0-9]*\).*/\1/p' phpstan.neon | head -1)
+
+    if [[ -z "$level" ]] || (( level < 8 )); then
+        report R54 error "phpstan.neon declara level ${level:-?}; R54 exige 8 o superior"
+        return
+    fi
+
+    pass R54 "el análisis estático corre en level $level"
+}
+
 # R26 · las migraciones de un módulo viven dentro del módulo
 # Lo que queda en database/migrations/ es infraestructura sin dueño: cache,
 # jobs y tokens. Cualquier otra cosa ahí pertenece a algún módulo.
@@ -362,7 +377,7 @@ main() {
     echo
 
     local rule
-    for rule in R2 R3 R5 R6 R25 R26 R40 R36 R37 R38 R44 R48 R52 R55 EXC; do
+    for rule in R2 R3 R5 R6 R25 R26 R40 R54 R36 R37 R38 R44 R48 R52 R55 EXC; do
         wants "$rule" && "check_$rule"
     done
 

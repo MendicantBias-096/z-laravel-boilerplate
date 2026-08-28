@@ -18,7 +18,9 @@ class Navbar extends Component
     public function render(): Factory|View
     {
         return view('components.layouts.navbar', [
-            'user' => auth()->user()->load('profile'),
+            // `?->` y no un assert: el navbar es UI compartida y no debe
+            // asumir sesión. La vista ya trata el caso sin usuario.
+            'user' => auth()->user()?->load('profile'),
         ]);
     }
 }

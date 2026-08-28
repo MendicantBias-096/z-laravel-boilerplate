@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Modules\Platform\Livewire\Settings;
+namespace App\Modules\Access\Livewire\Settings;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 
 class PasswordForm extends Component
 {
-    use Interactions;
+    use InteractsWithCurrentUser, Interactions;
 
     public string $current_password = '';
 
@@ -24,7 +25,7 @@ class PasswordForm extends Component
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        auth()->user()->update(['password' => $this->password]);
+        $this->currentUser()->update(['password' => $this->password]);
 
         $this->reset('current_password', 'password', 'password_confirmation');
 
@@ -33,6 +34,6 @@ class PasswordForm extends Component
 
     public function render(): Factory|View
     {
-        return view('platform::settings._password-form');
+        return view('access::settings._password-form');
     }
 }

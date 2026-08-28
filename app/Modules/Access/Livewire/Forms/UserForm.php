@@ -3,10 +3,21 @@
 namespace App\Modules\Access\Livewire\Forms;
 
 use App\Modules\Access\Models\User;
+use Livewire\Attributes\Locked;
 use Livewire\Form;
 
 class UserForm extends Form
 {
+    /**
+     * A quién se está editando. Lo fija `mount()` y nadie más.
+     *
+     * Livewire hidrata toda propiedad publica con lo que mande el navegador, y
+     * `store()` la usa como clave de `updateOrCreate`: sin el candado, quien
+     * puede abrir el alta manda el id de otro usuario y le sobrescribe correo
+     * y contraseña. `#[Locked]` no estorba a `fill()`, que corre en el
+     * servidor.
+     */
+    #[Locked]
     public ?int $id = null;
 
     public string $username = '';

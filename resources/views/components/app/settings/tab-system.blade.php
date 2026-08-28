@@ -22,7 +22,7 @@
             <p class="mt-1 text-sm text-content-muted">{{ __('platform::settings.system_language_desc') }}</p>
         </div>
         <div class="mt-4 md:col-span-2 md:mt-0">
-            @livewire('platform::settings.language-form')
+            @livewire('access::settings.language-form')
         </div>
     </div>
 

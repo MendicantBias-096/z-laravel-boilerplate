@@ -19,7 +19,7 @@ Route::middleware(['web', 'auth'])->group(function (): void {
         ->middleware('verified')
         ->name('dashboard');
 
-    Route::view('/settings', 'platform::settings.index')
+    Route::view('/settings', 'access::settings.index')
         ->name('settings');
 
     Route::view('/notifications', 'platform::notifications.index')

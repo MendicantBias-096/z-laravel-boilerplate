@@ -3,6 +3,7 @@
 namespace App\Modules\Access\Livewire\Roles;
 
 use App\Modules\Access\Models\Role;
+use App\Modules\Access\Models\User;
 use App\Modules\Access\Notifications\RoleCreatedNotification;
 use App\Modules\Access\Notifications\RoleUpdatedNotification;
 use App\Modules\Platform\Services\NotificationsService;
@@ -11,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
 
@@ -18,6 +20,7 @@ class Form extends Component
 {
     use Interactions;
 
+    #[Locked]
     public ?Role $record = null;
 
     public string $display_name = '';
@@ -122,6 +125,11 @@ class Form extends Component
     {
         $isEdit = $this->record instanceof Role;
 
+        // La ruta no interviene en una petición de Livewire, así que la puerta
+        // se comprueba aquí. Un rol concentra permisos: crearlo o editarlo es
+        // repartir privilegios.
+        $this->authorize($isEdit ? 'access.roles.update' : 'access.roles.create');
+
         // La vista ya desactiva los campos; esto es lo que de verdad decide.
         // Sin el guard bastaría con quitar el `disabled` desde el navegador
         // para escribir un cambio que el siguiente seed revertiría.
@@ -141,7 +149,7 @@ class Form extends Component
                     : Rule::unique('roles', 'name'),
             ],
             'permissionList' => ['array'],
-            'permissionList.*' => ['string', 'exists:permissions,name'],
+            'permissionList.*' => ['string', Rule::in($this->grantablePermissions())],
         ]);
 
         $role = Role::updateOrCreate(
@@ -164,6 +172,20 @@ class Form extends Component
             ->send();
 
         $this->redirect(route('access.roles.index'), navigate: true);
+    }
+
+    /**
+     * Solo se mete en un rol lo que el actor ya tiene. Sin esto, quien puede
+     * crear roles se fabrica uno con todos los permisos y se lo asigna.
+     *
+     * @return list<string>
+     */
+    private function grantablePermissions(): array
+    {
+        /** @var User $actor */
+        $actor = auth()->user();
+
+        return array_values($actor->getAllPermissions()->pluck('name')->all());
     }
 
     public function render(): Factory|View

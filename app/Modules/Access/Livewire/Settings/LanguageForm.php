@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Modules\Platform\Livewire\Settings;
+namespace App\Modules\Access\Livewire\Settings;
 
 use App\Modules\Platform\Enums\Language;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use TallStackUi\Traits\Interactions;
+use App\Modules\Access\Livewire\Concerns\InteractsWithCurrentUser;
 
 class LanguageForm extends Component
 {
-    use Interactions;
+    use InteractsWithCurrentUser, Interactions;
 
     public string $locale = '';
 
     public function mount(): void
     {
-        $this->locale = auth()->user()->profile?->locale ?? config('app.locale');
+        $this->locale = $this->currentUser()->profile->locale ?? config('app.locale');
     }
 
     public function save(): void
@@ -25,7 +26,7 @@ class LanguageForm extends Component
             'locale' => ['required', 'string', 'in:'.implode(',', Language::values())],
         ]);
 
-        auth()->user()->profile()->updateOrCreate(
+        $this->currentUser()->profile()->updateOrCreate(
             ['user_id' => auth()->id()],
             ['locale' => $this->locale]
         );
@@ -42,7 +43,7 @@ class LanguageForm extends Component
 
     public function render(): Factory|View
     {
-        return view('platform::settings._language-form', [
+        return view('access::settings._language-form', [
             'languages' => Language::options(),
         ]);
     }
