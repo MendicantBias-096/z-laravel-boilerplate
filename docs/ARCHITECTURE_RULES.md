@@ -32,7 +32,7 @@ Ejemplo correcto y contraejemplo.
 **`error`** rompe el build. **`warning`** avisa y se puede silenciar con
 anotación. **`guideline`** no se verifica: es prosa, y se sabe que lo es.
 
-De las 56 reglas, **40 son `error`**, 9 son `warning` y 7 son `guideline`.
+De las 58 reglas, **41 son `error`**, 10 son `warning` y 7 son `guideline`.
 
 Ese reparto no mide calidad, mide herramienta disponible: una regla es `error`
 solo si existe hoy algo que la compruebe sin falsos positivos. Las que
@@ -1545,6 +1545,82 @@ verificado es manejable; cuatro sin verificar es lo que había.
 
 `config('roles.permissions')` se sigue leyendo igual: cambia dónde se declara,
 no dónde se lee.
+
+## R57 — Toda propiedad pública que identifica un registro lleva `#[Locked]`.
+
+> Enforcement: script propio · `scripts/arch-lint.sh` · Severidad: error
+> Escape: puntual
+
+**Qué significa.** Una propiedad pública de un componente Livewire que dice
+*sobre qué registro* se está operando —`$record`, `$id`, `$invoiceId`— lleva
+`#[Locked]`. Sin el atributo, quien elige el registro es el navegador.
+
+Livewire no guarda el estado en el servidor: lo serializa en un snapshot que
+viaja al cliente y **vuelve rehidratado en cada petición**. El snapshot va
+firmado, así que nadie puede inventarse uno; pero las propiedades públicas son
+justamente la parte que el componente *espera* que cambie, y Livewire las
+escribe con lo que llegue. `#[Locked]` es lo que declara que esa concreta no.
+
+La cicatriz, de agosto de 2026. `Users\Form` tenía `public ?User $record` sin
+`#[Locked]`. Un usuario con solo `access.users.create` abría el alta —donde
+`$record` es `null` legítimamente—, ponía en el payload el id de un usuario
+existente y guardaba: el formulario de creación escribía sobre un registro
+ajeno, y de paso le sincronizaba los permisos que el atacante eligiera. Antes
+del arreglo había **un solo `#[Locked]` en todo el proyecto**.
+
+Esta regla y R58 son mitades del mismo fallo, y ninguna basta sola. `#[Locked]`
+sin `authorize()` fija el objeto pero no comprueba quién eres; `authorize()`
+sobre una propiedad no fijada decide sobre el objeto que el atacante acaba de
+cambiar, que es la forma más cara de dar un permiso.
+
+```php
+#[Locked]
+public ?User $record = null;        // ✓ lo fija quien montó el componente
+
+public ?int $invoiceId = null;      // ✗ lo elige el navegador en cada petición
+```
+
+`#[Locked]` no estorba a `mount()` ni a `fill()`: la restricción es sobre la
+hidratación desde el cliente, no sobre lo que el servidor asigne.
+
+**Qué mira el check.** Los nombres que identifican sin ambigüedad —`$record`,
+`$model`, `$id` y cualquier `$algoId` o `$algo_id`— en todo archivo bajo
+`Livewire/`. Una propiedad que identifica y se llama de otro modo se le escapa;
+reconocerla pide leer el tipo con un AST, y ese trabajo vive en R12.
+
+## R58 — Un método público de escritura de un componente Livewire llama a `authorize()`.
+
+> Enforcement: script propio · `scripts/arch-lint.sh` · Severidad: warning
+> Escape: puntual
+
+**Qué significa.** `save()`, `store()`, `update()`, `delete()` y `destroy()` de
+un componente Livewire empiezan autorizando. No porque la ruta no lo haga, sino
+porque **la ruta no interviene**: una acción de Livewire viaja a
+`/livewire/update`, no a la URL de la pantalla. El `permission:` y el `can:`
+que protegen `/users` no corren ahí. Tampoco `mount()`, que se ejecuta una vez
+en el render inicial y nunca más.
+
+Es el mismo error que R39 describe visto desde la otra punta: allí el problema
+era decidir la autorización en varios sitios, aquí es no decidirla en ninguno
+porque cada capa supone que la anterior ya lo hizo.
+
+De los 26 componentes del proyecto en agosto de 2026, **4 autorizaban**. Este
+check, al escribirse, encontró uno más: `Platform\Settings\SystemForm` llamaba
+a `authorize()` en `mount()` y no en `save()`.
+
+**Por qué es `warning` y no `error`.** Porque las dos exclusiones que lo hacen
+utilizable son heurísticas, y una heurística que rompe el build enseña a
+silenciarla:
+
+- Un **Form object** (`extends Form`) no autoriza: no es alcanzable por HTTP
+  por sí mismo, y el componente que lo monta ya decidió. `UserForm::store()`
+  es correcto tal cual.
+- Un método que solo toca **al usuario de la sesión** —usa `currentUser()` o
+  `auth()`, y no `$this->record`— no tiene objeto ajeno que autorizar. Los
+  cuatro formularios de `Settings/` son eso.
+
+El día que las dos exclusiones se comprueben con un AST en vez de con `grep`,
+la regla sube a `error`. Mientras tanto avisa, que es lo que el CI no hacía.
 
 ---
 

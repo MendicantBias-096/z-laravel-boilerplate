@@ -14,7 +14,7 @@ A CRUD always lives **inside a module**. If the module does not exist yet, run
 `create-module` first — this skill assumes `app/Modules/{Context}/` is already
 registered and routable.
 
-The architecture is `docs/ARCHITECTURE_RULES.md` (R1–R56) and the «Modules»
+The architecture is `docs/ARCHITECTURE_RULES.md` (R1–R58) and the «Modules»
 section of `CLAUDE.md`. Cite rules by id when a choice needs defending.
 
 ---
