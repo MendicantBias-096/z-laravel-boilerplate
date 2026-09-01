@@ -181,7 +181,6 @@
                         </div>
                     @endif
 
-                    <div class="space-y-6">
                 {{-- Grid de permisos --}}
                 <div class="space-y-6">
                     @foreach ($this->permissionsByGroup as $group => $modules)
@@ -278,7 +277,6 @@
                                     </fieldset>
                                 @endforeach
                             </div>
-                        </div>
                         </div>
                     @endforeach
                     </div>
