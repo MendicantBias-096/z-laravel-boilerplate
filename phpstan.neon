@@ -34,14 +34,17 @@ parameters:
     reportUnmatchedIgnoredErrors: false
 
     ignoreErrors:
-        # `HasRepeatableFields` no lo usa ninguna pantalla de este repositorio,
+        # Los dos repetidores no los usa ninguna pantalla de este repositorio,
         # y esa es su razon de ser: el boilerplate exporta piezas cuyo
-        # consumidor es el proyecto hijo. Quien lo ejercita es su test, y los
-        # tests de modulo estan excluidos arriba, asi que PHPStan lo ve huerfano.
+        # consumidor es el proyecto hijo. Quien los ejercita son sus tests, y
+        # los tests de modulo estan excluidos arriba, asi que PHPStan los ve
+        # huerfanos.
         #
         # Va aqui y no al baseline a proposito: el baseline vence y esto no es
         # deuda, es una decision. Si algun dia una pantalla del boilerplate
-        # repite campos, esta linea sobra y hay que quitarla.
+        # repite campos, estas lineas sobran y hay que quitarlas.
         -
             identifier: trait.unused
-            path: app/Modules/Platform/Traits/Livewire/HasRepeatableFields.php
+            paths:
+                - app/Modules/Platform/Traits/Livewire/HasRepeatableFields.php
+                - app/Modules/Platform/Traits/Livewire/HasRepeatableBlocks.php
