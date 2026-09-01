@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\LogRequestDuration;
 use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\ServeMarkdownTwin;
 use App\Http\Middleware\SetLocale;
 use App\Modules\Access\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Foundation\Application;
@@ -36,6 +37,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['darkMode', 'locale']);
         $middleware->redirectGuestsTo('/login');
         $middleware->statefulApi();
+
+        // Global y no en el grupo `web`: el sufijo `.md` se quita antes de que
+        // el router busque la ruta, porque `/nosotros.md` no casa con ninguna.
+        $middleware->prepend(ServeMarkdownTwin::class);
 
         $middleware->web(append: [
             SecurityHeaders::class,

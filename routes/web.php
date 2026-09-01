@@ -9,7 +9,19 @@ use Illuminate\Support\Facades\Route;
 /**
  * Módulo público
  */
-Route::view('/', 'platform::public.home.index')->name('home');
+/*
+ * El mapa del sitio para agentes. Va antes que nada porque no depende de
+ * sesión ni de idioma, y no es una página: es un archivo que se lee entero.
+ */
+Route::get('/llms.txt', fn () => response(
+    view('platform::llms')->render(),
+    200,
+    ['Content-Type' => 'text/plain; charset=UTF-8'],
+))->name('llms');
+
+Route::view('/', 'platform::public.home.index')
+    ->name('home')
+    ->defaults('markdown', 'platform::public.home.md');
 
 Route::post('/locale', function (Request $request) {
     $request->validate(['locale' => ['required', 'string', 'in:'.implode(',', Language::values())]]);
@@ -20,7 +32,9 @@ Route::post('/locale', function (Request $request) {
 })->name('locale.update');
 
 Route::prefix('')->name('platform::public.')->group(function (): void {
-    Route::view('/nosotros', 'platform::public.about.index')->name('about');
+    Route::view('/nosotros', 'platform::public.about.index')
+        ->name('about')
+        ->defaults('markdown', 'platform::public.about.md');
 });
 
 Route::middleware('guest')->group(function (): void {

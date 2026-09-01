@@ -16,6 +16,10 @@ return [
     'back_home' => 'Volver al inicio',
 
     // Register
+    // Resumen del sitio para `/llms.txt`. Lo lee un agente, no una persona:
+    // una frase que diga qué es esto, sin lenguaje de portada.
+    'llms_summary' => 'Boilerplate de Laravel con arquitectura modular, autenticación y permisos listos para usar.',
+
     'register_title' => 'Crear cuenta',
     'register_subtitle' => 'Completa los datos para registrarte',
 
