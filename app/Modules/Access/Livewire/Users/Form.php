@@ -47,12 +47,6 @@ class Form extends Component
      *
      * @return list<array{key: string, icon: string, label: string, badge?: string}>
      */
-    #[Computed]
-    public function sections(): array
-    {
-        return $this->formSections();
-    }
-
     /**
      * @return list<array{key: string, icon: string, label: string, badge?: string}>
      */
