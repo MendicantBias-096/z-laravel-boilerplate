@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\General;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Backup\Notifications\Notifications\BackupHasFailedNotification;
 use Spatie\Backup\Notifications\Notifications\BackupWasSuccessfulNotification;
@@ -38,8 +39,9 @@ class CopiasDeSeguridadTest extends TestCase
             'backup.backup.source.files.exclude' => [],
         ]);
 
-        $this->artisan('backup:run', ['--only-files' => true, '--disable-notifications' => true])
-            ->assertSuccessful();
+        $codigo = Artisan::call('backup:run', ['--only-files' => true, '--disable-notifications' => true]);
+
+        $this->assertSame(0, $codigo, 'backup:run falló. Salida: '.Artisan::output());
 
         $ficheros = Storage::disk('local')->allFiles();
 
