@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use RuntimeException;
 use TallStackUi\Facades\TallStackUi;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +27,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Password::defaults(fn () => Password::min(8));
+
+        // Un `fill()` con una clave que no está en `$fillable` la descarta sin
+        // decir nada: el `save()` responde true y el dato no se guardó. En
+        // dayacount eso dejó cuentas verificadas después de cambiar el correo,
+        // porque el atributo que las desverificaba se caía en silencio.
+        //
+        // Activo también en producción a propósito. Fallar ruidosamente al
+        // escribir mal es preferible a guardar el registro a medias, que es lo
+        // que hay que descubrir semanas después leyendo filas incoherentes.
+        Model::preventSilentlyDiscardingAttributes();
+
+        $this->refuseToBootWithDebugInProduction();
 
         // Aquí vivía un `Gate::before` que devolvía true para el rol admin.
         // Un `before` que devuelve true corta antes de toda Policy y no se
@@ -46,6 +60,25 @@ class AppServiceProvider extends ServiceProvider
             ->card()
             ->block('footer.wrapper', 'text-secondary-700 dark:text-dark-300 dark:border-t-dark-600 rounded-lg rounded-t-none border-t border-t-secondary-200 bg-primary-50 dark:bg-primary-950/60 px-4 py-2');
 
+    }
+
+    /**
+     * `APP_DEBUG=true` en producción publica la traza completa de cada error
+     * —conexiones, claves, rutas del disco— y enciende debugbar, porque
+     * `config/debugbar.php` no tiene default propio y cae en `app.debug`.
+     *
+     * Caer al arrancar es lo que se quiere: `.env.example` trae `APP_DEBUG=true`
+     * porque es la plantilla de desarrollo, y es la misma que copia quien
+     * despliega con prisa. Un recordatorio en un checklist no lo impide; esto
+     * sí, y lo hace antes de servir la primera petición.
+     */
+    private function refuseToBootWithDebugInProduction(): void
+    {
+        if ($this->app->isProduction() && config('app.debug') === true) {
+            throw new RuntimeException(
+                'APP_DEBUG=true con APP_ENV=production: expone la traza de cada error y enciende debugbar. Pon APP_DEBUG=false.'
+            );
+        }
     }
 
     private function validateMenuRoutes(): void

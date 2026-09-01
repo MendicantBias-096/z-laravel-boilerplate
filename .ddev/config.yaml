@@ -36,21 +36,9 @@ web_environment:
 use_dns_when_possible: true
 composer_version: "2"
 
-# ── Hooks ──────────────────────────────────────────────────────────────────
-# Bun is installed via .ddev/web-build/Dockerfile
+# Bun se instala en .ddev/web-build/Dockerfile.
+#
+# Sin `hooks:` a proposito. Habia un `post-stop` que reescribia el .env con
+# valores de Herd de otra maquina —incluido DB_USERNAME=am-mac— en cada
+# `ddev stop`, asi que parar el entorno rompia la conexion a la base de datos.
 
-hooks:
-  post-stop:
-    # Al parar DDEV, actualiza solo las keys de entorno en .env para Herd.
-    # No sobreescribe el .env completo para preservar secretos (API keys, etc.)
-    - exec-host: |
-        if [ -f .env ]; then
-          sed -i 's|^APP_URL=.*|APP_URL=https://z-laravel-boilerplate.test|' .env
-          sed -i 's|^DB_HOST=.*|DB_HOST=127.0.0.1|' .env
-          sed -i 's|^DB_DATABASE=.*|DB_DATABASE=z_laravel_boilerplate|' .env
-          sed -i 's|^DB_USERNAME=.*|DB_USERNAME=am-mac|' .env
-          sed -i 's|^DB_PASSWORD=.*|DB_PASSWORD=|' .env
-          sed -i 's|^MAIL_HOST=.*|MAIL_HOST=127.0.0.1|' .env
-          sed -i 's|^MAIL_PORT=.*|MAIL_PORT=1025|' .env
-          echo '.env actualizado para Herd'
-        fi

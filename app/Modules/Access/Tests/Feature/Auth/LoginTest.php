@@ -113,9 +113,26 @@ class LoginTest extends TestCase
         $this->app->detectEnvironment(fn (): string => 'local');
 
         Livewire::test(Login::class)
-            ->call('quickLogin', 'noexiste@example.com')
+            ->call('quickLogin', 'user@example.com')
             ->assertHasErrors('email')
             ->assertNoRedirect();
+
+        $this->assertGuest();
+    }
+
+    /**
+     * `isLocal()` depende de una variable de entorno; esta guarda no. Sin ella
+     * un `APP_ENV=local` copiado por error abre cualquier cuenta con solo su
+     * correo, que es toda la superficie que hace falta.
+     */
+    public function test_quick_login_solo_acepta_las_cuentas_de_ejemplo(): void
+    {
+        $this->app->detectEnvironment(fn (): string => 'local');
+        User::factory()->create(['email' => 'victima@example.com']);
+
+        Livewire::test(Login::class)
+            ->call('quickLogin', 'victima@example.com')
+            ->assertForbidden();
 
         $this->assertGuest();
     }

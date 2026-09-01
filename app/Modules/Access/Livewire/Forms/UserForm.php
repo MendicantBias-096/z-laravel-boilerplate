@@ -62,7 +62,13 @@ class UserForm extends Form
             $data['password'] = $this->password;
         }
 
-        $user = User::updateOrCreate(['id' => $this->id], $data);
+        // `updateOrCreate(['id' => ...])` mete el id en el `fill()` del alta,
+        // donde no está en `$fillable` y se descartaba en silencio. Funcionaba
+        // porque la clave la pone la base; dejaba de funcionar sin avisar el
+        // día que alguien añadiera `id` a `$fillable`.
+        $user = $this->id === null ? new User : User::findOrFail($this->id);
+
+        $user->fill($data)->save();
 
         $user->profile()->updateOrCreate(
             ['user_id' => $user->id],

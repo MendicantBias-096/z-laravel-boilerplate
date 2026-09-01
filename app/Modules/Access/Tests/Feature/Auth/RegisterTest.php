@@ -2,9 +2,11 @@
 
 namespace App\Modules\Access\Tests\Feature\Auth;
 
+use App\Modules\Access\Livewire\Auth\Register;
 use App\Modules\Access\Models\Profile;
 use App\Modules\Access\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class RegisterTest extends TestCase
@@ -99,5 +101,40 @@ class RegisterTest extends TestCase
         $this->actingAs($user)
             ->get(route('register'))
             ->assertRedirect(route('dashboard'));
+    }
+
+    /**
+     * El alta pública crea filas y manda correos de verificación. Sin límite
+     * es un endpoint que hace las dos cosas tan rápido como se le pida, y el
+     * correo distinto de cada intento no lo encarece: por eso el límite mira
+     * la IP y no el correo.
+     */
+    public function test_el_alta_se_limita_por_ip(): void
+    {
+        $this->seedRoles();
+
+        for ($intento = 1; $intento <= 5; $intento++) {
+            Livewire::test(Register::class)
+                ->set('first_name', 'Nombre')
+                ->set('last_name', 'Apellido')
+                ->set('username', "usuario{$intento}")
+                ->set('email', "usuario{$intento}@example.com")
+                ->set('password', 'password123')
+                ->set('password_confirmation', 'password123')
+                ->call('register')
+                ->assertHasNoErrors();
+        }
+
+        Livewire::test(Register::class)
+            ->set('first_name', 'Nombre')
+            ->set('last_name', 'Apellido')
+            ->set('username', 'usuario6')
+            ->set('email', 'usuario6@example.com')
+            ->set('password', 'password123')
+            ->set('password_confirmation', 'password123')
+            ->call('register')
+            ->assertHasErrors('email');
+
+        $this->assertDatabaseMissing('users', ['email' => 'usuario6@example.com']);
     }
 }
