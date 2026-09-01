@@ -242,7 +242,15 @@ return [
         'mail' => [
             // Sin destinatario no hay aviso de fallo, que es la única forma de
             // enterarse de que hace semanas que no hay copia.
-            'to' => env('BACKUP_NOTIFICATION_EMAIL', env('MAIL_FROM_ADDRESS')),
+            //
+            // El último default no es decorativo: `null` aquí no deja el aviso
+            // sin enviar, tira `package:discover` y con él toda la instalación,
+            // que es lo que le pasa a un proyecto hijo que copie el repositorio
+            // sin definir ninguna de las dos variables.
+            // `?:` y no el segundo argumento de `env()`: una clave presente y
+            // vacía —`BACKUP_NOTIFICATION_EMAIL=`, que es como la trae una
+            // plantilla recién copiada— devuelve `''`, no el default.
+            'to' => env('BACKUP_NOTIFICATION_EMAIL') ?: env('MAIL_FROM_ADDRESS') ?: 'hello@example.com',
 
             'from' => [
                 'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),

@@ -71,4 +71,25 @@ class CopiasDeSeguridadTest extends TestCase
             config('backup.monitor_backups.0.disks'),
         );
     }
+
+    /**
+     * Un destinatario nulo no deja el aviso sin enviar: tira
+     * `package:discover`, y con él `composer install`. Lo descubrió el CI, que
+     * no tiene `.env`, y es exactamente lo que le pasaría a un proyecto hijo
+     * recién clonado.
+     */
+    public function test_la_instalacion_no_depende_de_variables_de_entorno_de_correo(): void
+    {
+        // La clave presente y vacía es el caso que se escapó la primera vez:
+        // `env('X', 'default')` devuelve `''`, no el default, y `''` tampoco es
+        // un correo válido para spatie.
+        putenv('BACKUP_NOTIFICATION_EMAIL=');
+        putenv('MAIL_FROM_ADDRESS=');
+
+        $destinatario = require config_path('backup.php');
+        $destinatario = $destinatario['notifications']['mail']['to'];
+
+        $this->assertIsString($destinatario);
+        $this->assertNotSame('', $destinatario);
+    }
 }
