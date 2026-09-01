@@ -51,6 +51,8 @@
     --ui-danger:  #EF4444;
     --ui-info:    #0EA5E9;
 
+    --ui-divider-tint: color-mix(in oklch, var(--color-primary-500) 45%, transparent);
+
     /* Auth */
     --auth-input-bg:          rgba(0,0,0,0.04);
     --auth-input-border:      rgba(0,0,0,0.10);
@@ -86,6 +88,8 @@
     --ui-warning: #FBBF24;
     --ui-danger:  #F87171;
     --ui-info:    #38BDF8;
+
+    --ui-divider-tint: color-mix(in oklch, var(--color-primary-400) 35%, transparent);
 
     /* Auth */
     --auth-input-bg:          rgba(255,255,255,0.06);
@@ -127,4 +131,41 @@ html, body {
     --color-warning: var(--ui-warning);
     --color-danger:  var(--ui-danger);
     --color-info:    var(--ui-info);
+}
+
+/*
+ * El filete entre apartados de un formulario.
+ *
+ * El acento vive en el primer quinto y se apaga: un divisor teñido de lado a
+ * lado competiría con lo que separa. El primer apartado no lleva —de ahí el
+ * selector de hermano adyacente—, porque un formulario no empieza con una
+ * raya.
+ */
+.form-divider + .form-divider::before {
+    content: "";
+    display: block;
+    height: 1px;
+    margin-bottom: 1.75rem;
+    background-image: linear-gradient(
+        90deg,
+        var(--ui-divider-tint) 0%,
+        var(--ui-line) 18%,
+        var(--ui-line) 100%
+    );
+}
+
+/*
+ * Lista que se desplaza sin barra a la vista.
+ *
+ * El scroll sigue entero —rueda, dedo, teclado—: solo se oculta el indicador,
+ * que en una banda de cuarenta píxeles pesa más de lo que informa. Quien la
+ * use tiene que decir de otra forma que hay más al lado.
+ */
+@utility scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }

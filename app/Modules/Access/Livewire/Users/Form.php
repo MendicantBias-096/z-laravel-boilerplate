@@ -11,8 +11,10 @@ use App\Modules\Platform\Services\NotificationsService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -33,6 +35,75 @@ class Form extends Component
     public array $permissionList = [];
 
     public array $originalPermissions = [];
+
+    /**
+     * Sección abierta del formulario.
+     *
+     * Va en la URL para que recargar —o compartir el enlace— no devuelva
+     * siempre a la primera. No lleva `#[Locked]` a propósito: es estado de
+     * navegación, no dice sobre qué registro se opera. Lo que sí hace falta es
+     * acotarla, y de eso se encarga `goTo()`.
+     */
+    #[Url]
+    public string $section = 'identity';
+
+    /**
+     * Las secciones del formulario, en orden.
+     *
+     * El badge de accesos cuenta permisos concedidos sobre concedibles: es el
+     * dato que un formulario partido esconde, porque los permisos viven en una
+     * pestaña que puede no estar abierta.
+     *
+     * @return list<array{key: string, icon: string, label: string, badge?: string}>
+     */
+    #[Computed]
+    public function sections(): array
+    {
+        return [
+            ['key' => 'identity', 'icon' => 'lucide-user-round', 'label' => __('platform::app.user_section_identity')],
+            ['key' => 'account', 'icon' => 'lucide-key-round', 'label' => __('platform::app.user_section_account')],
+            [
+                'key' => 'access',
+                'icon' => 'lucide-shield',
+                'label' => __('platform::app.user_section_access'),
+                'badge' => count($this->permissionList).'/'.count($this->grantablePermissions()),
+            ],
+        ];
+    }
+
+    /**
+     * Cambia de sección.
+     *
+     * La clave llega del navegador, así que se comprueba contra las
+     * declaradas: sin esto, `section` acepta cualquier cadena y el chasis
+     * dibuja una caja vacía sin decir por qué.
+     */
+    public function goTo(string $key): void
+    {
+        if (in_array($key, array_column($this->sections(), 'key'), true)) {
+            $this->section = $key;
+        }
+    }
+
+    /**
+     * En qué sección vive cada campo, para poder llevar al usuario al error.
+     *
+     * Un formulario partido esconde sus propios fallos: si el correo está
+     * repetido y esa pestaña no está abierta, el guardado no hace nada y no se
+     * ve por qué.
+     */
+    private const CAMPOS_POR_SECCION = [
+        'photo' => 'identity',
+        'form.first_name' => 'identity',
+        'form.last_name' => 'identity',
+        'form.username' => 'identity',
+        'form.email' => 'account',
+        'form.password' => 'account',
+        'form.password_confirmation' => 'account',
+        'form.is_active' => 'account',
+        'form.role' => 'access',
+        'permissionList' => 'access',
+    ];
 
     public function mount(): void
     {
@@ -143,6 +214,10 @@ class Form extends Component
         // La ruta ya decidió quién entra, pero la petición de Livewire no pasa
         // por ella: va a /livewire/update. La puerta tiene que estar también
         // aquí, y sobre el registro, no solo sobre el permiso.
+        //
+        // Vive en `save()` y no en `guardar()` a propósito: éste es el método
+        // que el navegador alcanza, y esconder la guarda un nivel más abajo la
+        // vuelve invisible para quien lee —y para R58—.
         if ($this->record instanceof User) {
             $this->authorize('access.users.update');
             $this->authorize('update', $this->record);
@@ -150,6 +225,37 @@ class Form extends Component
             $this->authorize('access.users.create');
         }
 
+        try {
+            $this->guardar();
+        } catch (ValidationException $e) {
+            $this->section = $this->seccionDelPrimerError($e);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * La sección donde vive el primer campo que falló, o la actual si el error
+     * no es de ningún campo conocido.
+     */
+    private function seccionDelPrimerError(ValidationException $e): string
+    {
+        foreach (array_keys($e->errors()) as $campo) {
+            // `permissionList.0` cae en la misma sección que `permissionList`.
+            $raiz = str_contains((string) $campo, '.') && str_starts_with((string) $campo, 'permissionList')
+                ? 'permissionList'
+                : (string) $campo;
+
+            if (isset(self::CAMPOS_POR_SECCION[$raiz])) {
+                return self::CAMPOS_POR_SECCION[$raiz];
+            }
+        }
+
+        return $this->section;
+    }
+
+    private function guardar(): void
+    {
         $this->validate(['photo' => ['nullable', 'image', 'max:2048']]);
 
         $this->form->validate();

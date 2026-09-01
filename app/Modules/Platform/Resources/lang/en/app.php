@@ -87,4 +87,10 @@ return [
     'role_deleted' => 'Role deleted',
     'role_deleted_desc' => 'The role was deleted successfully.',
 
+    // Las tres secciones del chasis del formulario de usuario.
+    'user_nav_title' => 'Record',
+    'user_form_hint' => 'Everything is saved together when you press the button.',
+    'user_section_identity' => 'Identity',
+    'user_section_account' => 'Account',
+    'user_section_access' => 'Access',
 ];
