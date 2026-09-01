@@ -8,6 +8,7 @@ use App\Modules\Access\Livewire\Auth\ForgotPassword;
 use App\Modules\Access\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -62,5 +63,31 @@ class RecuperarClaveTest extends TestCase
             fn (string $message, array $context): bool => $message === 'request.duration'
                 && ! str_contains((string) json_encode($context), 'token-de-un-solo-uso')
         );
+    }
+
+    /**
+     * El límite frena a quien recorre una lista de correos, y lo hace sin
+     * anunciarse: un «demasiados intentos» que solo aparece con los correos
+     * registrados vuelve a distinguirlos, que es lo que el resto de esta
+     * pantalla evita.
+     */
+    public function test_el_envio_se_limita_sin_decirlo(): void
+    {
+        Notification::fake();
+
+        // Correos distintos a propósito: `auth.passwords.throttle` ya espacia
+        // los envíos de un mismo usuario, así que repetir uno solo no prueba
+        // nada. Lo que este límite frena es recorrer una lista desde una IP.
+        $usuarios = User::factory()->count(6)->create();
+
+        foreach ($usuarios as $usuario) {
+            Livewire::test(ForgotPassword::class)
+                ->set('email', $usuario->email)
+                ->call('sendResetLink')
+                ->assertHasNoErrors()
+                ->assertSet('linkSent', true);
+        }
+
+        Notification::assertCount(5);
     }
 }

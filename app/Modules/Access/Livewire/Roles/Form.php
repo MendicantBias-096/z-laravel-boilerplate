@@ -152,10 +152,15 @@ class Form extends Component
             'permissionList.*' => ['string', Rule::in($this->grantablePermissions())],
         ]);
 
-        $role = Role::updateOrCreate(
-            ['id' => $this->record?->id],
-            ['name' => $this->name, 'display_name' => $this->display_name, 'guard_name' => 'web']
-        );
+        // Ver la nota de `UserForm::store()`: el id como atributo de búsqueda
+        // entra en el `fill()` del alta, y ahí no es asignable en masa.
+        $role = $this->record ?? new Role;
+
+        $role->fill([
+            'name' => $this->name,
+            'display_name' => $this->display_name,
+            'guard_name' => 'web',
+        ])->save();
 
         $role->syncPermissions($this->permissionList);
 

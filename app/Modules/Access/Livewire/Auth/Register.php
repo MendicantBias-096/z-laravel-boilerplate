@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Access\Livewire\Auth;
 
 use App\Modules\Access\Actions\Fortify\CreateNewUser;
+use App\Modules\Access\Livewire\Concerns\InteractsWithRateLimiting;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -14,6 +15,8 @@ use Livewire\Component;
 
 class Register extends Component
 {
+    use InteractsWithRateLimiting;
+
     #[Validate('required|string|max:255')]
     public string $first_name = '';
 
@@ -35,6 +38,19 @@ class Register extends Component
     public function register(CreateNewUser $creator): void
     {
         $this->validate();
+
+        // Solo por IP: con el correo en la clave, cambiarlo en cada intento
+        // esquiva el límite, y cambiarlo es obligatorio de todos modos porque
+        // `unique:users,email` rechaza el repetido. Sin esto, el alta pública
+        // es un endpoint que crea filas y manda correos de verificación tan
+        // rápido como se le pida.
+        $seconds = $this->rateLimitExceeded('register', null, 5);
+
+        if ($seconds !== null) {
+            $this->addError('email', __('access::auth.throttle', ['seconds' => $seconds]));
+
+            return;
+        }
 
         $user = $creator->create([
             'first_name' => $this->first_name,

@@ -132,9 +132,14 @@ return [
 
     'temporary_file_upload' => [
         'disk' => env('LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK'), // Example: 'local', 's3'             | Default: 'default'
-        'rules' => null,                                      // Example: ['file', 'mimes:png,jpg'] | Default: ['required', 'file', 'max:12288'] (12MB)
+        // El endpoint temporal es público para cualquier usuario autenticado y
+        // no lo cubre la validación del formulario, que corre después: sin
+        // reglas aquí se puede dejar cualquier cosa en el disco temporal. La
+        // lista es la de los formularios que hoy existen —imágenes y PDF—; un
+        // proyecto que suba otra cosa la amplía aquí, no la quita.
+        'rules' => ['required', 'file', 'max:12288', 'mimes:png,jpg,jpeg,gif,webp,svg,ico,pdf'],
         'directory' => null,                                  // Example: 'tmp'                     | Default: 'livewire-tmp'
-        'middleware' => null,                                 // Example: 'throttle:5,1'            | Default: 'throttle:60,1'
+        'middleware' => 'throttle:30,1',                      // Example: 'throttle:5,1'            | Default: 'throttle:60,1'
         'preview_mimes' => [                                  // Supported file types for temporary pre-signed file URLs...
             'png', 'gif', 'bmp', 'svg', 'wav', 'mp4',
             'mov', 'avi', 'wmv', 'mp3', 'm4a',

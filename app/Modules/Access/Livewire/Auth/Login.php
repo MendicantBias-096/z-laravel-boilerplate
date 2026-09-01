@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Access\Livewire\Auth;
 
+use App\Modules\Access\Database\Seeders\UsersTableSeeder;
 use App\Modules\Access\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -56,10 +57,16 @@ class Login extends Component
      * Solo existe en local. En cualquier otro entorno responde 403 aunque
      * alguien invoque el método desde el cliente, porque la comprobación
      * vive en el servidor y no en el `@if` de la vista.
+     *
+     * La segunda guarda es la que importa: `isLocal()` depende de una variable
+     * de entorno, y una plantilla copiada con `APP_ENV=local` bastaría para
+     * entrar en cualquier cuenta con solo su correo. Acotado a las cuentas de
+     * ejemplo, ese fallo deja de dar acceso a nada que exista en producción.
      */
     public function quickLogin(string $email): void
     {
         abort_unless(app()->isLocal(), 403);
+        abort_unless(in_array($email, UsersTableSeeder::DEMO_EMAILS, true), 403);
 
         $user = User::where('email', $email)->first();
 
