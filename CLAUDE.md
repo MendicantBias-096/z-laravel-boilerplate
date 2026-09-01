@@ -10,7 +10,7 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 - **php** — 8.5+
 - **laravel/framework** — v13
 - **livewire/livewire** — v4
-- **tallstackui/tallstackui** — v3
+- **tallstackui/tallstackui** — v4
 - **spatie/laravel-permission** — v8
 - **spatie/laravel-medialibrary** — v11
 - **diglactic/laravel-breadcrumbs** — v10
@@ -319,7 +319,7 @@ class Index extends Component
 
 === tallstackui/core rules ===
 
-# TallStackUI v3
+# TallStackUI v4
 
 TallStackUI provides pre-built Blade components for this project. Use them before building custom UI.
 
