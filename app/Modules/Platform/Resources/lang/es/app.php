@@ -43,6 +43,7 @@ return [
     'role_identifier' => 'Identificador',
     'role_permissions' => 'Permisos del rol',
     'role_permissions_desc' => 'Selecciona los accesos que tendrá este rol.',
+    'role_btn_create' => 'Nuevo rol',
     'role_btn_save' => 'Guardar',
     'role_protected' => 'Rol de plataforma',
     'role_protected_desc' => 'Este rol lo define el código de la aplicación. Sus permisos y su nombre se restablecen en cada instalación, así que aquí solo se consultan.',
@@ -105,10 +106,9 @@ return [
     'user_perm_granted' => 'Concedidos :count permisos de :subject',
     'user_perm_revoked' => 'Quitados :count permisos de :subject',
 
-    // Las secciones del chasis de la ficha de rol.
-    'role_nav_title' => 'Rol',
-    'role_section_identity' => 'Identidad',
-    'role_section_permissions' => 'Permisos',
+    // La ficha de rol: el pie cuenta los permisos concedidos.
+    'role_permissions_matrix_desc' => 'Marca lo que este rol podrá hacer. Quien lo tenga asignado hereda esta plantilla.',
+    'role_permissions_count' => '{0} Sin permisos|{1} :count permiso concedido|[2,*] :count permisos concedidos',
 
     'user_section_identity' => 'Identidad',
     'user_section_account' => 'Cuenta',

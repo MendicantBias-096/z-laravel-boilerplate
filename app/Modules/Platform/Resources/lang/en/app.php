@@ -43,6 +43,7 @@ return [
     'role_identifier' => 'Identifier',
     'role_permissions' => 'Role permissions',
     'role_permissions_desc' => 'Select the access this role will have.',
+    'role_btn_create' => 'New role',
     'role_btn_save' => 'Save',
     'role_protected' => 'Platform role',
     'role_protected_desc' => 'This role is defined by the application code. Its name and permissions are restored on every install, so here they are read-only.',
@@ -105,10 +106,9 @@ return [
     'user_perm_granted' => 'Granted :count permissions in :subject',
     'user_perm_revoked' => 'Revoked :count permissions in :subject',
 
-    // Las secciones del chasis de la ficha de rol.
-    'role_nav_title' => 'Role',
-    'role_section_identity' => 'Identity',
-    'role_section_permissions' => 'Permissions',
+    // La ficha de rol: el pie cuenta los permisos concedidos.
+    'role_permissions_matrix_desc' => 'Tick what this role can do. Anyone assigned to it inherits this template.',
+    'role_permissions_count' => '{0} No permissions|{1} :count permission granted|[2,*] :count permissions granted',
 
     'user_section_identity' => 'Identity',
     'user_section_account' => 'Account',
