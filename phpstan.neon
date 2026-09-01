@@ -32,3 +32,16 @@ parameters:
     # baseline que no encaja, no por un error de codigo: R56. Lo que evita que
     # la deuda se olvide es la fecha de vencimiento del baseline, no esto.
     reportUnmatchedIgnoredErrors: false
+
+    ignoreErrors:
+        # `HasRepeatableFields` no lo usa ninguna pantalla de este repositorio,
+        # y esa es su razon de ser: el boilerplate exporta piezas cuyo
+        # consumidor es el proyecto hijo. Quien lo ejercita es su test, y los
+        # tests de modulo estan excluidos arriba, asi que PHPStan lo ve huerfano.
+        #
+        # Va aqui y no al baseline a proposito: el baseline vence y esto no es
+        # deuda, es una decision. Si algun dia una pantalla del boilerplate
+        # repite campos, esta linea sobra y hay que quitarla.
+        -
+            identifier: trait.unused
+            path: app/Modules/Platform/Traits/Livewire/HasRepeatableFields.php
