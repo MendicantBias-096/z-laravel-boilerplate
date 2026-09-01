@@ -71,7 +71,7 @@ class DocsTest extends TestCase
 
         $rules = array_filter($outline, fn (array $entry): bool => $entry['rule'] !== null);
 
-        $this->assertCount(56, $rules, 'El documento declara 56 reglas.');
+        $this->assertCount(58, $rules, 'El documento declara 58 reglas.');
         $this->assertSame('R1', reset($rules)['rule']);
     }
 
@@ -88,9 +88,9 @@ class DocsTest extends TestCase
             ->html();
 
         $this->assertSame(
-            56,
+            58,
             substr_count($html, '<p class="plain">'),
-            'Las 56 reglas deben tener su párrafo «Qué significa».'
+            'Las 58 reglas deben tener su párrafo «Qué significa».'
         );
     }
 

@@ -175,7 +175,7 @@ make stop                     # apagar
 
 ## Los otros documentos
 
-- **Reglas de arquitectura** — las 56 reglas que ordenan el proyecto. Cada una
+- **Reglas de arquitectura** — las 58 reglas que ordenan el proyecto. Cada una
   tiene un número citable (R25), una explicación en lenguaje llano y el motivo
   por el que existe. No se lee de corrido: se consulta.
 - **Patrones** — piezas de código reutilizables que ya han demostrado servir en

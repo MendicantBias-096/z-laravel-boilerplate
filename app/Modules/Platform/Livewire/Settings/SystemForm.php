@@ -35,6 +35,8 @@ class SystemForm extends Component
 
     public function save(): void
     {
+        $this->authorize('platform.settings.manage');
+
         $this->validate([
             'app_name' => ['required', 'string', 'max:100'],
             'app_short_name' => ['nullable', 'string', 'max:20'],

@@ -338,6 +338,94 @@ check_R55() {
     fi
 }
 
+# R57 · toda propiedad pública que identifica un registro lleva #[Locked]
+#
+# Livewire rehidrata cada propiedad pública con lo que mande el navegador en
+# cada petición. Sin `#[Locked]`, apuntar el formulario a otro registro es
+# editar un campo del payload, y el `authorize()` del método ya decidió sobre
+# el objeto equivocado.
+#
+# Acotado a lo que se reconoce por el nombre —`$record`, `$model`, `$id`,
+# `$algoId`— porque ahí no hay ambigüedad. Una propiedad que identifica y se
+# llama de otro modo se le escapa: eso pide un AST, y vive en R12.
+check_R57() {
+    local found=0 f hits
+    while read -r f; do
+        [[ -n "$f" ]] || continue
+        [[ "$f" == */Livewire/* ]] || continue
+
+        hits=$(awk '
+            /^[[:space:]]*#\[/            { attrs = attrs $0; next }
+            /^[[:space:]]*(\/\/|\/\*|\*)/ { next }
+            /^[[:space:]]*$/              { next }
+            /^[[:space:]]*public[[:space:]]+[^(]*\$(record|model|id|[A-Za-z_]*(Id|_id))[[:space:]]*(=|;)/ {
+                if (attrs !~ /Locked/) {
+                    prop = $0
+                    sub(/^[[:space:]]*/, "", prop)
+                    sub(/[[:space:]]*(=.*)?;.*$/, "", prop)
+                    print FILENAME ":" NR " · " prop
+                }
+            }
+            { attrs = "" }
+        ' "$f")
+
+        [[ -n "$hits" ]] || continue
+        report R57 error "propiedad identificadora sin \`#[Locked]\`:"
+        sed 's/^/      /' <<<"$hits"
+        found=1
+    done < <(targets .php "${CODE_DIRS[@]}")
+
+    (( found )) || pass R57 "toda propiedad identificadora lleva \`#[Locked]\`"
+}
+
+# R58 · un método público de escritura de un componente Livewire autoriza
+#
+# Las guardas de ruta —`permission:`, `can:`— no corren en una petición de
+# Livewire: viaja a `/livewire/update`, que es otra ruta. Un componente
+# alcanzable solo desde una pantalla protegida sigue siendo alcanzable por
+# HTTP, así que la autorización se repite dentro del método.
+#
+# Warning y no error porque las exclusiones son heurísticas: un Form object
+# delega en el componente que lo monta, y un método que solo toca al usuario
+# de la sesión no tiene objeto ajeno que autorizar.
+check_R58() {
+    local found=0 f hits
+    while read -r f; do
+        [[ -n "$f" ]] || continue
+        [[ "$f" == */Livewire/* ]] || continue
+        grep -q 'extends Form' "$f" && continue
+
+        hits=$(awk '
+            /^[[:space:]]*public function (save|store|update|delete|destroy)[[:space:]]*\(/ && !inm {
+                inm = 1; start = NR; body = ""; depth = 0; opened = 0
+                name = $0
+                sub(/^.*function[[:space:]]+/, "", name)
+                sub(/[[:space:]]*\(.*$/, "", name)
+            }
+            inm {
+                body = body $0 "\n"
+                line = $0
+                depth += gsub(/\{/, "&", line) - gsub(/\}/, "&", line)
+                if (line ~ /\{/) { opened = 1 }
+                if (opened && depth <= 0) {
+                    propio = (body ~ /currentUser\(\)|auth\(\)/ && body !~ /this->record/)
+                    if (body !~ /authorize\(/ && ! propio) {
+                        print FILENAME ":" start " · " name "()"
+                    }
+                    inm = 0
+                }
+            }
+        ' "$f")
+
+        [[ -n "$hits" ]] || continue
+        report R58 warning "escribe sin llamar a \`authorize()\`:"
+        sed 's/^/      /' <<<"$hits"
+        found=1
+    done < <(targets .php "${CODE_DIRS[@]}")
+
+    (( found )) || pass R58 "todo método de escritura de un componente autoriza"
+}
+
 # EXC · formato y caducidad de las válvulas de escape
 # `arch-exception` lleva fecha porque promete arreglarse; `arch-accepted` no la
 # lleva porque es una decisión revisada. Confundirlas es lo que convierte una
@@ -383,7 +471,7 @@ main() {
     echo
 
     local rule
-    for rule in R2 R3 R5 R6 R25 R26 R40 R54 R36 R37 R38 R44 R48 R52 R55 EXC; do
+    for rule in R2 R3 R5 R6 R25 R26 R40 R54 R36 R37 R38 R44 R48 R52 R55 R57 R58 EXC; do
         wants "$rule" && "check_$rule"
     done
 

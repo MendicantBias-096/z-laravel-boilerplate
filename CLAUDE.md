@@ -177,8 +177,8 @@ in a URL people copy: same properties, 26 characters, no hyphens.
 
 # Project Architecture
 
-**The architecture rules live in `docs/ARCHITECTURE_RULES.md`.** 56 numbered,
-citable rules (R1–R56) covering module boundaries, data ownership, migrations,
+**The architecture rules live in `docs/ARCHITECTURE_RULES.md`.** 58 numbered,
+citable rules (R1–R58) covering module boundaries, data ownership, migrations,
 authorization, queues and code form. Read it before designing anything new, and
 cite rules by ID in review ("this violates R13"). It is also served in-app at
 `/docs`.

@@ -16,7 +16,7 @@ Two distinct branches — establish which one before writing anything:
 
 If the resource needs listing, create and edit → use `create-crud` instead.
 
-The architecture behind these names is `docs/ARCHITECTURE_RULES.md` (R1–R56) and
+The architecture behind these names is `docs/ARCHITECTURE_RULES.md` (R1–R58) and
 the «Modules» section of `CLAUDE.md`. Read them before inventing a folder; cite
 rules by id when a choice needs defending.
 
