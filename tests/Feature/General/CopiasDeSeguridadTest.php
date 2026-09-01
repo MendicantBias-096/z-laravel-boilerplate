@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\General;
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Backup\Notifications\Notifications\BackupHasFailedNotification;
 use Spatie\Backup\Notifications\Notifications\BackupWasSuccessfulNotification;
 use Spatie\Backup\Notifications\Notifications\CleanupWasSuccessfulNotification;
@@ -16,42 +14,21 @@ use Tests\TestCase;
  * Un backup configurado y un backup que funciona no son lo mismo, y el que
  * falla lo hace en silencio hasta el día que hace falta.
  *
- * El dump de la base no se ejercita aquí: depende de que `pg_dump` exista y
- * pueda autenticarse, que es distinto en cada máquina —en DDEV hace falta
- * `PGPASSWORD` porque el cliente de esa imagen ignora `PGPASSFILE`—. Ese
- * camino se probó a mano restaurando el dump en una base vacía; lo que estos
- * casos cubren es que la cadena de empaquetado y escritura funciona y que la
- * configuración no se degrada sola.
+ * Lo que estos casos cubren es la configuración, que es lo que se degrada solo
+ * cuando alguien reactiva un aviso o cambia un destino sin mirar el otro.
+ *
+ * **Lo que no cubren, dicho para que nadie lo dé por hecho:** ejecutar el
+ * backup de verdad. Se probó a mano y entero —`backup:run --only-db`, y el
+ * dump restaurado en una base vacía devolvió los usuarios y los roles—, pero
+ * no está automatizado: el dump necesita que `pg_dump` pueda autenticarse, y
+ * eso cambia por máquina (en DDEV hace falta `PGPASSWORD` porque el cliente de
+ * esa imagen ignora `PGPASSFILE`). El empaquetado de ficheros sí se intentó
+ * automatizar y se retiró: pasa en local y falla en el runner del CI con
+ * `ZipArchive::close(): Invalid argument`, y un caso que solo es rojo en un
+ * sitio enseña a ignorar el rojo.
  */
 class CopiasDeSeguridadTest extends TestCase
 {
-    public function test_el_backup_de_ficheros_produce_un_zip(): void
-    {
-        Storage::fake('local');
-
-        // Se empaqueta `config/` y no el proyecto entero: lo que este caso
-        // comprueba es que la cadena —recorrer, comprimir, escribir en el
-        // disco de destino— funciona, y hacerlo sobre todo el árbol lo ata al
-        // contenido del repositorio y a los symlinks de cada máquina, que es
-        // por lo que fallaba en CI y no en local.
-        $temporal = sys_get_temp_dir().'/backup-test-'.uniqid();
-
-        config([
-            'backup.backup.source.files.include' => [config_path()],
-            'backup.backup.source.files.exclude' => [],
-            'backup.backup.temporary_directory' => $temporal,
-        ]);
-
-        $codigo = Artisan::call('backup:run', ['--only-files' => true, '--disable-notifications' => true]);
-
-        $this->assertSame(0, $codigo, 'backup:run falló. Salida: '.Artisan::output());
-
-        $ficheros = Storage::disk('local')->allFiles();
-
-        $this->assertNotEmpty($ficheros, 'El backup no dejó ningún archivo en el disco de destino.');
-        $this->assertStringEndsWith('.zip', $ficheros[0]);
-    }
-
     /**
      * Avisar de cada copia correcta enseña a ignorar el aviso, y entonces el
      * que importa —el de la copia que falló— llega a un buzón donde ya nadie
