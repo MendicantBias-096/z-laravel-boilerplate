@@ -137,4 +137,29 @@ class RegisterTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['email' => 'usuario6@example.com']);
     }
+
+    /**
+     * El campo trampa es la mitad del problema que no necesita un servicio
+     * externo. Un captcha de verdad pide credenciales por proyecto; esto no
+     * pide nada y para al bot que rellena todo lo que encuentra.
+     */
+    public function test_el_campo_trampa_descarta_el_alta_sin_delatarse(): void
+    {
+        $this->seedRoles();
+
+        Livewire::test(Register::class)
+            ->set('first_name', 'Bot')
+            ->set('last_name', 'Automatico')
+            ->set('username', 'bot')
+            ->set('email', 'bot@example.com')
+            ->set('password', 'password123')
+            ->set('password_confirmation', 'password123')
+            ->set('website', 'https://spam.example.com')
+            ->call('register')
+            ->assertHasNoErrors()
+            ->assertRedirect(route('verification.notice'));
+
+        $this->assertDatabaseMissing('users', ['email' => 'bot@example.com']);
+        $this->assertGuest();
+    }
 }

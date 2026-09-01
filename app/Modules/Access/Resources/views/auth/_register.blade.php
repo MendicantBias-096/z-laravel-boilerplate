@@ -7,6 +7,17 @@
 
     <form wire:submit="register" class="flex flex-col gap-4" novalidate>
 
+        {{-- Campo trampa: invisible para una persona, irresistible para un bot.
+             Oculto con posicionamiento y no con `display:none` ni `hidden`,
+             porque un bot que mire el estilo descarta lo segundo. `tabindex`
+             y `aria-hidden` lo sacan del tabulador y del lector de pantalla,
+             que es lo que lo hace invisible de verdad para quien navega sin
+             ratón. --}}
+        <div aria-hidden="true" style="position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;">
+            <label for="website">{{ __('platform::public.website') }}</label>
+            <input type="text" id="website" name="website" wire:model="website" tabindex="-1" autocomplete="off">
+        </div>
+
         {{-- Nombre y Apellido --}}
         <div class="grid grid-cols-2 gap-3">
             <x-ui.auth-input

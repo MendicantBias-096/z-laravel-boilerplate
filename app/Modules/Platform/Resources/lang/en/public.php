@@ -18,6 +18,10 @@ return [
     // Register
     'register_title' => 'Create account',
     'register_subtitle' => 'Fill in your details to register',
+
+    // Etiqueta del campo trampa del registro. Nadie la lee: existe para que
+    // el campo parezca legítimo a un bot que inspeccione el formulario.
+    'website' => 'Website',
     'first_name' => 'First name',
     'first_name_hint' => 'Your first name',
     'last_name' => 'Last name',
