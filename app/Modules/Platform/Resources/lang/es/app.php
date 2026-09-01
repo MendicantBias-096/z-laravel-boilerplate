@@ -87,4 +87,10 @@ return [
     'role_deleted' => 'Rol eliminado',
     'role_deleted_desc' => 'El rol fue eliminado correctamente.',
 
+    // Las tres secciones del chasis del formulario de usuario.
+    'user_nav_title' => 'Ficha',
+    'user_form_hint' => 'Los datos se guardan todos juntos al pulsar el botón.',
+    'user_section_identity' => 'Identidad',
+    'user_section_account' => 'Cuenta',
+    'user_section_access' => 'Accesos',
 ];

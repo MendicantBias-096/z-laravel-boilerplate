@@ -1,85 +1,147 @@
 <div>
-    <form wire:submit="save">
-        <div class="space-y-6">
+    {{--
+        El chasis de formulario del proyecto: menú de secciones a la izquierda,
+        cuerpo con scroll propio a la derecha y pie anclado con los botones.
 
-            {{-- Datos del usuario --}}
-            <x-ts-card>
+        La caja mide siempre lo mismo, así que cambiar de sección no reacomoda
+        la página —Identidad tiene cuatro campos y Accesos ochenta— y «Guardar»
+        no se va nunca fuera de la vista.
+    --}}
+    <div class="grid overflow-hidden rounded-lg border border-line lg:h-[calc(100vh-13rem)] lg:grid-cols-[13rem_1fr]">
 
-                {{-- Foto de perfil --}}
-                <div class="mb-6 flex items-center gap-4">
-                    <div class="relative">
+        <x-ui.form-rail
+            :sections="$this->sections"
+            :section="$section"
+            :title="__('platform::app.user_nav_title')"
+        >
+            @if ($record)
+                <x-slot:pie>
+                    <dl class="space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <dt class="text-content-muted">{{ __('platform::app.user_status_active') }}</dt>
+                            <dd class="flex items-center gap-1.5 font-medium {{ $record->is_active ? 'text-success' : 'text-content-muted' }}">
+                                <span class="size-1.5 rounded-full {{ $record->is_active ? 'bg-success' : 'bg-content-muted' }}"></span>
+                                {{ $record->is_active ? __('platform::app.user_status_active') : __('platform::app.user_status_inactive') }}
+                            </dd>
+                        </div>
+                    </dl>
+                </x-slot:pie>
+            @endif
+        </x-ui.form-rail>
+
+        <x-ui.form-shell
+            action="save"
+            :title="$record ? $record->username : __('platform::app.user_btn_create')"
+            :description="__('platform::app.user_form_hint')"
+            :icon="$this->sections[array_search($section, array_column($this->sections, 'key'), true) ?: 0]['icon']"
+        >
+
+            @if ($section === 'identity')
+                <x-ui.form-section
+                    :title="__('platform::app.user_section_identity')"
+                    :description="__('platform::app.user_photo')"
+                >
+                    <div class="flex items-center gap-4">
                         @if ($photo)
                             <img
                                 src="{{ $photo->temporaryUrl() }}"
                                 alt="{{ __('platform::app.user_photo_preview') }}"
-                                class="h-20 w-20 rounded-full object-cover ring-2 ring-line"
+                                class="size-20 shrink-0 rounded-full object-cover ring-2 ring-line"
                             >
                         @elseif ($record?->profile?->photo_url)
                             <img
                                 src="{{ $record->profile->photo_url }}"
                                 alt="{{ __('platform::app.user_photo') }}"
-                                class="h-20 w-20 rounded-full object-cover ring-2 ring-line"
+                                class="size-20 shrink-0 rounded-full object-cover ring-2 ring-line"
                             >
                         @else
-                            <div
-                                class="flex h-20 w-20 items-center justify-center rounded-full text-2xl font-bold text-white"
-                                style="background: linear-gradient(135deg, #f53003 0%, #c0392b 100%);"
-                            >
+                            <div class="flex size-20 shrink-0 items-center justify-center rounded-full bg-primary-500 text-2xl font-bold text-white">
                                 {{ $record ? mb_strtoupper(mb_substr($record->name, 0, 1)) : '?' }}
                             </div>
                         @endif
+
+                        <div class="min-w-0">
+                            <label class="mb-1 block text-sm font-medium text-content">{{ __('platform::app.user_photo') }}</label>
+                            <input
+                                type="file"
+                                wire:model="photo"
+                                accept="image/*"
+                                class="block w-full text-sm text-content-subtle file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-line file:bg-panel-alt file:px-3 file:py-1.5 file:text-sm file:text-content hover:file:bg-panel"
+                            >
+                            @error('photo')
+                                <p class="mt-1 text-xs text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-content mb-1">{{ __('platform::app.user_photo') }}</label>
-                        <input
-                            type="file"
-                            wire:model="photo"
-                            accept="image/*"
-                            class="block text-sm text-content-subtle file:mr-3 file:cursor-pointer file:rounded-md file:border file:border-line file:bg-panel-alt file:px-3 file:py-1.5 file:text-sm file:text-content hover:file:bg-panel"
-                        >
-                        @error('photo')
-                            <p class="mt-1 text-xs text-danger">{{ $message }}</p>
-                        @enderror
+                    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <x-ts-input
+                            label="{{ __('platform::app.user_first_name') }}"
+                            wire:model="form.first_name"
+                            placeholder="{{ __('platform::app.user_first_name_ph') }}"
+                        />
+                        <x-ts-input
+                            label="{{ __('platform::app.user_last_name') }}"
+                            wire:model="form.last_name"
+                            placeholder="{{ __('platform::app.user_last_name_ph') }}"
+                        />
+                        <x-ts-input
+                            label="{{ __('platform::app.user_username') }}"
+                            wire:model="form.username"
+                            placeholder="{{ __('platform::app.user_username_ph') }}"
+                            prefix="@"
+                            class="sm:col-span-2"
+                        />
                     </div>
-                </div>
+                </x-ui.form-section>
+            @endif
 
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <x-ts-input
-                        label="{{ __('platform::app.user_first_name') }}"
-                        wire:model="form.first_name"
-                        placeholder="{{ __('platform::app.user_first_name_ph') }}"
-                    />
-                    <x-ts-input
-                        label="{{ __('platform::app.user_last_name') }}"
-                        wire:model="form.last_name"
-                        placeholder="{{ __('platform::app.user_last_name_ph') }}"
-                    />
-                    <x-ts-input
-                        label="{{ __('platform::app.user_username') }}"
-                        wire:model="form.username"
-                        placeholder="{{ __('platform::app.user_username_ph') }}"
-                        prefix="@"
-                    />
-                    <x-ts-input
-                        label="{{ __('platform::app.user_email') }}"
-                        type="email"
-                        wire:model="form.email"
-                        placeholder="{{ __('platform::app.user_email_ph') }}"
-                    />
-                    <x-ts-input
-                        label="{{ $record ? __('platform::app.user_new_password') : __('platform::app.user_password') }}"
-                        type="password"
-                        wire:model="form.password"
-                        placeholder="{{ __('platform::app.user_password_ph') }}"
-                        hint="{{ $record ? __('platform::app.user_password_hint') : '' }}"
-                    />
-                    <x-ts-input
-                        label="{{ __('platform::app.user_confirm') }}"
-                        type="password"
-                        wire:model="form.password_confirmation"
-                        placeholder="{{ __('platform::app.user_confirm_ph') }}"
-                    />
+            @if ($section === 'account')
+                <x-ui.form-section
+                    :title="__('platform::app.user_section_account')"
+                    :description="__('platform::app.user_password_hint')"
+                >
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <x-ts-input
+                            label="{{ __('platform::app.user_email') }}"
+                            type="email"
+                            wire:model="form.email"
+                            placeholder="{{ __('platform::app.user_email_ph') }}"
+                            class="sm:col-span-2"
+                        />
+                        <x-ts-input
+                            label="{{ $record ? __('platform::app.user_new_password') : __('platform::app.user_password') }}"
+                            type="password"
+                            wire:model="form.password"
+                            placeholder="{{ __('platform::app.user_password_ph') }}"
+                            hint="{{ $record ? __('platform::app.user_password_hint') : '' }}"
+                        />
+                        <x-ts-input
+                            label="{{ __('platform::app.user_confirm') }}"
+                            type="password"
+                            wire:model="form.password_confirmation"
+                            placeholder="{{ __('platform::app.user_confirm_ph') }}"
+                        />
+                    </div>
+
+                    @if ($record)
+                        <div class="mt-4">
+                            <x-ts-toggle
+                                wire:model="form.is_active"
+                                label="{{ __('platform::app.user_status_active') }}"
+                                color="green"
+                            />
+                            <p class="mt-1 text-xs text-content-muted">{{ __('platform::app.user_status_hint') }}</p>
+                        </div>
+                    @endif
+                </x-ui.form-section>
+            @endif
+
+            @if ($section === 'access')
+                <x-ui.form-section
+                    :title="__('platform::app.user_role')"
+                    :description="__('platform::app.user_role_hint_new')"
+                >
                     <x-ts-select.styled
                         label="{{ __('platform::app.user_role') }}"
                         wire:model.live="form.role"
@@ -89,47 +151,27 @@
                         placeholder="{{ __('platform::app.user_role_ph') }}"
                         :hint="$record ? __('platform::app.user_role_hint_edit') : __('platform::app.user_role_hint_new')"
                     />
+                </x-ui.form-section>
 
-                    @if ($record)
-                        <div class="flex flex-col justify-center">
-                            <x-ts-toggle
-                                wire:model="form.is_active"
-                                label="{{ __('platform::app.user_status_active') }}"
-                                color="green"
-                            />
-                            <p class="mt-1 text-xs text-content-muted">{{ __('platform::app.user_status_hint') }}</p>
+                <x-ui.form-section
+                    stacked
+                    :title="__('platform::app.user_permissions')"
+                    :description="__('platform::app.user_permissions_desc')"
+                >
+                    @if ($record && $permissionList !== $originalPermissions)
+                        <div class="mb-3 flex justify-end">
+                            <x-ts-button
+                                color="secondary"
+                                sm
+                                icon="arrow-path"
+                                wire:click="restorePermissions"
+                            >
+                                {{ __('platform::app.user_restore_perms') }}
+                            </x-ts-button>
                         </div>
                     @endif
-                </div>
 
-
-            </x-ts-card>
-
-            {{-- Permisos --}}
-            <x-ts-card>
-                <x-slot:header>
-                    <div class="flex items-center justify-between py-3" style="padding-left: 14px; padding-right: 12px;">
-                        <div>
-                            <h3 class="text-sm font-semibold text-content">{{ __('platform::app.user_permissions') }}</h3>
-                            <p class="text-xs text-content-muted">{{ __('platform::app.user_permissions_desc') }}</p>
-                        </div>
-                        @if ($record && $permissionList !== $originalPermissions)
-                            <div class="group relative" x-data>
-                                <button
-                                    type="button"
-                                    wire:click="restorePermissions"
-                                    class="flex cursor-pointer items-center justify-center rounded-md border border-line bg-panel p-1.5 text-content-muted transition-colors hover:border-primary-400 hover:text-primary-600 dark:hover:border-primary-600 dark:hover:text-primary-400"
-                                >
-                                    @svg('lucide-rotate-ccw', 'size-3.5')
-                                </button>
-                                <div class="pointer-events-none absolute right-0 top-full mt-2 whitespace-nowrap rounded-md bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 dark:bg-dark-600 z-10">
-                                    {{ __('platform::app.user_restore_perms') }}
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                </x-slot:header>
-
+                    <div class="space-y-6">
                 {{-- Grid de permisos --}}
                 <div class="space-y-6">
                     @foreach ($this->permissionsByGroup as $group => $modules)
@@ -143,7 +185,7 @@
                             </div>
 
                             {{-- Módulos del grupo --}}
-                            <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                                 @foreach ($modules as $module => $permissions)
                                     @php $allSelected = $this->moduleFullySelected($module); @endphp
 
@@ -205,7 +247,7 @@
                                                             @svg('lucide-check', 'size-2 text-white')
                                                         </span>
                                                     </span>
-                                                    <span class="text-xs font-semibold text-content-muted leading-tight line-clamp-2">{{ $permLabel }}</span>
+                                                    <span class="text-xs font-semibold leading-tight text-content-muted">{{ $permLabel }}</span>
 
                                                     <template x-teleport="#app-root">
                                                         <div
@@ -228,22 +270,18 @@
                             </div>
                         </div>
                     @endforeach
-                </div>
-
-                <x-slot:footer>
-                    <div class="flex items-center justify-end gap-3">
-                        <a href="{{ route('access.users.index') }}" wire:navigate
-                           class="text-sm text-content-muted hover:text-content">
-                            {{ __('platform::app.cancel') }}
-                        </a>
-                        <x-ts-button type="submit" wire:loading.attr="disabled" sm>
-                            {{ $record ? __('platform::app.user_btn_update') : __('platform::app.user_btn_create') }}
-                        </x-ts-button>
                     </div>
-                </x-slot:footer>
+                </x-ui.form-section>
+            @endif
 
-            </x-ts-card>
-
-        </div>
-    </form>
+            <x-slot:footer>
+                <x-ui.form-footer
+                    :cancel-route="route('access.users.index')"
+                    :label="$record ? __('platform::app.user_btn_update') : __('platform::app.user_btn_create')"
+                >
+                    {{ $record?->email }}
+                </x-ui.form-footer>
+            </x-slot:footer>
+        </x-ui.form-shell>
+    </div>
 </div>
