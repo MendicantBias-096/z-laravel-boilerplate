@@ -7,6 +7,7 @@ use App\Modules\Access\Models\Role;
 use App\Modules\Access\Models\User;
 use App\Modules\Access\Notifications\UserCreatedNotification;
 use App\Modules\Access\Notifications\UserUpdatedNotification;
+use App\Modules\Access\Traits\Livewire\WithPermissionMatrix;
 use App\Modules\Platform\Services\NotificationsService;
 use App\Modules\Platform\Traits\Livewire\HasFormSections;
 use Illuminate\Contracts\View\Factory;
@@ -23,6 +24,7 @@ class Form extends Component
 {
     use HasFormSections;
     use Interactions, WithFileUploads;
+    use WithPermissionMatrix;
 
     #[Locked]
     public ?User $record = null;
@@ -142,62 +144,6 @@ class Form extends Component
             $this->permissionList = $this->record->getAllPermissions()->pluck('name')->toArray();
             $this->originalPermissions = $this->permissionList;
         }
-    }
-
-    /**
-     * Permisos organizados por grupo → módulo desde config/roles.php.
-     *
-     * @return array<string, array<string, list<string>>>
-     */
-    #[Computed]
-    public function permissionsByGroup(): array
-    {
-        $groups = config('roles.module_groups', []);
-        $allModules = config('roles.permissions', []);
-        $result = [];
-
-        foreach ($groups as $group => $modules) {
-            foreach ($modules as $module) {
-                if (isset($allModules[$module])) {
-                    $result[$group][$module] = $allModules[$module];
-                }
-            }
-        }
-
-        $grouped = array_merge(...array_values($groups));
-        foreach ($allModules as $module => $permissions) {
-            if (! in_array($module, $grouped)) {
-                $result['other'][$module] = $permissions;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Toggle de todos los permisos de un módulo.
-     */
-    public function toggleModule(string $module): void
-    {
-        $permissions = config("roles.permissions.{$module}", []);
-        $missing = array_diff($permissions, $this->permissionList);
-
-        if ($missing === []) {
-            $this->permissionList = array_values(array_diff($this->permissionList, $permissions));
-        } else {
-            $this->permissionList = array_values(array_unique(array_merge($this->permissionList, $permissions)));
-        }
-    }
-
-    /**
-     * Indica si todos los permisos de un módulo están seleccionados.
-     */
-    public function moduleFullySelected(string $module): bool
-    {
-        $permissions = config("roles.permissions.{$module}", []);
-
-        return count($permissions) > 0
-            && array_diff($permissions, $this->permissionList) === [];
     }
 
     /**

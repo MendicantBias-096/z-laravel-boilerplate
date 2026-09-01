@@ -76,6 +76,19 @@ return [
      * Agrupa módulos bajo una sección visual en el formulario de roles.
      * Los módulos que no estén en ningún grupo aparecen en "Otros".
      */
+    /**
+     * El icono de cada grupo en la matriz de permisos.
+     *
+     * Un grupo sin entrada cae en la carpeta genérica: es una etiqueta, no una
+     * regla, así que faltar no puede romper la pantalla.
+     */
+    'group_icons' => [
+        'access' => 'lucide-shield',
+        'configuracion' => 'lucide-settings',
+        'notificaciones' => 'lucide-bell',
+        'other' => 'lucide-folder',
+    ],
+
     'module_groups' => [
         'access' => ['usuarios', 'roles'],
         'configuracion' => ['sistema'],

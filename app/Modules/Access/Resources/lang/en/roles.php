@@ -7,6 +7,20 @@ return [
     'users' => 'Users',
     'new_user' => 'New user',
 
+    /**
+     * Los verbos: el eje de columnas de la matriz de permisos. Salen de la
+     * última parte del nombre del permiso (R40), así que añadir un permiso
+     * con un verbo nuevo pide su etiqueta aquí.
+     */
+    'verbs' => [
+        'view' => 'View',
+        'create' => 'Create',
+        'update' => 'Edit',
+        'delete' => 'Delete',
+        'restore' => 'Restore',
+        'manage' => 'Manage',
+    ],
+
     'groups' => [
         'access' => 'Access',
         'configuracion' => 'Configuration',

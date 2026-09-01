@@ -90,6 +90,21 @@ return [
     // Las tres secciones del chasis del formulario de usuario.
     'user_nav_title' => 'Ficha',
     'user_form_hint' => 'Los datos se guardan todos juntos al pulsar el botón.',
+    // La matriz de permisos: encabezados, avisos del lector de pantalla y
+    // los mensajes de la región viva al alternar una fila o una columna.
+    'user_permissions_filter' => 'Filtrar por módulo',
+    'user_permissions_filter_ph' => 'Todos los módulos',
+    'user_permissions_no_results' => 'Ningún módulo coincide con el filtro.',
+    'user_perm_module_col' => 'Módulo',
+    'user_perm_extras' => 'Otros permisos',
+    'user_perm_absent' => 'No disponible',
+    'user_perm_table_caption' => 'Permisos del grupo :group, por módulo y acción.',
+    'user_perm_toggle_col' => 'Conceder o quitar «:verb» en todo el grupo',
+    'user_perm_toggle_all' => 'Conceder o quitar todos los permisos de :module',
+    'user_perm_cell' => ':permission · :module',
+    'user_perm_granted' => 'Concedidos :count permisos de :subject',
+    'user_perm_revoked' => 'Quitados :count permisos de :subject',
+
     'user_section_identity' => 'Identidad',
     'user_section_account' => 'Cuenta',
     'user_section_access' => 'Accesos',
