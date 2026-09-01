@@ -29,7 +29,7 @@
 --}}
 <nav
     aria-label="{{ $title }}"
-    class="flex min-h-0 flex-col border-b border-line bg-panel-alt lg:border-b-0 lg:border-e"
+    class="flex min-h-0 shrink-0 flex-col border-b border-line bg-panel-alt lg:w-52 lg:border-b-0 lg:border-e"
 >
     <div class="hidden h-12 shrink-0 items-center border-b border-line px-4 lg:flex">
         <span class="text-xs font-semibold uppercase tracking-[0.1em] text-content-muted">
