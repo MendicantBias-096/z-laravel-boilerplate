@@ -24,6 +24,10 @@ return [
     'confirmed' => 'La confirmación de :attribute no coincide.',
     'contains' => 'Al campo :attribute le falta un valor requerido.',
     'current_password' => 'La contraseña es incorrecta.',
+    // Nadie reparte un poder que no tiene.
+    'grant_beyond_own' => 'No puedes conceder «:permission» porque tú no lo tienes.',
+    'grant_role_beyond_own' => 'No puedes conceder el rol «:role»: incluye :count permiso(s) que tú no tienes.',
+
     'date' => 'El campo :attribute no es una fecha válida.',
     'date_equals' => 'El campo :attribute debe ser una fecha igual a :date.',
     'date_format' => 'El campo :attribute no coincide con el formato :format.',
