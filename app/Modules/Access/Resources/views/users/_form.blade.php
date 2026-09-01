@@ -7,7 +7,7 @@
         la página —Identidad tiene cuatro campos y Accesos ochenta— y «Guardar»
         no se va nunca fuera de la vista.
     --}}
-    <div class="form-card flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-line lg:flex-row">
+    <div class="form-card flex min-h-0 flex-1 flex-col rounded-lg border border-line lg:flex-row">
 
         <x-ui.form-rail
             :sections="$this->sections"
