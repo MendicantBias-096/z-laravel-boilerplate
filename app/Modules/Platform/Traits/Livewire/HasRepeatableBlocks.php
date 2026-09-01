@@ -30,7 +30,9 @@ use RuntimeException;
  *
  *     protected function repeatableBlocks(): array
  *     {
- *         return ['experimentos' => ['nombre' => '', 'valor' => null, 'comprobante' => null]];
+ *         return ['experimentos' => [
+ *             'nombre' => '', 'valor' => null, 'comprobante' => null,
+ *         ]];
  *     }
  *
  * El componente necesita además `Livewire\WithFileUploads` para los archivos.
