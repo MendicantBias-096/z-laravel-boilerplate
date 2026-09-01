@@ -207,6 +207,16 @@ html, body {
     .form-card {
         height: calc(100dvh - var(--form-card-gap));
 
+        /*
+         * `clip` y no `hidden`. Los dos recortan lo que sobra, pero `hidden`
+         * **crea un contenedor desplazable**: no dibuja barras, pero obedece
+         * al scroll programático y no ofrece forma de deshacerlo. Un
+         * `scrollIntoView` —el que dispara el navegador al enfocar un control
+         * dentro— lo desplazaba y, con `contain: paint` recortando encima, la
+         * caja se quedaba en blanco hasta recargar.
+         */
+        overflow: clip;
+
         /* Dentro de una pantalla fija manda el hueco, no el cálculo. */
         &:where(.flex-1) {
             height: auto;
