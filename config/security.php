@@ -39,11 +39,15 @@ return [
     /**
      * Content Security Policy.
      *
-     * Arranca en `Report-Only`: Livewire y Alpine evalúan código en tiempo de
-     * ejecución, así que una política estricta no degrada la interfaz, la
-     * rompe entera en el primer despliegue. En `Report-Only` el navegador
-     * escribe la violación en la consola y no bloquea nada, que es como se
-     * averigua qué hace falta de verdad antes de endurecer.
+     * Bloquea. Nació en `Report-Only` —Livewire y Alpine evalúan código en
+     * tiempo de ejecución, y una política estricta no degrada la interfaz, la
+     * rompe entera— y pasó a bloqueo cuando las 13 pantallas de la aplicación
+     * dieron cero violaciones con un listener de `securitypolicyviolation`.
+     *
+     * **Un proyecto hijo que añada un origen —un CDN, un mapa, un iframe de
+     * pago— vuelve a `CSP_REPORT_ONLY=true` mientras lo mide.** Endurecer sin
+     * haber recogido es exactamente lo que rompe la interfaz en el primer
+     * despliegue.
      *
      * `'unsafe-eval'` lo pide Alpine, que compila cada expresión `x-on:` con
      * `new Function`. `'unsafe-inline'` en `style-src` lo piden los estilos
@@ -56,12 +60,9 @@ return [
      * en los tres layouts públicos, y `fonts.gstatic.com` las imágenes de emoji
      * del componente `reaction` de TallStackUI. Un proyecto hijo que sirva sus
      * fuentes desde `public/` puede quitar los dos y quedarse en `'self'`.
-     *
-     * Para pasar a bloqueo: `CSP_REPORT_ONLY=false` cuando la consola esté
-     * limpia en las pantallas que importan.
      */
     'csp' => [
-        'report_only' => (bool) env('CSP_REPORT_ONLY', true),
+        'report_only' => (bool) env('CSP_REPORT_ONLY', false),
 
         'directives' => [
             'default-src' => "'self'",

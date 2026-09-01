@@ -25,38 +25,41 @@ class CabecerasDeSeguridadTest extends TestCase
             ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
 
-    public function test_la_csp_arranca_reportando_y_no_bloqueando(): void
+    public function test_la_csp_bloquea(): void
     {
         $response = $this->get('/login');
 
-        $response->assertHeader('Content-Security-Policy-Report-Only');
-        $response->assertHeaderMissing('Content-Security-Policy');
+        $response->assertHeader('Content-Security-Policy');
+        $response->assertHeaderMissing('Content-Security-Policy-Report-Only');
 
         $this->assertStringContainsString(
             "frame-ancestors 'none'",
-            (string) $response->headers->get('Content-Security-Policy-Report-Only'),
+            (string) $response->headers->get('Content-Security-Policy'),
         );
     }
 
-    public function test_la_csp_bloquea_cuando_se_desactiva_report_only(): void
+    /**
+     * La válvula que usa un proyecto hijo mientras mide un origen nuevo. Sin
+     * ella, la única forma de averiguar qué falta es romper la interfaz.
+     */
+    public function test_report_only_reporta_sin_bloquear(): void
     {
-        config(['security.csp.report_only' => false]);
+        config(['security.csp.report_only' => true]);
 
         $this->get('/login')
-            ->assertHeader('Content-Security-Policy')
-            ->assertHeaderMissing('Content-Security-Policy-Report-Only');
+            ->assertHeader('Content-Security-Policy-Report-Only')
+            ->assertHeaderMissing('Content-Security-Policy');
     }
 
     /**
-     * Los dos orígenes salieron de recoger los reportes del navegador en
-     * `/login`, no de suponerlos. Quitarlos deja la interfaz sin la tipografía
-     * y sin los emojis el día que la CSP pase a bloquear, que es cuando ya no
-     * se puede averiguar leyendo la consola.
+     * Los dos orígenes salieron de recoger los reportes del navegador, no de
+     * suponerlos. Ahora que la política bloquea, quitarlos deja la interfaz sin
+     * la tipografía y sin los emojis, y en producción no hay consola que leer.
      */
     public function test_la_csp_admite_los_origenes_que_las_vistas_usan(): void
     {
         $policy = (string) $this->get('/login')
-            ->headers->get('Content-Security-Policy-Report-Only');
+            ->headers->get('Content-Security-Policy');
 
         $this->assertStringContainsString("style-src 'self' 'unsafe-inline' https://fonts.bunny.net", $policy);
         $this->assertStringContainsString('font-src \'self\' data: https://fonts.bunny.net', $policy);
