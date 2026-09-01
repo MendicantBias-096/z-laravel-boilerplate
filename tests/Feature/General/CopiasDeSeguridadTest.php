@@ -28,6 +28,16 @@ class CopiasDeSeguridadTest extends TestCase
     {
         Storage::fake('local');
 
+        // Se empaqueta `config/` y no el proyecto entero: lo que este caso
+        // comprueba es que la cadena —recorrer, comprimir, escribir en el
+        // disco de destino— funciona, y hacerlo sobre todo el árbol lo ata al
+        // contenido del repositorio y a los symlinks de cada máquina, que es
+        // por lo que fallaba en CI y no en local.
+        config([
+            'backup.backup.source.files.include' => [config_path()],
+            'backup.backup.source.files.exclude' => [],
+        ]);
+
         $this->artisan('backup:run', ['--only-files' => true, '--disable-notifications' => true])
             ->assertSuccessful();
 
