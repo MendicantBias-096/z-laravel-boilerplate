@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\LogRequestDuration;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Modules\Access\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Foundation\Application;
@@ -23,11 +24,21 @@ return Application::configure(basePath: dirname(__DIR__))
         // ServiceProvider, así que aquí ya no queda nada que agrupar.
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // `config()` todavía no está cargada cuando corre este closure, así
+        // que el valor se lee del entorno aquí y `config/security.php` lo
+        // documenta. Sin proxies confiados, `isSecure()` miente detrás de un
+        // balanceador y se caen con él la cookie `Secure` y el HSTS.
+        $proxies = env('TRUSTED_PROXIES', '*');
+        $middleware->trustProxies(
+            at: $proxies === '*' ? '*' : array_map(trim(...), explode(',', (string) $proxies)),
+        );
+
         $middleware->encryptCookies(except: ['darkMode', 'locale']);
         $middleware->redirectGuestsTo('/login');
         $middleware->statefulApi();
 
         $middleware->web(append: [
+            SecurityHeaders::class,
             SetLocale::class,
             EnsureUserIsActive::class,
             LogRequestDuration::class,
