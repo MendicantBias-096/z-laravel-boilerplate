@@ -90,6 +90,21 @@ return [
     // Las tres secciones del chasis del formulario de usuario.
     'user_nav_title' => 'Record',
     'user_form_hint' => 'Everything is saved together when you press the button.',
+    // La matriz de permisos: encabezados, avisos del lector de pantalla y
+    // los mensajes de la región viva al alternar una fila o una columna.
+    'user_permissions_filter' => 'Filter by module',
+    'user_permissions_filter_ph' => 'All modules',
+    'user_permissions_no_results' => 'No module matches the filter.',
+    'user_perm_module_col' => 'Module',
+    'user_perm_extras' => 'Other permissions',
+    'user_perm_absent' => 'Not available',
+    'user_perm_table_caption' => 'Permissions for the :group group, by module and action.',
+    'user_perm_toggle_col' => 'Grant or revoke “:verb” across the group',
+    'user_perm_toggle_all' => 'Grant or revoke every permission in :module',
+    'user_perm_cell' => ':permission · :module',
+    'user_perm_granted' => 'Granted :count permissions in :subject',
+    'user_perm_revoked' => 'Revoked :count permissions in :subject',
+
     'user_section_identity' => 'Identity',
     'user_section_account' => 'Account',
     'user_section_access' => 'Access',

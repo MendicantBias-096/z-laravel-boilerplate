@@ -10,6 +10,20 @@ return [
     /**
      * Grupos de módulos
      */
+    /**
+     * Los verbos: el eje de columnas de la matriz de permisos. Salen de la
+     * última parte del nombre del permiso (R40), así que añadir un permiso
+     * con un verbo nuevo pide su etiqueta aquí.
+     */
+    'verbs' => [
+        'view' => 'Ver',
+        'create' => 'Crear',
+        'update' => 'Editar',
+        'delete' => 'Eliminar',
+        'restore' => 'Restaurar',
+        'manage' => 'Administrar',
+    ],
+
     'groups' => [
         'access' => 'Accesos',
         'configuracion' => 'Configuración',

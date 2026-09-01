@@ -168,118 +168,20 @@
                     :title="__('platform::app.user_permissions')"
                     :description="__('platform::app.user_permissions_desc')"
                 >
-                    @if ($record && $permissionList !== $originalPermissions)
-                        <div class="mb-3 flex justify-end">
-                            <x-ts-button
-                                color="secondary"
-                                sm
-                                icon="arrow-path"
-                                wire:click="restorePermissions"
-                            >
-                                {{ __('platform::app.user_restore_perms') }}
-                            </x-ts-button>
-                        </div>
-                    @endif
-
-                {{-- Grid de permisos --}}
-                <div class="space-y-6">
-                    @foreach ($this->permissionsByGroup as $group => $modules)
-                        <div>
-                            {{-- Cabecera de grupo --}}
-                            <div class="mb-3 flex items-center gap-3">
-                                <span class="text-xs font-bold uppercase tracking-widest text-content-subtle">
-                                    {{ __("access::roles.groups.{$group}") }}
-                                </span>
-                                <div class="h-px flex-1 bg-line"></div>
-                            </div>
-
-                            {{-- Módulos del grupo --}}
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                                @foreach ($modules as $module => $permissions)
-                                    @php $allSelected = $this->moduleFullySelected($module); @endphp
-
-                                    <fieldset class="rounded-lg border border-primary-400/40 dark:border-primary-600/40 px-4 pt-3">
-                                        <legend class="-ml-1 px-2">
-                                            <button
-                                                type="button"
-                                                wire:click="toggleModule('{{ $module }}')"
-                                                class="flex cursor-pointer items-center gap-1.5 rounded px-1 py-0.5"
-                                            >
-                                                <span @class([
-                                                    'flex size-3.5 shrink-0 items-center justify-center rounded border transition-colors',
-                                                    'border-primary-500 bg-primary-500' => $allSelected,
-                                                    'border-line bg-panel' => !$allSelected,
-                                                ])>
-                                                    @if ($allSelected)
-                                                        @svg('lucide-check', 'size-2 text-white')
-                                                    @endif
-                                                </span>
-                                                <span class="text-xs font-semibold tracking-wide text-primary-600 dark:text-primary-400">
-                                                    {{ __("access::roles.modules.{$module}") }}
-                                                </span>
-                                            </button>
-                                        </legend>
-
-                                        <div class="grid gap-x-2 gap-y-0.5 pb-2 {{ count($permissions) > 1 ? 'grid-cols-2' : 'grid-cols-1' }}" style="margin-top: 6px;">
-                                            @foreach ($permissions as $permission)
-                                                @php
-                                                    // El nombre del permiso lleva puntos (R40) y `__()` los
-                                                    // lee como niveles de array, así que la búsqueda se hace
-                                                    // sobre el array ya resuelto, donde el punto no significa
-                                                    // nada.
-                                                    $permLabel = __('access::roles.permissions')[$permission] ?? $permission;
-                                                    $permDesc  = __('access::roles.descriptions')[$permission] ?? '';
-                                                @endphp
-                                                <label
-                                                    class="flex cursor-pointer items-center gap-2 rounded px-2 py-1 mt-[4px] ml-1 transition-colors hover:bg-primary-50 dark:hover:bg-primary-950/30"
-                                                    x-data="{
-                                                        show: false,
-                                                        pos: { top: 0, left: 0 },
-                                                        open(el) {
-                                                            const r = el.getBoundingClientRect();
-                                                            this.pos = { top: r.top - 8, left: r.left + r.width / 2 };
-                                                            this.show = true;
-                                                        }
-                                                    }"
-                                                    @mouseenter="open($el)"
-                                                    @mouseleave="show = false"
-                                                >
-                                                    <span class="relative size-3.5 shrink-0">
-                                                        <input
-                                                            type="checkbox"
-                                                            wire:model.live="permissionList"
-                                                            value="{{ $permission }}"
-                                                            class="peer sr-only"
-                                                        />
-                                                        <span class="absolute inset-0 rounded border border-line bg-panel transition-colors peer-checked:border-primary-500 peer-checked:bg-primary-500"></span>
-                                                        <span class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity peer-checked:opacity-100">
-                                                            @svg('lucide-check', 'size-2 text-white')
-                                                        </span>
-                                                    </span>
-                                                    <span class="text-xs font-semibold leading-tight text-content-muted">{{ $permLabel }}</span>
-
-                                                    <template x-teleport="#app-root">
-                                                        <div
-                                                            x-show="show"
-                                                            x-cloak
-                                                            x-transition:enter="transition ease-out duration-100"
-                                                            x-transition:enter-start="opacity-0 translate-y-1"
-                                                            x-transition:enter-end="opacity-100 translate-y-0"
-                                                            :style="`position:fixed; top:${pos.top}px; left:${pos.left}px; transform:translate(-50%,-100%); z-index:9999;`"
-                                                            class="w-72 rounded-lg border border-line bg-panel px-3 py-2 text-sm text-content-muted shadow-lg"
-                                                        >
-                                                            {{ $permDesc }}
-                                                        </div>
-                                                    </template>
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    </fieldset>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
-                    </div>
+                    <x-ui.permissions.matrix :matrix="$this->permissionMatrix">
+                        <x-slot name="acciones">
+                            @if ($record && $permissionList !== $originalPermissions)
+                                <button
+                                    type="button"
+                                    wire:click="restorePermissions"
+                                    class="inline-flex shrink-0 cursor-pointer items-center gap-1.5 pb-2 text-sm font-medium text-content-muted transition-colors hover:text-content"
+                                >
+                                    @svg('lucide-rotate-ccw', 'size-3.5', ['aria-hidden' => 'true'])
+                                    {{ __('platform::app.user_restore_perms') }}
+                                </button>
+                            @endif
+                        </x-slot>
+                    </x-ui.permissions.matrix>
                 </x-ui.form-section>
             @endif
 
