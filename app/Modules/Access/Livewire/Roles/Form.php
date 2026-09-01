@@ -3,9 +3,9 @@
 namespace App\Modules\Access\Livewire\Roles;
 
 use App\Modules\Access\Models\Role;
-use App\Modules\Access\Models\User;
 use App\Modules\Access\Notifications\RoleCreatedNotification;
 use App\Modules\Access\Notifications\RoleUpdatedNotification;
+use App\Modules\Access\Rules\GrantablePermission;
 use App\Modules\Access\Traits\Livewire\WithPermissionMatrix;
 use App\Modules\Platform\Services\NotificationsService;
 use Illuminate\Contracts\View\Factory;
@@ -94,7 +94,7 @@ class Form extends Component
                     : Rule::unique('roles', 'name'),
             ],
             'permissionList' => ['array'],
-            'permissionList.*' => ['string', Rule::in($this->grantablePermissions())],
+            'permissionList.*' => ['string', new GrantablePermission(auth()->user())],
         ]);
 
         // Ver la nota de `UserForm::store()`: el id como atributo de búsqueda
@@ -122,20 +122,6 @@ class Form extends Component
             ->send();
 
         $this->redirect(route('access.roles.index'), navigate: true);
-    }
-
-    /**
-     * Solo se mete en un rol lo que el actor ya tiene. Sin esto, quien puede
-     * crear roles se fabrica uno con todos los permisos y se lo asigna.
-     *
-     * @return list<string>
-     */
-    private function grantablePermissions(): array
-    {
-        /** @var User $actor */
-        $actor = auth()->user();
-
-        return array_values($actor->getAllPermissions()->pluck('name')->all());
     }
 
     public function render(): Factory|View

@@ -7,12 +7,13 @@ use App\Modules\Access\Models\Role;
 use App\Modules\Access\Models\User;
 use App\Modules\Access\Notifications\UserCreatedNotification;
 use App\Modules\Access\Notifications\UserUpdatedNotification;
+use App\Modules\Access\Rules\GrantablePermission;
+use App\Modules\Access\Rules\GrantableRole;
 use App\Modules\Access\Traits\Livewire\WithPermissionMatrix;
 use App\Modules\Platform\Services\NotificationsService;
 use App\Modules\Platform\Traits\Livewire\HasFormSections;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -59,9 +60,18 @@ class Form extends Component
                 'key' => 'access',
                 'icon' => 'lucide-shield',
                 'label' => __('platform::app.user_section_access'),
-                'badge' => count($this->permissionList).'/'.count($this->grantablePermissions()),
+                // Sobre lo que el actor puede repartir, no sobre el catálogo
+                // entero: un supervisor con diez permisos vería «3/84» y
+                // pensaría que le faltan setenta y cuatro por marcar.
+                'badge' => count($this->permissionList).'/'.$this->concedibles(),
             ],
         ];
+    }
+
+    /** Cuántos permisos puede repartir quien está mirando la ficha. */
+    private function concedibles(): int
+    {
+        return auth()->user()?->getAllPermissions()->count() ?? 0;
     }
 
     /**
@@ -195,8 +205,8 @@ class Form extends Component
 
         $this->validate([
             'permissionList' => ['array'],
-            'permissionList.*' => ['string', Rule::in($this->grantablePermissions())],
-            'form.role' => ['nullable', Rule::in($this->grantableRoles())],
+            'permissionList.*' => ['string', new GrantablePermission(auth()->user())],
+            'form.role' => ['nullable', 'exists:roles,name', new GrantableRole(auth()->user())],
         ]);
 
         $isEdit = $this->form->id !== null;
@@ -229,41 +239,6 @@ class Form extends Component
             ->send();
 
         $this->redirect(route('access.users.index'), navigate: true);
-    }
-
-    /**
-     * Los permisos que el actor puede delegar: solo los que ya tiene.
-     *
-     * `exists:permissions,name` comprueba que el permiso exista, no que quien
-     * lo concede pueda concederlo. Sin esta lista, cualquiera que alcance el
-     * formulario se firma a sí mismo el permiso que le falte.
-     *
-     * @return list<string>
-     */
-    private function grantablePermissions(): array
-    {
-        /** @var User $actor */
-        $actor = auth()->user();
-
-        return array_values($actor->getAllPermissions()->pluck('name')->all());
-    }
-
-    /**
-     * Un rol es delegable cuando el actor tiene todos sus permisos. Asignarlo
-     * concede el paquete entero, así que la regla es la misma de arriba.
-     *
-     * @return list<string>
-     */
-    private function grantableRoles(): array
-    {
-        $mine = $this->grantablePermissions();
-
-        // `filter` deja huecos en las claves, así que `all()` no produce una
-        // list; `values()` los cierra antes de salir.
-        return array_values(Role::with('permissions')->get()
-            ->filter(fn (Role $role): bool => $role->permissions->pluck('name')->diff($mine)->isEmpty())
-            ->pluck('name')
-            ->all());
     }
 
     public function render(): Factory|View

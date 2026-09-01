@@ -6,6 +6,7 @@ namespace App\Modules\Access\Tests\Feature\Users;
 
 use App\Modules\Access\Livewire\Roles\Form as RoleForm;
 use App\Modules\Access\Livewire\Users\Form as UserForm;
+use App\Modules\Access\Models\Role;
 use App\Modules\Access\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -146,6 +147,81 @@ class EscaladaDePrivilegiosTest extends TestCase
             ->assertHasErrors('permissionList.0');
 
         $this->assertDatabaseMissing('roles', ['name' => 'suplantador']);
+    }
+
+    /**
+     * El caso positivo, que es lo que evita que la regla se pase de estricta:
+     * repartir lo que uno tiene es exactamente para lo que existe delegar.
+     */
+    public function test_si_se_concede_lo_que_el_actor_si_tiene(): void
+    {
+        Notification::fake();
+        $actor = $this->userWithPermissions(['access.users.create', 'access.users.view']);
+
+        Livewire::actingAs($actor)
+            ->test(UserForm::class)
+            ->set('form.username', 'delegado')
+            ->set('form.email', 'delegado@example.com')
+            ->set('form.first_name', 'Nombre')
+            ->set('form.last_name', 'Apellido')
+            ->set('form.password', 'password123')
+            ->set('form.password_confirmation', 'password123')
+            ->set('permissionList', ['access.users.view'])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('users', ['email' => 'delegado@example.com']);
+    }
+
+    /**
+     * Lo que hace valiosa a la regla frente a una lista de «quién otorga qué»:
+     * el rol se crea después de escribirla y queda cubierto igual, porque la
+     * respuesta sale de sus permisos y no de una tabla que mantener a mano.
+     */
+    public function test_un_rol_creado_despues_se_juzga_por_sus_permisos(): void
+    {
+        $actor = $this->userWithPermissions(['access.users.create']);
+
+        $supervisor = Role::create(['name' => 'supervisor', 'display_name' => 'Supervisor']);
+        $supervisor->givePermissionTo('platform.settings.manage');
+
+        Livewire::actingAs($actor)
+            ->test(UserForm::class)
+            ->set('form.username', 'nuevo')
+            ->set('form.email', 'nuevo@example.com')
+            ->set('form.first_name', 'Nombre')
+            ->set('form.last_name', 'Apellido')
+            ->set('form.password', 'password123')
+            ->set('form.password_confirmation', 'password123')
+            ->set('form.role', 'supervisor')
+            ->call('save')
+            ->assertHasErrors('form.role');
+
+        $this->assertDatabaseMissing('users', ['email' => 'nuevo@example.com']);
+    }
+
+    /**
+     * La misma puerta, la otra pantalla: un rol es un paquete de permisos, así
+     * que llenarlo con lo que uno no tiene es la misma escalada por otro sitio.
+     */
+    public function test_el_error_dice_que_permiso_no_se_puede_conceder(): void
+    {
+        $actor = $this->userWithPermissions(['access.roles.create']);
+
+        $componente = Livewire::actingAs($actor)
+            ->test(RoleForm::class)
+            ->set('display_name', 'Inventado')
+            ->set('name', 'inventado')
+            ->set('permissionList', ['platform.settings.manage'])
+            ->call('save')
+            ->assertHasErrors('permissionList.0');
+
+        // El mensaje nombra el permiso. `Rule::in` decía «el valor
+        // seleccionado no es válido», que no explica nada.
+        $this->assertStringContainsString(
+            'platform.settings.manage',
+            (string) $componente->instance()->getErrorBag()->first('permissionList.0'),
+        );
     }
 
     /**
