@@ -1,4 +1,9 @@
-@props(['matrix' => ['tables' => [], 'blocks' => []]])
+@props([
+    'matrix' => ['tables' => [], 'blocks' => []],
+    // Se muestra pero no se edita. Un control vivo que no guarda nada promete
+    // algo que no se va a cumplir.
+    'disabled' => false,
+])
 
 {{--
     La matriz de permisos, compartida por Usuarios y por Roles.
@@ -87,7 +92,11 @@
                                             role="checkbox"
                                             aria-checked="{{ ['all' => 'true', 'some' => 'mixed', 'none' => 'false'][$columnState] }}"
                                             aria-label="{{ __('platform::app.user_perm_toggle_col', ['verb' => __("access::roles.verbs.{$verb}")]) }}"
-                                            class="flex w-full cursor-pointer flex-col items-center gap-1.5 px-2 py-2 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-content-muted transition-colors hover:bg-panel hover:text-content"
+                                            @disabled($disabled)
+                                            @class([
+                                                'flex w-full flex-col items-center gap-1.5 px-2 py-2 text-[0.6875rem] font-semibold uppercase tracking-[0.08em] text-content-muted',
+                                                'cursor-pointer transition-colors hover:bg-panel hover:text-content' => ! $disabled,
+                                            ])
                                         >
                                             {{ __("access::roles.verbs.{$verb}") }}
                                             <x-ui.permissions.box :state="$columnState" />
@@ -123,7 +132,11 @@
                                             role="checkbox"
                                             aria-checked="{{ ['all' => 'true', 'some' => 'mixed', 'none' => 'false'][$moduleState] }}"
                                             aria-label="{{ __('platform::app.user_perm_toggle_all', ['module' => __("access::roles.modules.{$module}")]) }}"
-                                            class="flex h-full min-h-11 w-full min-w-44 cursor-pointer items-center gap-2.5 px-4 transition-colors hover:bg-panel-alt"
+                                            @disabled($disabled)
+                                            @class([
+                                                'flex h-full min-h-11 w-full min-w-44 items-center gap-2.5 px-4',
+                                                'cursor-pointer transition-colors hover:bg-panel-alt' => ! $disabled,
+                                            ])
                                         >
                                             <x-ui.permissions.box :state="$moduleState" />
                                             <span class="truncate text-sm font-medium text-content">
@@ -152,7 +165,10 @@
                                                 $id = 'celda-'.\Illuminate\Support\Str::slug($permission);
                                             @endphp
                                             <td @class(['border-s border-line p-0', 'bg-primary-500/[0.08]' => $marcado])>
-                                                <label class="flex h-11 cursor-pointer items-center justify-center transition-colors hover:bg-panel-alt">
+                                                <label @class([
+                                                    'flex h-11 items-center justify-center',
+                                                    'cursor-pointer transition-colors hover:bg-panel-alt' => ! $disabled,
+                                                ])>
                                                     <span class="relative size-4">
                                                         <input
                                                             type="checkbox"
@@ -161,6 +177,7 @@
                                                             value="{{ $permission }}"
                                                             aria-label="{{ __('platform::app.user_perm_cell', ['permission' => $etiquetaDe($permission), 'module' => __("access::roles.modules.{$module}")]) }}"
                                                             aria-describedby="{{ $id }}-desc"
+                                                            @disabled($disabled)
                                                             class="peer absolute inset-0 cursor-pointer opacity-0"
                                                         />
                                                         <span class="pointer-events-none absolute inset-0 rounded border border-content-subtle bg-panel transition-colors peer-checked:border-primary-600 peer-checked:bg-primary-600 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary-600 dark:peer-checked:border-primary-500 dark:peer-checked:bg-primary-500"></span>
@@ -184,6 +201,7 @@
                                                     :permission="$extra"
                                                     :module="$module"
                                                     :granted="in_array($extra, $this->permissionList, true)"
+                                                    :disabled="$disabled"
                                                 />
                                             @endforeach
                                         </div>
@@ -216,6 +234,7 @@
                                         :permission="$permission"
                                         :module="$module"
                                         :granted="in_array($permission, $this->permissionList, true)"
+                                        :disabled="$disabled"
                                     />
                                 @endforeach
                             </div>

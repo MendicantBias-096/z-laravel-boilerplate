@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Platform\Traits\Livewire;
 
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 
 /**
@@ -40,6 +41,21 @@ trait HasFormSections
      */
     #[Url]
     public string $section = '';
+
+    /**
+     * Las secciones, para la vista.
+     *
+     * `#[Computed]` y no un acceso directo a `formSections()`: la vista las
+     * pide varias veces —el menú, el icono del encabezado— y algunas llevan un
+     * contador que cuesta calcular.
+     *
+     * @return list<array{key: string, icon: string, label: string, badge?: string}>
+     */
+    #[Computed]
+    public function sections(): array
+    {
+        return $this->formSections();
+    }
 
     /**
      * @return list<array{key: string, icon: string, label: string, badge?: string}>

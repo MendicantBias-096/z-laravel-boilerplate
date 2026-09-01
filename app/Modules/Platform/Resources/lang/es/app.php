@@ -105,6 +105,11 @@ return [
     'user_perm_granted' => 'Concedidos :count permisos de :subject',
     'user_perm_revoked' => 'Quitados :count permisos de :subject',
 
+    // Las secciones del chasis de la ficha de rol.
+    'role_nav_title' => 'Rol',
+    'role_section_identity' => 'Identidad',
+    'role_section_permissions' => 'Permisos',
+
     'user_section_identity' => 'Identidad',
     'user_section_account' => 'Cuenta',
     'user_section_access' => 'Accesos',

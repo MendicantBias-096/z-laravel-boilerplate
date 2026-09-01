@@ -6,7 +6,9 @@ use App\Modules\Access\Models\Role;
 use App\Modules\Access\Models\User;
 use App\Modules\Access\Notifications\RoleCreatedNotification;
 use App\Modules\Access\Notifications\RoleUpdatedNotification;
+use App\Modules\Access\Traits\Livewire\WithPermissionMatrix;
 use App\Modules\Platform\Services\NotificationsService;
+use App\Modules\Platform\Traits\Livewire\HasFormSections;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -18,7 +20,9 @@ use TallStackUi\Traits\Interactions;
 
 class Form extends Component
 {
+    use HasFormSections;
     use Interactions;
+    use WithPermissionMatrix;
 
     #[Locked]
     public ?Role $record = null;
@@ -29,8 +33,40 @@ class Form extends Component
 
     public array $permissionList = [];
 
+    /**
+     * Dos secciones: el nombre y lo que el rol concede.
+     *
+     * @return list<array{key: string, icon: string, label: string, badge?: string}>
+     */
+    protected function formSections(): array
+    {
+        return [
+            ['key' => 'identity', 'icon' => 'lucide-tag', 'label' => __('platform::app.role_section_identity')],
+            [
+                'key' => 'permissions',
+                'icon' => 'lucide-shield',
+                'label' => __('platform::app.role_section_permissions'),
+                'badge' => (string) count($this->permissionList),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function sectionFields(): array
+    {
+        return [
+            'display_name' => 'identity',
+            'name' => 'identity',
+            'permissionList' => 'permissions',
+        ];
+    }
+
     public function mount(): void
     {
+        $this->section = $this->section ?: $this->firstSectionKey();
+
         if ($this->record instanceof Role) {
             $this->display_name = $this->record->display_name ?? $this->record->name;
             $this->name = $this->record->name;
@@ -57,63 +93,6 @@ class Form extends Component
         $this->name = Str::slug($value);
     }
 
-    /**
-     * Permisos organizados por grupo → módulo desde config/roles.php.
-     *
-     * @return array<string, array<string, list<string>>>
-     */
-    #[Computed]
-    public function permissionsByGroup(): array
-    {
-        $groups = config('roles.module_groups', []);
-        $allModules = config('roles.permissions', []);
-        $result = [];
-
-        foreach ($groups as $group => $modules) {
-            foreach ($modules as $module) {
-                if (isset($allModules[$module])) {
-                    $result[$group][$module] = $allModules[$module];
-                }
-            }
-        }
-
-        // Módulos sin grupo asignado → "other"
-        $grouped = array_merge(...array_values($groups));
-        foreach ($allModules as $module => $permissions) {
-            if (! in_array($module, $grouped)) {
-                $result['other'][$module] = $permissions;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Toggle de todos los permisos de un módulo.
-     */
-    public function toggleModule(string $module): void
-    {
-        $permissions = config("roles.permissions.{$module}", []);
-        $missing = array_diff($permissions, $this->permissionList);
-
-        if ($missing === []) {
-            $this->permissionList = array_values(array_diff($this->permissionList, $permissions));
-        } else {
-            $this->permissionList = array_values(array_unique(array_merge($this->permissionList, $permissions)));
-        }
-    }
-
-    /**
-     * Indica si todos los permisos de un módulo están seleccionados.
-     */
-    public function moduleFullySelected(string $module): bool
-    {
-        $permissions = config("roles.permissions.{$module}", []);
-
-        return count($permissions) > 0
-            && array_diff($permissions, $this->permissionList) === [];
-    }
-
     /** Un rol de plataforma se muestra, pero no se edita. */
     #[Computed]
     public function isProtected(): bool
@@ -123,12 +102,21 @@ class Form extends Component
 
     public function save(): void
     {
-        $isEdit = $this->record instanceof Role;
-
         // La ruta no interviene en una petición de Livewire, así que la puerta
         // se comprueba aquí. Un rol concentra permisos: crearlo o editarlo es
         // repartir privilegios.
-        $this->authorize($isEdit ? 'access.roles.update' : 'access.roles.create');
+        //
+        // Vive en `save()` y no en `guardar()` a propósito: éste es el método
+        // que el navegador alcanza, y esconder la guarda un nivel más abajo la
+        // vuelve invisible para quien lee —y para R58—.
+        $this->authorize($this->record instanceof Role ? 'access.roles.update' : 'access.roles.create');
+
+        $this->saveShowingErrors(fn () => $this->guardar());
+    }
+
+    private function guardar(): void
+    {
+        $isEdit = $this->record instanceof Role;
 
         // La vista ya desactiva los campos; esto es lo que de verdad decide.
         // Sin el guard bastaría con quitar el `disabled` desde el navegador

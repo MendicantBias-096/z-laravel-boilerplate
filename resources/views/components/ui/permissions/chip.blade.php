@@ -1,4 +1,4 @@
-@props(['permission' => '', 'module' => '', 'granted' => false])
+@props(['permission' => '', 'module' => '', 'granted' => false, 'disabled' => false])
 
 {{-- Un permiso que no comparte columna con nadie: restaurar, administrar, los
      eventos de notificación. Lleva su etiqueta encima porque no hay
@@ -18,13 +18,13 @@
     formulario. Las celdas de la matriz ya usaban este patrón, y por eso nunca
     fallaron; el chip era el único que se había quedado atrás.
 --}}
-<label
-    class="relative inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors
-        border-line bg-panel-alt text-content-muted hover:border-content-subtle hover:text-content
-        has-[:checked]:border-primary-600/45 has-[:checked]:bg-primary-500/10 has-[:checked]:text-content
-        has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-600
-        dark:has-[:checked]:border-primary-500/45"
->
+<label @class([
+    'relative inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+    'border-line bg-panel-alt text-content-muted',
+    'has-[:checked]:border-primary-600/45 has-[:checked]:bg-primary-500/10 has-[:checked]:text-content dark:has-[:checked]:border-primary-500/45',
+    'has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary-600',
+    'cursor-pointer hover:border-content-subtle hover:text-content' => ! $disabled,
+])>
     <input
         type="checkbox"
         wire:model.live="permissionList"
@@ -32,6 +32,7 @@
         value="{{ $permission }}"
         aria-label="{{ __('platform::app.user_perm_cell', ['permission' => $etiqueta, 'module' => __("access::roles.modules.{$module}")]) }}"
         @if ($descripcion) aria-describedby="{{ $id }}-desc" @endif
+        @disabled($disabled)
         class="peer absolute inset-0 cursor-pointer opacity-0"
     />
 
