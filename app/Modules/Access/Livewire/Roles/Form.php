@@ -8,7 +8,6 @@ use App\Modules\Access\Notifications\RoleCreatedNotification;
 use App\Modules\Access\Notifications\RoleUpdatedNotification;
 use App\Modules\Access\Traits\Livewire\WithPermissionMatrix;
 use App\Modules\Platform\Services\NotificationsService;
-use App\Modules\Platform\Traits\Livewire\HasFormSections;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -20,7 +19,6 @@ use TallStackUi\Traits\Interactions;
 
 class Form extends Component
 {
-    use HasFormSections;
     use Interactions;
     use WithPermissionMatrix;
 
@@ -33,40 +31,8 @@ class Form extends Component
 
     public array $permissionList = [];
 
-    /**
-     * Dos secciones: el nombre y lo que el rol concede.
-     *
-     * @return list<array{key: string, icon: string, label: string, badge?: string}>
-     */
-    protected function formSections(): array
-    {
-        return [
-            ['key' => 'identity', 'icon' => 'lucide-tag', 'label' => __('platform::app.role_section_identity')],
-            [
-                'key' => 'permissions',
-                'icon' => 'lucide-shield',
-                'label' => __('platform::app.role_section_permissions'),
-                'badge' => (string) count($this->permissionList),
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function sectionFields(): array
-    {
-        return [
-            'display_name' => 'identity',
-            'name' => 'identity',
-            'permissionList' => 'permissions',
-        ];
-    }
-
     public function mount(): void
     {
-        $this->section = $this->section ?: $this->firstSectionKey();
-
         if ($this->record instanceof Role) {
             $this->display_name = $this->record->display_name ?? $this->record->name;
             $this->name = $this->record->name;
@@ -102,21 +68,12 @@ class Form extends Component
 
     public function save(): void
     {
+        $isEdit = $this->record instanceof Role;
+
         // La ruta no interviene en una petición de Livewire, así que la puerta
         // se comprueba aquí. Un rol concentra permisos: crearlo o editarlo es
         // repartir privilegios.
-        //
-        // Vive en `save()` y no en `guardar()` a propósito: éste es el método
-        // que el navegador alcanza, y esconder la guarda un nivel más abajo la
-        // vuelve invisible para quien lee —y para R58—.
-        $this->authorize($this->record instanceof Role ? 'access.roles.update' : 'access.roles.create');
-
-        $this->saveShowingErrors(fn () => $this->guardar());
-    }
-
-    private function guardar(): void
-    {
-        $isEdit = $this->record instanceof Role;
+        $this->authorize($isEdit ? 'access.roles.update' : 'access.roles.create');
 
         // La vista ya desactiva los campos; esto es lo que de verdad decide.
         // Sin el guard bastaría con quitar el `disabled` desde el navegador

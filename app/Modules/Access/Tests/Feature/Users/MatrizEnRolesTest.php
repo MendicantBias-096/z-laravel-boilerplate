@@ -13,8 +13,9 @@ use Tests\TestCase;
 
 /**
  * Roles reparte exactamente los mismos permisos que Usuarios, así que usa la
- * misma matriz. Lo único suyo es que un rol de plataforma se muestra pero no
- * se edita.
+ * misma matriz. Dos cosas son suyas: la ficha va en una sola pantalla —un rol
+ * es un nombre y una plantilla de permisos, y un menú de una entrada es un
+ * menú de mentira— y un rol de plataforma se muestra pero no se edita.
  */
 class MatrizEnRolesTest extends TestCase
 {
@@ -47,7 +48,6 @@ class MatrizEnRolesTest extends TestCase
 
         $html = Livewire::actingAs($this->createAdmin())
             ->test(Form::class, ['record' => $protegido])
-            ->call('goTo', 'permissions')
             ->html();
 
         $dom = new \DOMDocument;
@@ -62,12 +62,28 @@ class MatrizEnRolesTest extends TestCase
 
     public function test_un_rol_normal_tiene_la_matriz_viva(): void
     {
-        $html = $this->componente()->call('goTo', 'permissions')->html();
+        $html = $this->componente()->html();
 
         $dom = new \DOMDocument;
         @$dom->loadHTML('<?xml encoding="UTF-8">'.$html, LIBXML_NOERROR);
 
         $this->assertSame(0, new \DOMXPath($dom)->query('//input[@type="checkbox"][@disabled]')->length);
+    }
+
+    /**
+     * Una clave que no existe no falla: `__()` devuelve la clave misma, y en
+     * pantalla se lee «platform::app.role_btn_create» donde debería ir un
+     * título. Se coló una en la ficha de rol y solo se vio mirando la captura.
+     */
+    public function test_no_queda_ninguna_clave_de_traduccion_sin_resolver(): void
+    {
+        $html = $this->componente()->html();
+
+        $this->assertDoesNotMatchRegularExpression(
+            '/(platform|access)::[a-z_]+\.[a-z_]+/',
+            strip_tags($html),
+            'Hay una clave de traducción sin definir en la ficha de rol.',
+        );
     }
 
     private function componente(): Testable
