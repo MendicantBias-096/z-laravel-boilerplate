@@ -169,3 +169,75 @@ html, body {
         display: none;
     }
 }
+
+/*
+ * La caja de un formulario.
+ *
+ * El chasis de las pantallas de alta y edición: encabezado y pie anclados con
+ * el cuerpo desplazándose en medio.
+ *
+ * La altura es FIJA y no un tope. De ella sacan su alto el encabezado, el
+ * cuerpo y el pie: `flex-1` necesita un padre con altura resuelta, y `max-h`
+ * no la da. Con un tope, el formulario crece con su contenido, el pie con
+ * «Guardar» se va al final y el cuerpo nunca activa su scroll —una rejilla de
+ * ochenta casillas se vuelve inalcanzable—.
+ *
+ * El descuento deja ver que la página sigue debajo. Con menos, la caja ocupa
+ * casi todo el alto de la ventana y parece la pantalla entera, así que lo
+ * único que se puede desplazar es su interior. Se ajusta por pantalla
+ * redefiniendo `--form-card-gap`.
+ *
+ * Solo desde `lg`: por debajo la caja fluye con el contenido, porque en un
+ * móvil una zona de scroll dentro de otra es una trampa.
+ */
+.form-card {
+    --form-card-gap: 20rem;
+}
+
+@media (min-width: 64rem) {
+    .form-card {
+        height: calc(100dvh - var(--form-card-gap));
+        min-height: 40rem;
+
+        /*
+         * El cuerpo recorta lo que le sobra y hace su propio scroll, pero el
+         * alto intrínseco de su contenido puede seguir contando para el
+         * documento, y entonces la página se desplaza hasta una zona vacía.
+         * `contain: paint` dice que lo de dentro no se pinta fuera, y con eso
+         * el documento vuelve a medir lo que se ve.
+         *
+         * Viene de dayacount, donde llegó a desplazar 1204 px. Allí se
+         * probaron antes y sin efecto: `overflow-x: hidden` y `overflow: auto`
+         * en el cuerpo, `overflow: clip` en la caja, y acotar el envoltorio de
+         * la página.
+         */
+        contain: paint;
+    }
+}
+
+/*
+ * Entrada de una sección.
+ *
+ * Un solo momento con autor: al cambiar de sección el panel entra desde abajo
+ * con salida exponencial. El rail no se mueve — es el marco.
+ */
+@keyframes section-enter {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.section-panel {
+    animation: section-enter 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-panel {
+        animation: none;
+    }
+}

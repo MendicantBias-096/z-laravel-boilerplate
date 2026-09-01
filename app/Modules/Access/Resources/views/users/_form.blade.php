@@ -7,11 +7,12 @@
         la página —Identidad tiene cuatro campos y Accesos ochenta— y «Guardar»
         no se va nunca fuera de la vista.
     --}}
-    <div class="grid overflow-hidden rounded-lg border border-line lg:h-[calc(100vh-13rem)] lg:grid-cols-[13rem_1fr]">
+    <div class="form-card grid grid-cols-1 overflow-hidden rounded-lg border border-line lg:grid-cols-[13rem_minmax(0,1fr)]">
 
         <x-ui.form-rail
             :sections="$this->sections"
             :section="$section"
+            :dirty="$this->dirtySections"
             :title="__('platform::app.user_nav_title')"
         >
             @if ($record)
@@ -29,6 +30,7 @@
             @endif
         </x-ui.form-rail>
 
+        <div wire:key="section-{{ $section }}" class="section-panel flex min-h-0 min-w-0 flex-col">
         <x-ui.form-shell
             action="save"
             :title="$record ? $record->username : __('platform::app.user_btn_create')"
@@ -283,5 +285,6 @@
                 </x-ui.form-footer>
             </x-slot:footer>
         </x-ui.form-shell>
+        </div>
     </div>
 </div>

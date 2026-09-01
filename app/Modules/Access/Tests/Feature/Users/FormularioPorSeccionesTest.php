@@ -77,4 +77,43 @@ class FormularioPorSeccionesTest extends TestCase
         $acceso = collect($componente->instance()->sections())->firstWhere('key', 'access');
         $this->assertStringStartsWith('1/', (string) $acceso['badge']);
     }
+
+    /**
+     * El aviso que hace útil el menú: un formulario partido esconde lo que
+     * falta por guardar en las secciones que no se ven.
+     */
+    public function test_el_rail_marca_la_seccion_con_cambios_sin_guardar(): void
+    {
+        $usuario = User::factory()->create();
+
+        $componente = Livewire::actingAs($this->createAdmin())
+            ->test(Form::class, ['record' => $usuario]);
+
+        $this->assertSame(
+            ['identity' => false, 'account' => false, 'access' => false],
+            $componente->instance()->dirtySections(),
+        );
+
+        // El correo vive en «Cuenta», y solo esa sección debe marcarse.
+        $componente->set('form.email', 'otro@example.com');
+
+        $sucias = $componente->instance()->dirtySections();
+
+        $this->assertTrue($sucias['account']);
+        $this->assertFalse($sucias['identity']);
+        $this->assertFalse($sucias['access']);
+    }
+
+    /**
+     * En un alta no hay con qué comparar, y marcar todo desde el primer
+     * carácter convierte el aviso en ruido.
+     */
+    public function test_un_alta_no_marca_nada_como_sin_guardar(): void
+    {
+        $componente = Livewire::actingAs($this->createAdmin())
+            ->test(Form::class)
+            ->set('form.email', 'nuevo@example.com');
+
+        $this->assertSame([], $componente->instance()->dirtySections());
+    }
 }

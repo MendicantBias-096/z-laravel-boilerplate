@@ -8,13 +8,12 @@ use App\Modules\Access\Models\User;
 use App\Modules\Access\Notifications\UserCreatedNotification;
 use App\Modules\Access\Notifications\UserUpdatedNotification;
 use App\Modules\Platform\Services\NotificationsService;
+use App\Modules\Platform\Traits\Livewire\HasFormSections;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
-use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -22,6 +21,7 @@ use TallStackUi\Traits\Interactions;
 
 class Form extends Component
 {
+    use HasFormSections;
     use Interactions, WithFileUploads;
 
     #[Locked]
@@ -37,17 +37,6 @@ class Form extends Component
     public array $originalPermissions = [];
 
     /**
-     * Sección abierta del formulario.
-     *
-     * Va en la URL para que recargar —o compartir el enlace— no devuelva
-     * siempre a la primera. No lleva `#[Locked]` a propósito: es estado de
-     * navegación, no dice sobre qué registro se opera. Lo que sí hace falta es
-     * acotarla, y de eso se encarga `goTo()`.
-     */
-    #[Url]
-    public string $section = 'identity';
-
-    /**
      * Las secciones del formulario, en orden.
      *
      * El badge de accesos cuenta permisos concedidos sobre concedibles: es el
@@ -58,6 +47,14 @@ class Form extends Component
      */
     #[Computed]
     public function sections(): array
+    {
+        return $this->formSections();
+    }
+
+    /**
+     * @return list<array{key: string, icon: string, label: string, badge?: string}>
+     */
+    protected function formSections(): array
     {
         return [
             ['key' => 'identity', 'icon' => 'lucide-user-round', 'label' => __('platform::app.user_section_identity')],
@@ -72,41 +69,63 @@ class Form extends Component
     }
 
     /**
-     * Cambia de sección.
-     *
-     * La clave llega del navegador, así que se comprueba contra las
-     * declaradas: sin esto, `section` acepta cualquier cadena y el chasis
-     * dibuja una caja vacía sin decir por qué.
+     * @return array<string, string>
      */
-    public function goTo(string $key): void
+    protected function sectionFields(): array
     {
-        if (in_array($key, array_column($this->sections(), 'key'), true)) {
-            $this->section = $key;
-        }
+        return [
+            'photo' => 'identity',
+            'form.first_name' => 'identity',
+            'form.last_name' => 'identity',
+            'form.username' => 'identity',
+            'form.email' => 'account',
+            'form.password' => 'account',
+            'form.password_confirmation' => 'account',
+            'form.is_active' => 'account',
+            'form.role' => 'access',
+            'permissionList' => 'access',
+        ];
     }
 
     /**
-     * En qué sección vive cada campo, para poder llevar al usuario al error.
+     * Qué secciones tienen cambios sin guardar, para que el rail lo señale y
+     * nadie se vaya creyendo que ya guardó lo que no se ve.
      *
-     * Un formulario partido esconde sus propios fallos: si el correo está
-     * repetido y esa pestaña no está abierta, el guardado no hace nada y no se
-     * ve por qué.
+     * Se compara contra el registro y no contra una copia de los valores
+     * iniciales: una propiedad privada no sobrevive a la siguiente petición de
+     * Livewire, así que esa copia estaría vacía justo cuando hace falta.
+     *
+     * En un alta no hay con qué comparar, y marcar todo como sucio desde el
+     * primer carácter convierte el aviso en ruido.
+     *
+     * @return array<string, bool>
      */
-    private const CAMPOS_POR_SECCION = [
-        'photo' => 'identity',
-        'form.first_name' => 'identity',
-        'form.last_name' => 'identity',
-        'form.username' => 'identity',
-        'form.email' => 'account',
-        'form.password' => 'account',
-        'form.password_confirmation' => 'account',
-        'form.is_active' => 'account',
-        'form.role' => 'access',
-        'permissionList' => 'access',
-    ];
+    #[Computed]
+    public function dirtySections(): array
+    {
+        if (! $this->record instanceof User) {
+            return [];
+        }
+
+        $perfil = $this->record->profile;
+
+        return [
+            'identity' => $this->photo !== null
+                || $this->form->first_name !== ($perfil->first_name ?? '')
+                || $this->form->last_name !== ($perfil->last_name ?? '')
+                || $this->form->username !== $this->record->username,
+            'account' => $this->form->email !== $this->record->email
+                || $this->form->password !== ''
+                || $this->form->is_active !== $this->record->is_active,
+            'access' => $this->permissionList !== $this->originalPermissions
+                || $this->form->role !== $this->record->getRoleNames()->first(),
+        ];
+    }
 
     public function mount(): void
     {
+        $this->section = $this->section ?: $this->firstSectionKey();
+
         if ($this->record instanceof User) {
             $this->record->load('roles');
 
@@ -225,33 +244,7 @@ class Form extends Component
             $this->authorize('access.users.create');
         }
 
-        try {
-            $this->guardar();
-        } catch (ValidationException $e) {
-            $this->section = $this->seccionDelPrimerError($e);
-
-            throw $e;
-        }
-    }
-
-    /**
-     * La sección donde vive el primer campo que falló, o la actual si el error
-     * no es de ningún campo conocido.
-     */
-    private function seccionDelPrimerError(ValidationException $e): string
-    {
-        foreach (array_keys($e->errors()) as $campo) {
-            // `permissionList.0` cae en la misma sección que `permissionList`.
-            $raiz = str_contains((string) $campo, '.') && str_starts_with((string) $campo, 'permissionList')
-                ? 'permissionList'
-                : (string) $campo;
-
-            if (isset(self::CAMPOS_POR_SECCION[$raiz])) {
-                return self::CAMPOS_POR_SECCION[$raiz];
-            }
-        }
-
-        return $this->section;
+        $this->saveShowingErrors(fn () => $this->guardar());
     }
 
     private function guardar(): void
