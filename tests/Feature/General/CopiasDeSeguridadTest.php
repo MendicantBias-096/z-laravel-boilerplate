@@ -34,9 +34,12 @@ class CopiasDeSeguridadTest extends TestCase
         // disco de destino— funciona, y hacerlo sobre todo el árbol lo ata al
         // contenido del repositorio y a los symlinks de cada máquina, que es
         // por lo que fallaba en CI y no en local.
+        $temporal = sys_get_temp_dir().'/backup-test-'.uniqid();
+
         config([
             'backup.backup.source.files.include' => [config_path()],
             'backup.backup.source.files.exclude' => [],
+            'backup.backup.temporary_directory' => $temporal,
         ]);
 
         $codigo = Artisan::call('backup:run', ['--only-files' => true, '--disable-notifications' => true]);
