@@ -1,4 +1,19 @@
-@props(['icon' => null, 'title' => null, 'parent' => null])
+@props([
+    'icon' => null,
+    'title' => null,
+    'parent' => null,
+    // Pantalla de altura fija: la página no se desplaza y el scroll vive
+    // dentro del contenido. Es lo que necesitan los formularios con chasis
+    // —form-shell—, donde el pie con «Guardar» tiene que estar siempre a la
+    // vista. Una pantalla larga (una tabla, la documentación) no lo pasa y
+    // sigue desplazándose como siempre.
+    //
+    // Ningún nombre de componente se escribe aquí entre signos de menor y
+    // mayor: Blade compila esas etiquetas también dentro de un comentario de
+    // PHP, y el layout revienta con «Unable to locate a class or view for
+    // component». Este aviso ya lo provocó dos veces al escribirlo.
+    'fixed' => false,
+])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -36,7 +51,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="antialiased">
+<body @class(['antialiased', 'h-dvh overflow-hidden' => $fixed])>
 
 <div
     id="app-root"
@@ -47,7 +62,11 @@
 >
     <div
         id="page-container"
-        class="mx-auto flex min-h-screen w-full min-w-[320px] flex-col bg-canvas text-content transition-all duration-300 ease-out"
+        @class([
+            'mx-auto flex w-full min-w-[320px] flex-col bg-canvas text-content transition-all duration-300 ease-out',
+            'min-h-screen' => ! $fixed,
+            'h-dvh overflow-hidden' => $fixed,
+        ])
     >
         <x-layouts.sidebar />
         @livewire('platform::layouts.navbar')
@@ -76,10 +95,16 @@
         {{-- Contenido scrollable --}}
         <main
             id="page-content"
-            class="flex max-w-full flex-auto flex-col"
+            @class([
+                'flex max-w-full flex-auto flex-col',
+                // `min-h-0` es lo que deja que el contenido se encoja hasta
+                // caber; sin él un hijo flexible crece con su contenido y el
+                // scroll interno no llega a activarse nunca.
+                'min-h-0 overflow-hidden' => $fixed,
+            ])
             style="padding-top: {{ ($icon || $title) ? '8rem' : '4rem' }}; padding-bottom: 3.5rem;"
         >
-            <div class="w-full p-4 lg:p-8">
+            <div @class(['w-full p-4 lg:p-8', 'flex min-h-0 flex-1 flex-col' => $fixed])>
                 {{ $slot }}
             </div>
         </main>

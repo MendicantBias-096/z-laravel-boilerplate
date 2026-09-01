@@ -182,22 +182,35 @@ html, body {
  * «Guardar» se va al final y el cuerpo nunca activa su scroll —una rejilla de
  * ochenta casillas se vuelve inalcanzable—.
  *
- * El descuento deja ver que la página sigue debajo. Con menos, la caja ocupa
- * casi todo el alto de la ventana y parece la pantalla entera, así que lo
- * único que se puede desplazar es su interior. Se ajusta por pantalla
- * redefiniendo `--form-card-gap`.
+ * En una pantalla `<x-layouts.app fixed>` la caja **ocupa el hueco que le deja
+ * el layout** en vez de calcularlo: `flex-1` sobre un padre de altura resuelta.
+ * Así no hay que mantener un número que sume cabeceras, pie, relleno y
+ * breadcrumb, y que se queda viejo en cuanto una de esas piezas cambia de alto.
+ *
+ * `--form-card-gap` es el respaldo para una pantalla que no use ese layout: ahí
+ * sí toca descontar el cromo a mano.
+ *
+ * **Sin `min-height` a propósito.** Un mínimo mayor que el hueco disponible
+ * devuelve el scroll a la página, que es justo lo que este chasis existe para
+ * quitar: entre el encabezado y el pie de la caja se desplaza el cuerpo, y
+ * nada más. En una ventana baja la caja se encoge y su interior sigue
+ * alcanzándose.
  *
  * Solo desde `lg`: por debajo la caja fluye con el contenido, porque en un
  * móvil una zona de scroll dentro de otra es una trampa.
  */
 .form-card {
-    --form-card-gap: 20rem;
+    --form-card-gap: 22rem;
 }
 
 @media (min-width: 64rem) {
     .form-card {
         height: calc(100dvh - var(--form-card-gap));
-        min-height: 40rem;
+
+        /* Dentro de una pantalla fija manda el hueco, no el cálculo. */
+        &:where(.flex-1) {
+            height: auto;
+        }
 
         /*
          * El cuerpo recorta lo que le sobra y hace su propio scroll, pero el

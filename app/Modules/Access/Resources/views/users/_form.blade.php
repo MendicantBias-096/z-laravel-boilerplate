@@ -1,4 +1,4 @@
-<div>
+<div class="flex min-h-0 flex-1 flex-col">
     {{--
         El chasis de formulario del proyecto: menú de secciones a la izquierda,
         cuerpo con scroll propio a la derecha y pie anclado con los botones.
@@ -7,7 +7,7 @@
         la página —Identidad tiene cuatro campos y Accesos ochenta— y «Guardar»
         no se va nunca fuera de la vista.
     --}}
-    <div class="form-card grid grid-cols-1 overflow-hidden rounded-lg border border-line lg:grid-cols-[13rem_minmax(0,1fr)]">
+    <div class="form-card flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-line lg:flex-row">
 
         <x-ui.form-rail
             :sections="$this->sections"
@@ -30,13 +30,21 @@
             @endif
         </x-ui.form-rail>
 
-        <div wire:key="section-{{ $section }}" class="section-panel flex min-h-0 min-w-0 flex-col">
+        <div wire:key="section-{{ $section }}" class="section-panel flex min-h-0 min-w-0 flex-1 flex-col">
         <x-ui.form-shell
             action="save"
             :title="$record ? $record->username : __('platform::app.user_btn_create')"
             :description="__('platform::app.user_form_hint')"
             :icon="$this->sections[array_search($section, array_column($this->sections, 'key'), true) ?: 0]['icon']"
         >
+            <x-slot name="footer">
+                <x-ui.form-footer
+                    :cancel-route="route('access.users.index')"
+                    :label="$record ? __('platform::app.user_btn_update') : __('platform::app.user_btn_create')"
+                >
+                    {{ $record?->email }}
+                </x-ui.form-footer>
+            </x-slot>
 
             @if ($section === 'identity')
                 <x-ui.form-section
@@ -271,19 +279,12 @@
                                 @endforeach
                             </div>
                         </div>
+                        </div>
                     @endforeach
                     </div>
                 </x-ui.form-section>
             @endif
 
-            <x-slot:footer>
-                <x-ui.form-footer
-                    :cancel-route="route('access.users.index')"
-                    :label="$record ? __('platform::app.user_btn_update') : __('platform::app.user_btn_create')"
-                >
-                    {{ $record?->email }}
-                </x-ui.form-footer>
-            </x-slot:footer>
         </x-ui.form-shell>
         </div>
     </div>

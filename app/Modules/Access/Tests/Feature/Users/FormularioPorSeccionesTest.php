@@ -116,4 +116,30 @@ class FormularioPorSeccionesTest extends TestCase
 
         $this->assertSame([], $componente->instance()->dirtySections());
     }
+
+    /**
+     * El pie del chasis va anclado al fondo de la caja, no dentro del cuerpo
+     * que se desplaza.
+     *
+     * Un `<div>` sin cerrar en una sección se lo tragaba: el navegador cierra
+     * el árbol donde puede, el formulario sigue funcionando y lo único que
+     * pasa es que «Guardar» se va de la vista en la sección larga. El síntoma
+     * parecía de CSS y costó encontrarlo.
+     */
+    public function test_el_pie_queda_fuera_del_cuerpo_que_se_desplaza(): void
+    {
+        $componente = Livewire::actingAs($this->createAdmin())->test(Form::class);
+
+        foreach (['identity', 'account', 'access'] as $seccion) {
+            $html = $componente->call('goTo', $seccion)->html();
+
+            $cuerpo = strpos($html, 'overflow-y-auto');
+            $pie = strpos($html, 'h-14 shrink-0');
+            $finDelFormulario = strrpos($html, '</form>');
+
+            $this->assertNotFalse($pie, "La sección «{$seccion}» no pinta el pie.");
+            $this->assertGreaterThan($cuerpo, $pie, "En «{$seccion}» el pie sale antes que el cuerpo.");
+            $this->assertLessThan($finDelFormulario, $pie, "En «{$seccion}» el pie quedó fuera del formulario.");
+        }
+    }
 }
