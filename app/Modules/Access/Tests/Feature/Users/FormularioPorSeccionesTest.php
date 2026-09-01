@@ -6,6 +6,8 @@ namespace App\Modules\Access\Tests\Feature\Users;
 
 use App\Modules\Access\Livewire\Users\Form;
 use App\Modules\Access\Models\User;
+use DOMDocument;
+use DOMXPath;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -118,28 +120,35 @@ class FormularioPorSeccionesTest extends TestCase
     }
 
     /**
-     * El pie del chasis va anclado al fondo de la caja, no dentro del cuerpo
-     * que se desplaza.
+     * El pie del chasis es hijo directo del formulario, no un nodo suelto
+     * dentro del cuerpo que se desplaza.
      *
-     * Un `<div>` sin cerrar en una sección se lo tragaba: el navegador cierra
-     * el árbol donde puede, el formulario sigue funcionando y lo único que
-     * pasa es que «Guardar» se va de la vista en la sección larga. El síntoma
-     * parecía de CSS y costó encontrarlo.
+     * Se comprueba con un parser y no comparando posiciones de texto: un
+     * `<div>` de más cierra el `<form>` antes de tiempo, y entonces el pie
+     * sigue apareciendo después en el HTML —así que el orden no delata nada—
+     * pero cuelga fuera del formulario. El navegador repara el árbol igual que
+     * `DOMDocument`, así que lo que este caso ve es lo que se ve en pantalla:
+     * los botones «Cancelar» y «Guardar» dejan de estar anclados.
      */
-    public function test_el_pie_queda_fuera_del_cuerpo_que_se_desplaza(): void
+    public function test_el_pie_es_hijo_del_formulario_en_todas_las_secciones(): void
     {
         $componente = Livewire::actingAs($this->createAdmin())->test(Form::class);
 
         foreach (['identity', 'account', 'access'] as $seccion) {
             $html = $componente->call('goTo', $seccion)->html();
 
-            $cuerpo = strpos($html, 'overflow-y-auto');
-            $pie = strpos($html, 'h-14 shrink-0');
-            $finDelFormulario = strrpos($html, '</form>');
+            $dom = new DOMDocument;
+            @$dom->loadHTML('<?xml encoding="UTF-8">'.$html, LIBXML_NOERROR);
 
-            $this->assertNotFalse($pie, "La sección «{$seccion}» no pinta el pie.");
-            $this->assertGreaterThan($cuerpo, $pie, "En «{$seccion}» el pie sale antes que el cuerpo.");
-            $this->assertLessThan($finDelFormulario, $pie, "En «{$seccion}» el pie quedó fuera del formulario.");
+            $pie = new DOMXPath($dom)->query("//form/div[contains(@class, 'h-14')]");
+
+            $this->assertNotFalse($pie);
+            $this->assertSame(
+                1,
+                $pie->length,
+                "En la sección «{$seccion}» el pie no cuelga del formulario: "
+                .'un `<div>` sin cerrar lo dejó fuera y los botones ya no están anclados.',
+            );
         }
     }
 }
