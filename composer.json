@@ -23,6 +23,7 @@
         "mallardduck/blade-lucide-icons": "^2.0",
         "owen-it/laravel-auditing": "^14.0",
         "sentry/sentry-laravel": "^4.20",
+        "spatie/laravel-backup": "^10.3",
         "spatie/laravel-medialibrary": "^11.21",
         "spatie/laravel-permission": "^8.0",
         "tallstackui/tallstackui": "^3.0"

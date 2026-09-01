@@ -35,8 +35,33 @@ class Register extends Component
     #[Validate('required|string')]
     public string $password_confirmation = '';
 
+    /**
+     * Campo trampa. Una persona no lo ve y un bot lo rellena porque rellena
+     * todo lo que encuentra.
+     *
+     * No lleva `#[Validate]` a propósito: validarlo lo convertiría en un error
+     * de formulario, y decirle al bot que se le ha visto solo le enseña a
+     * esquivarlo. El alta se descarta con el mismo desenlace que una correcta.
+     *
+     * Esto es la mitad del problema que no necesita un servicio externo. Un
+     * captcha de verdad —Turnstile, hCaptcha— pide credenciales por proyecto,
+     * así que se engancha aquí, junto a esta comprobación, cuando las haya.
+     */
+    public string $website = '';
+
     public function register(CreateNewUser $creator): void
     {
+        if ($this->website !== '') {
+            // El disfraz tiene que ser completo: los `#[Validate]` validan en
+            // vivo mientras se teclea, así que volver aquí sin limpiar dejaría
+            // en pantalla errores que un alta correcta no deja, y eso es
+            // precisamente la señal que le diría al bot que se le ha visto.
+            $this->resetErrorBag();
+            $this->redirectRoute('verification.notice', navigate: true);
+
+            return;
+        }
+
         $this->validate();
 
         // Solo por IP: con el correo en la clave, cambiarlo en cada intento
