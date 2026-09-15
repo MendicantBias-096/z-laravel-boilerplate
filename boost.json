@@ -8,9 +8,13 @@
     "nightwatch_mcp": false,
     "sail": false,
     "skills": [
+        "infer-conventions",
         "fortify-development",
         "laravel-best-practices",
+        "testing-best-practices",
+        "mcp-development",
         "livewire-development",
+        "echo-development",
         "tailwindcss-development"
     ]
 }
