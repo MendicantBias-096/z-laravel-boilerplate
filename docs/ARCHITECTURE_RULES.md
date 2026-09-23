@@ -357,7 +357,7 @@ tres módulos lo necesiten de verdad. Copiar código dos veces está bien;
 adivinar qué será reutilizable casi siempre sale mal.
 
 Es la *rule of three* de `docs/patterns/README.md`, aplicada a la ubicación.
-El código que emite un generador (`create-crud`) **cuenta como consumidor**:
+El código que emite un generador (los `make:` de ZBLP-18) **cuenta como consumidor**:
 si el generador lo escribe en cada módulo, tiene consumidores por construcción.
 
 Cicatriz: `Platform` es el nodo base y todos pueden importarlo sin ceremonia,
@@ -2030,7 +2030,7 @@ Dicho en voz alta, para que no se confunda «no normado» con «olvidado».
 | **Versionado y deploy** | fuera **salvo** R36, que R35 necesita |
 | **Observabilidad** | Sentry está instalado sin DSN. Es una conversación aparte |
 | **i18n** | `lang/` funciona; R40 resolvió lo que cruzaba |
-| **Commits y ramas** | ya viven en la skill `git-commits` |
+| **Commits y ramas** | viven en la skill global `git-commits`, en el perfil zygma de `claude-code-config` |
 | **Mutation testing** | responde «¿son buenos mis tests?» cuando la pregunta aún es «¿existen?» |
 
 **Regla puente**: un módulo que maneje datos sensibles lo declara en su README

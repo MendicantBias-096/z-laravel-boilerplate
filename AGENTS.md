@@ -19,16 +19,6 @@ This is a Laravel boilerplate project. These guidelines must be followed closely
 - **tailwindcss** — v4
 - **alpinejs** — v3
 
-## Skills Activation
-
-Activate the relevant skill whenever you work in that domain — don't wait until you're stuck.
-
-- `git-commits` — Enforces Spanish Conventional Commits and branch naming. Activate always before creating a commit or a new branch.
-- `create-mcp` — Creates an MCP server with tools, resources and prompts using `laravel/mcp`. Activate when the user wants to expose app functionality to AI clients; when they mention "mcp", "servidor mcp", "exponer al agente", or "mcp tool".
-- `create-module` — Creates a domain or a simple module (no table, no form). Activate when the user asks to add a new domain or a plain module; when they mention "nuevo módulo", "nuevo dominio", "crear módulo", or "agregar módulo". If listing/create/edit is also needed, use `create-crud` instead.
-- `create-crud` — Generates a complete CRUD module. Activate when the user asks to create a new module with listing, create, and edit; when they mention "crud", "módulo nuevo", "generar módulo", or "tabla con formulario".
-- `livewire-development` — Develops reactive Livewire 4 components. Activate when creating or modifying Livewire components, using wire: directives, adding real-time behavior, or debugging component reactivity.
-
 ## Conventions
 
 - Follow existing code conventions in sibling files before writing new code.
@@ -110,7 +100,7 @@ use HasUuids;                    // model
 public ?string $id = null;       // Form object
 ```
 
-`create-crud` already generates all three. Integer and ULID keys also work —
+A new module sets all three. Integer and ULID keys also work —
 see below — but UUID is what a new module gets unless there is a reason.
 
 **What stays on integers**, deliberately: `users`, `roles` and everything from
@@ -269,22 +259,23 @@ to *generate* the README section, not verify it), R7, R10, R12 and R20 — all o
 which need an AST or an import graph. Everything else is enforced by
 `scripts/arch-lint.sh`, `php artisan arch:check`, PHPat or PHPStan level 8.
 
-Use the `create-module` skill for full instructions on creating new domains and modules.
-
 === crud generation ===
 
 # CRUD Generation
 
-When the user asks to create a CRUD or a new module with a table, **activate the `create-crud` skill**.
+A CRUD is a module (see Modules above) with a model, a Form object, a listing
+and create/edit screens. Until the `make:module` and `make:crud` generators
+exist (ZBLP-18), copy the shape of `app/Modules/Access/Livewire/Users`.
+Permissions, notifications and seeders live inside the module; only two steps
+are remote, and skipping either fails silently: the provider in
+`bootstrap/providers.php` and the entry in `config/menu.php` (R41).
 
 Before generating anything, ask for:
 
 - Model name (PascalCase singular)
-- Domain where it lives
+- Module where it lives
 - Fields (name and type)
 - Spanish name (singular and plural)
-
-Use the `create-crud` skill for the complete step-by-step generation guide adapted to this boilerplate.
 
 === livewire/core rules ===
 
@@ -410,7 +401,7 @@ $path = Image::of('description')->landscape()->generate()->store();
 # Laravel MCP
 
 Use `laravel/mcp` when exposing app functionality to external AI clients.
-Activate `create-mcp` skill for guided generation.
+Activate the `mcp-development` skill (installed by Boost) for guided generation.
 
 ## Key commands
 
