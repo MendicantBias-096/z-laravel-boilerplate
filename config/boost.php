@@ -48,4 +48,21 @@ return [
         'vendor_bin' => env('BOOST_VENDOR_BIN_EXECUTABLE_PATH'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Agent Guideline Paths
+    |--------------------------------------------------------------------------
+    |
+    | AGENTS.md is the one instruction file every coding agent shares, and
+    | CLAUDE.md only imports it. Left at its default, Boost would write its
+    | guidelines back into CLAUDE.md and split them from the rest.
+    |
+    */
+
+    'agents' => [
+        'claude_code' => [
+            'guidelines_path' => 'AGENTS.md',
+        ],
+    ],
+
 ];
